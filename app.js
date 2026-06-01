@@ -315,6 +315,22 @@
   }
 
   // ================= RESULTS =================
+  // Fun, non-coder productivity tips for Claude (chat, cowork, or code).
+  var TIPS = [
+    "Paste a messy email thread and ask “what do I actually need to do here?” to get a clean action list.",
+    "Before a meeting, drop in your notes and ask Claude for three sharp questions to bring.",
+    "Turn a wall of text into a to-do list: “give me this as a checklist I can actually follow.”",
+    "After any plan, ask “what am I missing?” — Claude is great at catching the obvious gap.",
+    "Stuck on a blank page? Ask for “five rough first drafts, one sentence each” and pick a direction.",
+    "Feed Claude a screenshot and ask it to pull the numbers or dates into a clean table.",
+    "End a request with “explain it like I'm new to this” to skip the jargon.",
+    "Before sending an important message, ask Claude to “play devil's advocate.”",
+    "Save the prompts you reuse in a notes file so you're not rewriting instructions every day.",
+    "After a long chat, ask “summarize the decisions we made” so you have a paper trail.",
+    "Paste something you wrote and ask Claude to match your tone on the next draft.",
+    "Batch your small questions into one message — it's faster than asking one at a time."
+  ];
+
   function showResults(r) {
     $("results-emoji").innerHTML = r.replay ? "📖" : (r.perfect ? "🎯" : "🎉");
     $("results-title").textContent = r.replay ? "Review complete" : "Day complete!";
@@ -346,6 +362,9 @@
     var body = "**Day " + d.day + " — " + d.title + "**\n\n" +
       "What would you improve? (lesson, quiz, a hands-on task, the capstone, or anything else)\n\n";
     $("results-suggest").href = repo + "/issues/new?title=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(body);
+
+    // fun productivity tip in a purple bubble
+    $("results-tip-text").textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
 
     $("results-home").onclick = function () { renderHome(); show("screen-home"); };
     show("screen-results");
