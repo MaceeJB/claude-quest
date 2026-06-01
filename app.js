@@ -101,6 +101,12 @@
     $("stat-progress").textContent = completedCount(state) + "/" + TOTAL_DAYS;
     $("streak-flame").classList.toggle("lit", state.currentStreak > 0);
 
+    var pv = $("preview-toggle");
+    if (pv) {
+      pv.textContent = previewMode ? "Preview: ON" : "Preview all days";
+      pv.classList.toggle("active", previewMode);
+    }
+
     renderCTA();
     renderGrid();
     renderBadges();
@@ -388,6 +394,10 @@
       $("profile-name").value = "";
       $("profile-name").focus();
       show("screen-profile");
+    };
+    $("preview-toggle").onclick = function () {
+      previewMode = !previewMode;
+      if (state) renderHome();
     };
     show("screen-profile");
   }

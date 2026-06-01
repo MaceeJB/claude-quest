@@ -68,6 +68,8 @@ h2 { font-size: 1.25rem; margin: .2em 0 .5em; }
 .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
 .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
 .btn.small { padding: 6px 12px; font-size: .85rem; }
+.btn-ghost.active { color: #fff; background: var(--primary); border-color: var(--primary-hi); }
+.btn-ghost.active:hover { color: #fff; border-color: var(--accent); }
 .btn-primary { margin-top: 8px; }
 
 /* ---- Profile gate ---- */
