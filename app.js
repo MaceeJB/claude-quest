@@ -34,6 +34,7 @@
   // ---- state ----
   var profile = null;   // current player name
   var state = null;     // current player state
+  var previewMode = false; // when on (via CCQ.previewAll), every day tile opens in review mode for content review
 
   function blankState(name) {
     return { name: name, totalPoints: 0, currentStreak: 0, longestStreak: 0,
@@ -149,6 +150,7 @@
       tile.appendChild(el("div", "dsection", d.section + (rec && rec.completed ? " · " + rec.score + " pts" : "")));
       if (status === "done") tile.onclick = function () { beginDay(d.day, true); };
       else if (status === "available") tile.onclick = function () { beginDay(d.day, false); };
+      else if (previewMode) { tile.classList.remove("locked"); tile.classList.add("available"); tile.title = "Preview (review mode — no points)"; tile.onclick = function () { beginDay(d.day, true); }; }
       else tile.title = d.day === next ? "Come back tomorrow to unlock this day." : "Complete earlier days first.";
       grid.appendChild(tile);
     });
@@ -395,7 +397,12 @@
     setDate: function (s) { localStorage.setItem("ccq:debugDate", s); },
     clearDate: function () { localStorage.removeItem("ccq:debugDate"); },
     state: function () { return state; },
-    today: today
+    today: today,
+    // Content review: unlock every day tile (opens in review mode — no points/streak changes).
+    previewAll: function () { previewMode = true; if (state) { renderHome(); show("screen-home"); } return "Preview ON — every day tile is now clickable (review mode). Run CCQ.previewOff() to restore."; },
+    previewOff: function () { previewMode = false; if (state) renderHome(); return "Preview OFF."; },
+    // Jump straight into one day in review mode, e.g. CCQ.preview(7).
+    preview: function (n) { if (!state) return "Pick a player first."; if (n < 1 || n > TOTAL_DAYS) return "Day must be 1–" + TOTAL_DAYS + "."; beginDay(n, true); return "Previewing day " + n + " (review mode)."; }
   };
 
   document.addEventListener("DOMContentLoaded", init);
