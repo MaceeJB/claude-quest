@@ -71,6 +71,21 @@
   }
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
+  // Copy text to clipboard with a graceful fallback, and flash the button.
+  function copyToClipboard(text, btn, restoreLabel) {
+    function done() { btn.textContent = "Copied! ✓"; btn.classList.add("copied"); setTimeout(function () { btn.textContent = restoreLabel; btn.classList.remove("copied"); }, 2200); }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", "");
+      ta.style.position = "absolute"; ta.style.left = "-9999px";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fallback); }
+    else { fallback(); }
+  }
+
   // ================= PROFILE =================
   function initProfile() {
     var last = localStorage.getItem("ccq:lastProfile");
@@ -446,7 +461,9 @@
     if (!r.replay && r.singer) singer = r.singer;
     else { var rec0 = state.days[d.day]; singer = (rec0 && rec0.singer) ? rec0.singer : chooseSinger(accuracy, false); }
     $("results-singer").innerHTML = "<span class=\"sv-label\">If your quiz was an '80s singer…</span>" +
-      "<span class=\"sv-text\">" + singer + "</span>";
+      "<span class=\"sv-text\">" + singer + "</span>" +
+      "<button id=\"singer-copy\" class=\"btn btn-ghost small sv-copy\">Copy my singer</button>";
+    $("singer-copy").onclick = function () { copyToClipboard(singer, $("singer-copy"), "Copy my singer"); };
 
     // "Share in Teams" card — a ready-to-paste message + copy button
     var shareMsg = [
@@ -458,21 +475,7 @@
     $("share-text").textContent = shareMsg;
     $("share-copy").textContent = "Copy message";
     $("share-copy").classList.remove("copied");
-    $("share-copy").onclick = function () {
-      var btn = $("share-copy");
-      function done() { btn.textContent = "Copied! ✓"; btn.classList.add("copied"); setTimeout(function () { btn.textContent = "Copy message"; btn.classList.remove("copied"); }, 2200); }
-      function fallback() {
-        var ta = document.createElement("textarea");
-        ta.value = shareMsg; ta.setAttribute("readonly", "");
-        ta.style.position = "absolute"; ta.style.left = "-9999px";
-        document.body.appendChild(ta); ta.select();
-        try { document.execCommand("copy"); done(); } catch (e) {}
-        document.body.removeChild(ta);
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareMsg).then(done, fallback);
-      } else { fallback(); }
-    };
+    $("share-copy").onclick = function () { copyToClipboard(shareMsg, $("share-copy"), "Copy message"); };
 
     var feedbackEmail = "MaceeJB@gmail.com";
     var subject = "Claude Quest — Day " + d.day + " (" + d.title + "): feedback";
