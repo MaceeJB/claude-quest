@@ -186,7 +186,9 @@ code { background: #0c0e16; border: 1px solid var(--border); border-radius: 5px;
   border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--border)); }
 .sv-label { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
 .sv-text { display: block; color: var(--text); font-size: 1.02rem; font-weight: 700; line-height: 1.4; }
-.sv-copy { margin-top: 10px; }
+.sv-link { display: inline-block; margin-top: 8px; color: var(--primary-hi); font-size: .85rem; font-weight: 600; text-decoration: none; }
+.sv-link:hover { text-decoration: underline; }
+.sv-copy { display: block; margin-top: 10px; }
 .btn-ghost.copied { color: #fff; background: var(--primary); border-color: var(--primary-hi); }
 
 /* ---- Productivity tip bubble (results screen) ---- */
