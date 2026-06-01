@@ -38,7 +38,7 @@
 
   function blankState(name) {
     return { name: name, totalPoints: 0, currentStreak: 0, longestStreak: 0,
-      lastCompletedDate: null, perfectCount: 0, days: {}, badges: {} };
+      lastCompletedDate: null, perfectCount: 0, days: {}, badges: {}, singersUsed: [] };
   }
   function key(name) { return "ccq:" + name; }
   function load(name) {
@@ -301,17 +301,19 @@
     var streakBonus = Math.round(base * multiplier) - base;
     var dayScore = base + streakBonus;
 
+    var singer = chooseSinger(computeAccuracy(session.quizPoints, d.quiz.length), true);
+
     state.totalPoints += dayScore;
     state.lastCompletedDate = t;
     if (session.perfect) state.perfectCount += 1;
-    state.days[d.day] = { completed: true, score: dayScore, perfect: session.perfect, date: t };
+    state.days[d.day] = { completed: true, score: dayScore, perfect: session.perfect, date: t, singer: singer };
 
     var newBadges = evaluateBadges();
     save();
 
     showResults({ replay: false, quiz: session.quizPoints, challenge: challengePoints,
       multiplier: multiplier, streakBonus: streakBonus, total: dayScore,
-      perfect: session.perfect, streak: state.currentStreak, newBadges: newBadges });
+      perfect: session.perfect, streak: state.currentStreak, newBadges: newBadges, singer: singer });
   }
 
   function evaluateBadges() {
@@ -342,35 +344,74 @@
 
   // "If your quiz performance was an '80s singer..." — graded on first-try accuracy.
   // Kept playful and kind; even the bottom tier is encouraging, not a roast.
+  // Roster is generous so teammates with the same score still get different singers.
   var SINGERS = [
     { min: 1.00, picks: [
       "🎤 Michael Jackson — you moonwalked through that quiz without a single stumble.",
       "👑 Prince — pure genius, made every answer look effortless.",
-      "🎶 Whitney Houston — every note pitch-perfect. Flawless." ] },
+      "🎶 Whitney Houston — every note pitch-perfect. Flawless.",
+      "⚡ David Bowie — chameleon brilliance; you nailed every change.",
+      "🎹 Stevie Wonder — didn't even need to look. Perfect pitch.",
+      "🌙 Annie Lennox — sweet dreams are made of scores like this.",
+      "🎸 Freddie Mercury — operatic, theatrical, absolutely flawless.",
+      "✨ Kate Bush — running up that hill and clearing it in one leap." ] },
     { min: 0.75, picks: [
       "💃 Madonna — struck a pose and basically owned it.",
       "🕶️ George Michael — smooth and confident, faith in nearly every answer.",
-      "🎸 Tina Turner — simply the best, give or take one little wobble." ] },
+      "🎸 Tina Turner — simply the best, give or take one little wobble.",
+      "🎤 Lionel Richie — dancing on the ceiling, just shy of perfect.",
+      "🥁 Sting — every breath you take was almost spot on.",
+      "🎷 Sade — smooth operator, one note off.",
+      "🌟 Janet Jackson — control, very nearly total.",
+      "🎵 Pat Benatar — hit it with your best shot, and you mostly did." ] },
     { min: 0.50, picks: [
       "🌈 Cyndi Lauper — you just wanna have fun, and you did just fine.",
       "🥁 Phil Collins — felt it coming in the air tonight, and you landed it.",
-      "🎹 Lionel Richie — easy like Sunday morning, a nice steady set." ] },
+      "🎹 Billy Joel — kept the faith, a solid middle of the set.",
+      "🎤 Hall & Oates — you made their dreams come true, half of them anyway.",
+      "🎸 Bryan Adams — summer of solid; about halfway to heaven.",
+      "🎶 Belinda Carlisle — heaven is a place on earth, roughly 50% of the time.",
+      "🎷 Huey Lewis — that's the heart of rock 'n' roll beating steady." ] },
     { min: 0.25, picks: [
       "🎵 Rick Astley — never gonna give you up; you pushed right through.",
       "🌙 Bonnie Tyler — turned around a few times, but you made it.",
-      "🎷 Wham! — wake me up before you go-go back over those misses." ] },
+      "🎷 Wham! — wake me up before you go-go back over those misses.",
+      "🎤 Culture Club — do you really want to hurt your score? Patch it up.",
+      "🎸 Toto — you blessed the rains, missed a few; bless the retry.",
+      "🥁 a-ha — take on the next one, take it ooon." ] },
     { min: 0.00, picks: [
       "🎤 Milli Vanilli — hey, you showed up and looked great. Encore time — give it another take!",
-      "📼 One-hit-wonder energy — today was the warm-up. The replay is your comeback tour." ] }
+      "📼 One-hit-wonder energy — today was the warm-up. The replay is your comeback tour.",
+      "🎙️ Karaoke-night legend — you'll have every word memorized by the next round.",
+      "🎵 B-side gem — a hidden classic in the making. Flip it over and try again." ] }
   ];
-  function singerVerdict(ratio) {
-    for (var i = 0; i < SINGERS.length; i++) {
-      if (ratio >= SINGERS[i].min) {
-        var picks = SINGERS[i].picks;
-        return picks[Math.floor(Math.random() * picks.length)];
-      }
-    }
-    return SINGERS[SINGERS.length - 1].picks[0];
+  function computeAccuracy(quizPoints, nQ) {
+    if (nQ <= 0) return 0;
+    var firstTry = quizPoints / POINTS_AFTER_MISS - nQ; // pts = 10a + 5b, N=a+b → a = pts/5 - N
+    return Math.max(0, Math.min(1, firstTry / nQ));
+  }
+  function pickTier(ratio) {
+    for (var i = 0; i < SINGERS.length; i++) { if (ratio >= SINGERS[i].min) return SINGERS[i]; }
+    return SINGERS[SINGERS.length - 1];
+  }
+  // Stable per-name hash so two players almost never collide on the same singer.
+  function nameHash(str) {
+    var h = 0; str = str || "";
+    for (var i = 0; i < str.length; i++) { h = (h * 31 + str.charCodeAt(i)) >>> 0; }
+    return h;
+  }
+  // Choose a singer for this player from the right tier, skipping any they've
+  // already had (until the whole roster is used). Seeded by name so identical
+  // scores still diverge across teammates. record=true persists the pick.
+  function chooseSinger(ratio, record) {
+    var pool = pickTier(ratio).picks;
+    if (!state.singersUsed) state.singersUsed = [];
+    var used = state.singersUsed;
+    var avail = pool.filter(function (s) { return used.indexOf(s) === -1; });
+    if (!avail.length) avail = pool.slice(); // whole tier seen → allow reuse
+    var pick = avail[nameHash(profile) % avail.length];
+    if (record) used.push(pick);
+    return pick;
   }
 
   function showResults(r) {
@@ -397,13 +438,41 @@
       badgeBox.appendChild(el("div", "step-label", "New badge" + (r.newBadges.length > 1 ? "s" : "") + " unlocked!"));
       r.newBadges.forEach(function (b) { badgeBox.appendChild(el("span", "results-badge", b.emoji + " " + b.name)); });
     }
-    // "If your quiz performance was an '80s singer..." verdict
+    // "If your quiz performance was an '80s singer..." verdict.
+    // Use the singer chosen at completion (stable on replay); fall back for legacy days.
     var d = CURRICULUM[session.day - 1];
-    var nQ = d.quiz.length;
-    var firstTry = nQ > 0 ? (r.quiz / POINTS_AFTER_MISS - nQ) : 0; // quizPoints = 10a + 5b, N=a+b → a = pts/5 - N
-    var accuracy = nQ > 0 ? Math.max(0, Math.min(1, firstTry / nQ)) : 0;
+    var accuracy = computeAccuracy(r.quiz, d.quiz.length);
+    var singer;
+    if (!r.replay && r.singer) singer = r.singer;
+    else { var rec0 = state.days[d.day]; singer = (rec0 && rec0.singer) ? rec0.singer : chooseSinger(accuracy, false); }
     $("results-singer").innerHTML = "<span class=\"sv-label\">If your quiz was an '80s singer…</span>" +
-      "<span class=\"sv-text\">" + singerVerdict(accuracy) + "</span>";
+      "<span class=\"sv-text\">" + singer + "</span>";
+
+    // "Share in Teams" card — a ready-to-paste message + copy button
+    var shareMsg = [
+      "🟣 Claude Quest — Day " + d.day + ": " + d.title + (r.replay ? " (review)" : " ✅"),
+      singer,
+      "🔥 " + state.currentStreak + "-day streak · " + state.totalPoints + " pts total",
+      "My takeaway: "
+    ].join("\n");
+    $("share-text").textContent = shareMsg;
+    $("share-copy").textContent = "Copy message";
+    $("share-copy").classList.remove("copied");
+    $("share-copy").onclick = function () {
+      var btn = $("share-copy");
+      function done() { btn.textContent = "Copied! ✓"; btn.classList.add("copied"); setTimeout(function () { btn.textContent = "Copy message"; btn.classList.remove("copied"); }, 2200); }
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = shareMsg; ta.setAttribute("readonly", "");
+        ta.style.position = "absolute"; ta.style.left = "-9999px";
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareMsg).then(done, fallback);
+      } else { fallback(); }
+    };
 
     var feedbackEmail = "MaceeJB@gmail.com";
     var subject = "Claude Quest — Day " + d.day + " (" + d.title + "): feedback";

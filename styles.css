@@ -187,6 +187,16 @@ code { background: #0c0e16; border: 1px solid var(--border); border-radius: 5px;
 .sv-label { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
 .sv-text { display: block; color: var(--text); font-size: 1.02rem; font-weight: 700; line-height: 1.4; }
 
+/* ---- "Share in Teams" card (results screen) ---- */
+.share-card { text-align: left; margin: 16px auto 4px; max-width: 420px; padding: 14px 16px; border-radius: 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 18%, var(--bg-elev-2)), var(--bg-elev-2));
+  border: 1px solid color-mix(in srgb, var(--primary) 45%, var(--border)); }
+.share-head { font-size: .72rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--primary-hi); margin-bottom: 8px; }
+.share-text { white-space: pre-wrap; word-break: break-word; font-family: inherit; font-size: .92rem; line-height: 1.5;
+  color: var(--text); background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin: 0 0 10px; }
+.share-card .btn { width: 100%; margin: 0; }
+.btn-ghost.copied { color: #fff; background: var(--primary); border-color: var(--primary-hi); }
+
 /* ---- Productivity tip bubble (results screen) ---- */
 .tip-bubble {
   position: relative;
