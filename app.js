@@ -465,18 +465,6 @@
       "<button id=\"singer-copy\" class=\"btn btn-ghost small sv-copy\">Copy my singer</button>";
     $("singer-copy").onclick = function () { copyToClipboard(singer, $("singer-copy"), "Copy my singer"); };
 
-    // "Share in Teams" card — a ready-to-paste message + copy button
-    var shareMsg = [
-      "🟣 Claude Quest — Day " + d.day + ": " + d.title + (r.replay ? " (review)" : " ✅"),
-      singer,
-      "🔥 " + state.currentStreak + "-day streak · " + state.totalPoints + " pts total",
-      "My takeaway: "
-    ].join("\n");
-    $("share-text").textContent = shareMsg;
-    $("share-copy").textContent = "Copy message";
-    $("share-copy").classList.remove("copied");
-    $("share-copy").onclick = function () { copyToClipboard(shareMsg, $("share-copy"), "Copy message"); };
-
     var feedbackEmail = "MaceeJB@gmail.com";
     var subject = "Claude Quest — Day " + d.day + " (" + d.title + "): feedback";
     var body = "Day " + d.day + " — " + d.title + "\n\n" +
