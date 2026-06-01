@@ -246,12 +246,28 @@
     var list = $("challenge-list");
     list.innerHTML = "";
     session.checks = d.challenge.map(function () { return false; });
-    d.challenge.forEach(function (text, i) {
-      var row = el("label", "challenge-item");
+    d.challenge.forEach(function (item, i) {
+      // items may be a plain string (legacy) or { text, link, capstone }
+      var text = typeof item === "string" ? item : item.text;
+      var link = typeof item === "string" ? null : item.link;
+      var isCap = typeof item === "object" && item.capstone;
+
+      var row = el("div", "challenge-item" + (isCap ? " capstone" : ""));
+      var main = el("label", "ci-main");
       var cb = el("input"); cb.type = "checkbox";
       cb.onchange = function () { session.checks[i] = cb.checked; row.classList.toggle("checked", cb.checked); };
-      var span = el("span", null, text);
-      row.appendChild(cb); row.appendChild(span);
+      main.appendChild(cb);
+      if (isCap) main.appendChild(el("span", "cap-badge", "Capstone"));
+      main.appendChild(el("span", "ci-text", text));
+      row.appendChild(main);
+
+      if (link) {
+        var a = el("a", "ci-link", "Learn how &rarr;");
+        a.href = link;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        row.appendChild(a);
+      }
       list.appendChild(row);
     });
     $("challenge-finish").onclick = finishDay;

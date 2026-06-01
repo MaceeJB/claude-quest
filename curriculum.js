@@ -2,7 +2,13 @@
  * Defined as a plain global so the app works from file:// and from GitHub Pages
  * without any fetch/CORS. Each day: { day, title, section, lesson[], quiz[], challenge[] }.
  * quiz[].answer is the 0-based index of the correct option.
+ *
+ * challenge[] items are objects: { text, link }, where `link` points at the
+ * official Claude Code docs page for that task ("Learn how →"). The final item of
+ * each day has capstone:true — it carries ONE real project forward across all 18
+ * days, so players build something real while they learn.
  */
+var DOC = "https://code.claude.com/docs/en/";
 window.CURRICULUM = [
   {
     day: 1,
@@ -20,9 +26,10 @@ window.CURRICULUM = [
       { q: "What happens at the very start of a session?", options: ["Nothing loads until you prompt", "CLAUDE.md files and auto memory load", "All MCP tools fully load into context", "It clears previous memory"], answer: 1, explanation: "CLAUDE.md and auto memory load on launch so Claude starts with project context." }
     ],
     challenge: [
-      "Launch Claude Code with the <code>claude</code> command and read the welcome screen.",
-      "Run a one-off task with <code>claude -p \"summarize the files in this folder\"</code> and watch it exit without a session.",
-      "Confirm which shell Claude Code is using by asking it to run <code>echo $SHELL</code> (or check the welcome screen)."
+      { text: "Launch Claude Code with the <code>claude</code> command and read the welcome screen.", link: DOC + "quickstart" },
+      { text: "Run a one-off task with <code>claude -p \"summarize the files in this folder\"</code> and watch it exit without a session.", link: DOC + "headless" },
+      { text: "Confirm which shell Claude Code is using by asking it to run <code>echo $SHELL</code> (or check the welcome screen).", link: DOC + "setup" },
+      { text: "<b>Capstone kickoff:</b> pick a small, real project you'd actually like (a CLI tool, a webpage, a script you keep meaning to write). Make an empty folder, run <code>claude</code> inside it, and ask Claude to scaffold a starter file.", link: DOC + "quickstart", capstone: true }
     ]
   },
   {
@@ -40,9 +47,10 @@ window.CURRICULUM = [
       { q: "How do you stop Claude mid-action without losing the conversation?", options: ["Close the terminal", "Press Esc", "Run /stop", "Ctrl+C twice"], answer: 1, explanation: "Esc cancels the running action and keeps your conversation intact." }
     ],
     challenge: [
-      "Give Claude a small multi-step task and watch it gather → act → verify.",
-      "While it's working, press <code>Esc</code> to interrupt, then type a redirection and continue.",
-      "Try <code>Esc Esc</code> to open the rewind menu and look at your checkpoints."
+      { text: "Give Claude a small multi-step task and watch it gather → act → verify.", link: DOC + "common-workflows" },
+      { text: "While it's working, press <code>Esc</code> to interrupt, then type a redirection and continue.", link: DOC + "interactive-mode" },
+      { text: "Try <code>Esc Esc</code> to open the rewind menu and look at your checkpoints.", link: DOC + "interactive-mode" },
+      { text: "<b>Capstone:</b> describe the first real feature of your project in plain English and let Claude build it end-to-end — watch the gather → act → verify loop run on your own code.", link: DOC + "common-workflows", capstone: true }
     ]
   },
   {
@@ -61,9 +69,10 @@ window.CURRICULUM = [
       { q: "Before editing a file, Claude…", options: ["Deletes the original", "Snapshots it so you can revert", "Commits to git automatically", "Asks you to back it up"], answer: 1, explanation: "The snapshot powers /rewind and Esc-Esc undo." }
     ],
     challenge: [
-      "Press <code>Shift+Tab</code> a few times and watch the mode indicator cycle.",
-      "Ask Claude to make a small edit, approve it, then press <code>Esc Esc</code> and try /rewind to undo it.",
-      "Run <code>/permissions</code> and add an allow rule for a command you trust (e.g. your test command)."
+      { text: "Press <code>Shift+Tab</code> a few times and watch the mode indicator cycle.", link: DOC + "permission-modes" },
+      { text: "Ask Claude to make a small edit, approve it, then press <code>Esc Esc</code> and try /rewind to undo it.", link: DOC + "interactive-mode" },
+      { text: "Run <code>/permissions</code> and add an allow rule for a command you trust (e.g. your test command).", link: DOC + "permissions" },
+      { text: "<b>Capstone:</b> have Claude make a real edit to your project, review the diff before approving, then add an allow-rule for the command you run most (your build/test/run command).", link: DOC + "permissions", capstone: true }
     ]
   },
   {
@@ -81,9 +90,10 @@ window.CURRICULUM = [
       { q: "How do you reopen a previous session?", options: ["/clear", "/resume", "/branch", "/reset"], answer: 1, explanation: "/resume lets you pick and reopen an earlier session." }
     ],
     challenge: [
-      "Type <code>/</code> and skim the full command list; open <code>/help</code>.",
-      "Run <code>/clear</code> between two unrelated tasks and notice the fresh context.",
-      "Try <code>/model</code> to see which models you can switch to."
+      { text: "Type <code>/</code> and skim the full command list; open <code>/help</code>.", link: DOC + "slash-commands" },
+      { text: "Run <code>/clear</code> between two unrelated tasks and notice the fresh context.", link: DOC + "slash-commands" },
+      { text: "Try <code>/model</code> to see which models you can switch to.", link: DOC + "slash-commands" },
+      { text: "<b>Capstone:</b> while working on your project, run <code>/clear</code> between two unrelated changes so each one starts from clean context.", link: DOC + "slash-commands", capstone: true }
     ]
   },
   {
@@ -101,9 +111,10 @@ window.CURRICULUM = [
       { q: "Which command focuses a summary on a specific area when compacting?", options: ["/clear", "/compact focus on …", "/context", "/rename"], answer: 1, explanation: "/compact accepts a focus so the important details survive summarization." }
     ],
     challenge: [
-      "Run <code>/context</code> and see what's taking up space in your window.",
-      "Name your current session with <code>/rename</code>.",
-      "Set a <code>/goal</code> like 'all tests pass' on a small task and watch Claude re-check it."
+      { text: "Run <code>/context</code> and see what's taking up space in your window.", link: DOC + "slash-commands" },
+      { text: "Name your current session with <code>/rename</code>.", link: DOC + "slash-commands" },
+      { text: "Set a <code>/goal</code> like 'all tests pass' on a small task and watch Claude re-check it.", link: DOC + "goal" },
+      { text: "<b>Capstone:</b> set a <code>/goal</code> for your project's next feature (e.g. 'the page loads with no console errors') and let Claude iterate until it's met.", link: DOC + "goal", capstone: true }
     ]
   },
   {
@@ -122,9 +133,10 @@ window.CURRICULUM = [
       { q: "When does a nested subdirectory CLAUDE.md load?", options: ["Never", "Always at session start", "On demand when Claude reads files in that directory", "Only via @import"], answer: 2, explanation: "Nested CLAUDE.md loads on demand as Claude works in that directory." }
     ],
     challenge: [
-      "Create or open a project <code>CLAUDE.md</code> and add one build command and one coding standard.",
-      "Add an <code>@import</code> line pulling in another notes file.",
-      "Start a fresh session and confirm Claude already knows your build command."
+      { text: "Create or open a project <code>CLAUDE.md</code> and add one build command and one coding standard.", link: DOC + "memory" },
+      { text: "Add an <code>@import</code> line pulling in another notes file.", link: DOC + "memory" },
+      { text: "Start a fresh session and confirm Claude already knows your build command.", link: DOC + "memory" },
+      { text: "<b>Capstone:</b> write a real <code>CLAUDE.md</code> for your project — how to run it, its structure, and one coding standard — then start a fresh session and confirm Claude already knows them.", link: DOC + "memory", capstone: true }
     ]
   },
   {
@@ -142,9 +154,10 @@ window.CURRICULUM = [
       { q: "Two git worktrees of the same repo…", options: ["Each get separate memory", "Share one memory directory", "Can't use auto memory", "Merge memory on commit"], answer: 1, explanation: "Worktrees of the same repo share a single memory directory." }
     ],
     challenge: [
-      "Run <code>/memory</code> and look at what Claude has saved (or the empty folder if new).",
-      "Tell Claude a project fact worth remembering and confirm it offers to save it.",
-      "Open <code>MEMORY.md</code> and read how Claude structures its index vs. topic files."
+      { text: "Run <code>/memory</code> and look at what Claude has saved (or the empty folder if new).", link: DOC + "memory" },
+      { text: "Tell Claude a project fact worth remembering and confirm it offers to save it.", link: DOC + "memory" },
+      { text: "Open <code>MEMORY.md</code> and read how Claude structures its index vs. topic files.", link: DOC + "memory" },
+      { text: "<b>Capstone:</b> do a real work session on your project, then run <code>/memory</code> and see what Claude chose to remember about it.", link: DOC + "memory", capstone: true }
     ]
   },
   {
@@ -162,9 +175,10 @@ window.CURRICULUM = [
       { q: "A key benefit of skills over CLAUDE.md is that they…", options: ["Load every session", "Load on demand, saving context", "Can't be invoked manually", "Are stored in git history only"], answer: 1, explanation: "On-demand loading keeps long reference material out of context until needed." }
     ],
     challenge: [
-      "Type <code>/</code> and look for skills already available in your setup.",
-      "Create a tiny skill at <code>.claude/skills/hello/SKILL.md</code> with a name and description.",
-      "Invoke it with <code>/hello</code> and confirm Claude follows it."
+      { text: "Type <code>/</code> and look for skills already available in your setup.", link: DOC + "skills" },
+      { text: "Create a tiny skill at <code>.claude/skills/hello/SKILL.md</code> with a name and description.", link: DOC + "skills" },
+      { text: "Invoke it with <code>/hello</code> and confirm Claude follows it.", link: DOC + "skills" },
+      { text: "<b>Capstone:</b> turn a repetitive step in your project (e.g. 'add a new page/component the standard way') into a skill, then invoke it on real work.", link: DOC + "skills", capstone: true }
     ]
   },
   {
@@ -182,9 +196,10 @@ window.CURRICULUM = [
       { q: "When a subagent finishes, it returns…", options: ["Its full raw transcript into your context", "A summary of its work", "Nothing — you must ask", "A new session you must resume"], answer: 1, explanation: "Subagents report back a concise summary, protecting your main context." }
     ],
     challenge: [
-      "Ask Claude to use the Explore subagent to map an unfamiliar part of a codebase.",
-      "Notice how the subagent's searching doesn't flood your main conversation.",
-      "Sketch a custom subagent file in <code>.claude/agents/</code> with a restricted <code>tools</code> list."
+      { text: "Ask Claude to use the Explore subagent to map an unfamiliar part of a codebase.", link: DOC + "sub-agents" },
+      { text: "Notice how the subagent's searching doesn't flood your main conversation.", link: DOC + "sub-agents" },
+      { text: "Sketch a custom subagent file in <code>.claude/agents/</code> with a restricted <code>tools</code> list.", link: DOC + "sub-agents" },
+      { text: "<b>Capstone:</b> ask a subagent to explore your growing project and summarize how its parts fit together.", link: DOC + "sub-agents", capstone: true }
     ]
   },
   {
@@ -202,9 +217,10 @@ window.CURRICULUM = [
       { q: "How do hooks differ from CLAUDE.md instructions?", options: ["Hooks are advisory too", "Hooks are deterministic and always run", "Hooks only run on startup", "Hooks can't run shell commands"], answer: 1, explanation: "CLAUDE.md is advisory; hooks always execute at their event." }
     ],
     challenge: [
-      "Open or create <code>.claude/settings.json</code> and look at the <code>hooks</code> structure.",
-      "Add a simple post-edit hook that echoes a message or runs your formatter.",
-      "Trigger an edit and confirm the hook fires."
+      { text: "Open or create <code>.claude/settings.json</code> and look at the <code>hooks</code> structure.", link: DOC + "hooks" },
+      { text: "Add a simple post-edit hook that echoes a message or runs your formatter.", link: DOC + "hooks-guide" },
+      { text: "Trigger an edit and confirm the hook fires.", link: DOC + "hooks-guide" },
+      { text: "<b>Capstone:</b> add a hook that auto-formats (or lints) your project's files after each edit, then make an edit and watch it run.", link: DOC + "hooks-guide", capstone: true }
     ]
   },
   {
@@ -222,9 +238,10 @@ window.CURRICULUM = [
       { q: "Which in-session command checks MCP status and lets you authenticate?", options: ["/permissions", "/mcp", "/context", "/agents"], answer: 1, explanation: "/mcp shows server status and handles authentication." }
     ],
     challenge: [
-      "Run <code>/mcp</code> (or <code>claude mcp list</code>) to see any servers already connected.",
-      "Read about one MCP server you'd find useful (e.g. GitHub or your database).",
-      "If you have one configured, ask Claude to use one of its tools."
+      { text: "Run <code>/mcp</code> (or <code>claude mcp list</code>) to see any servers already connected.", link: DOC + "mcp" },
+      { text: "Read about one MCP server you'd find useful (e.g. GitHub or your database).", link: DOC + "mcp" },
+      { text: "If you have one configured, ask Claude to use one of its tools.", link: DOC + "mcp" },
+      { text: "<b>Capstone:</b> connect one MCP server that's useful to your project (e.g. GitHub or your database) and have Claude use it on real work.", link: DOC + "mcp", capstone: true }
     ]
   },
   {
@@ -242,9 +259,10 @@ window.CURRICULUM = [
       { q: "What does Esc Esc do?", options: ["Quit Claude Code", "Open the rewind menu", "Clear context", "Switch model"], answer: 1, explanation: "Esc Esc opens rewind so you can restore an earlier checkpoint." }
     ],
     challenge: [
-      "Practice <code>Tab</code> completion on a slash command.",
-      "Press <code>↑</code> to recall a previous prompt.",
-      "Open <code>~/.claude/keybindings.json</code> and read what's rebindable (the /keybindings-help skill can guide you)."
+      { text: "Practice <code>Tab</code> completion on a slash command.", link: DOC + "interactive-mode" },
+      { text: "Press <code>↑</code> to recall a previous prompt.", link: DOC + "interactive-mode" },
+      { text: "Open <code>~/.claude/keybindings.json</code> and read what's rebindable (the /keybindings-help skill can guide you).", link: DOC + "keybindings" },
+      { text: "<b>Capstone:</b> build your project's next feature using mostly keyboard shortcuts — <code>Tab</code> to complete, <code>↑</code> to recall, <code>Shift+Tab</code> for modes.", link: DOC + "interactive-mode", capstone: true }
     ]
   },
   {
@@ -262,9 +280,10 @@ window.CURRICULUM = [
       { q: "Auto-accept edits will auto-approve which of these?", options: ["curl downloads", "rm -rf", "mkdir / mv / cp", "git push"], answer: 2, explanation: "It auto-approves file edits and safe filesystem commands, still prompting for risky ones." }
     ],
     challenge: [
-      "Enter plan mode (<code>Shift+Tab</code> to it) and try to make Claude edit — watch it stay read-only.",
-      "Add two allow rules with <code>/permissions</code> for commands you trust.",
-      "Switch to auto-accept edits for a small safe task and feel the difference."
+      { text: "Enter plan mode (<code>Shift+Tab</code> to it) and try to make Claude edit — watch it stay read-only.", link: DOC + "permission-modes" },
+      { text: "Add two allow rules with <code>/permissions</code> for commands you trust.", link: DOC + "permissions" },
+      { text: "Switch to auto-accept edits for a small safe task and feel the difference.", link: DOC + "permission-modes" },
+      { text: "<b>Capstone:</b> explore your project in plan mode first (no edits), then switch to auto-accept edits to implement a small, safe change.", link: DOC + "permission-modes", capstone: true }
     ]
   },
   {
@@ -282,9 +301,10 @@ window.CURRICULUM = [
       { q: "What does typing @src/api/routes.ts in a prompt do?", options: ["Nothing special", "Tells Claude to read that file before responding", "Deletes the file", "Runs the file"], answer: 1, explanation: "@path references a file so Claude reads it as context first." }
     ],
     challenge: [
-      "Rewrite a vague request you'd normally type into a specific one with a file reference and a 'done' condition.",
-      "Give Claude an explicit test case to satisfy and have it run the test.",
-      "Use <code>@file</code> to point Claude at a specific file before asking a question."
+      { text: "Rewrite a vague request you'd normally type into a specific one with a file reference and a 'done' condition.", link: DOC + "best-practices" },
+      { text: "Give Claude an explicit test case to satisfy and have it run the test.", link: DOC + "best-practices" },
+      { text: "Use <code>@file</code> to point Claude at a specific file before asking a question.", link: DOC + "common-workflows" },
+      { text: "<b>Capstone:</b> write one tightly-scoped prompt for your project's next feature — what's needed, which file, and a 'done' test — and let Claude satisfy it.", link: DOC + "best-practices", capstone: true }
     ]
   },
   {
@@ -302,9 +322,10 @@ window.CURRICULUM = [
       { q: "After auto-compaction, can you still rewind to an earlier point?", options: ["No, it's gone", "Yes — history is saved locally", "Only within 5 minutes", "Only if you ran /compact"], answer: 1, explanation: "Checkpoints persist locally, so /rewind still works after compaction." }
     ],
     challenge: [
-      "Run <code>/context</code> mid-session and identify the biggest consumers.",
-      "Try <code>/compact focus on …</code> with a focus relevant to your task.",
-      "Practice <code>/clear</code> when switching to an unrelated task and feel the speed-up."
+      { text: "Run <code>/context</code> mid-session and identify the biggest consumers.", link: DOC + "slash-commands" },
+      { text: "Try <code>/compact focus on …</code> with a focus relevant to your task.", link: DOC + "slash-commands" },
+      { text: "Practice <code>/clear</code> when switching to an unrelated task and feel the speed-up.", link: DOC + "slash-commands" },
+      { text: "<b>Capstone:</b> during a long building session on your project, run <code>/context</code>, then <code>/compact focus on …</code> to keep Claude sharp without starting over.", link: DOC + "slash-commands", capstone: true }
     ]
   },
   {
@@ -322,9 +343,10 @@ window.CURRICULUM = [
       { q: "Where do personal, machine-specific preferences belong?", options: ["./CLAUDE.md (committed)", "CLAUDE.local.md or ~/.claude/settings.json", "the project README", ".mcp.json"], answer: 1, explanation: "Personal settings stay local/user-scoped, not in shared project files." }
     ],
     challenge: [
-      "Add one team convention to your project <code>CLAUDE.md</code> and commit it.",
-      "Run <code>/code-review</code> on a recent diff in a fresh session.",
-      "Use <code>/rename</code> to give your session a descriptive, handoff-friendly name."
+      { text: "Add one team convention to your project <code>CLAUDE.md</code> and commit it.", link: DOC + "memory" },
+      { text: "Run <code>/code-review</code> on a recent diff in a fresh session.", link: DOC + "slash-commands" },
+      { text: "Use <code>/rename</code> to give your session a descriptive, handoff-friendly name.", link: DOC + "slash-commands" },
+      { text: "<b>Capstone:</b> commit your project's <code>CLAUDE.md</code> and config to git, then run <code>/code-review</code> on your latest diff in a fresh session.", link: DOC + "best-practices", capstone: true }
     ]
   },
   {
@@ -342,9 +364,10 @@ window.CURRICULUM = [
       { q: "Plan mode is poor value for which task?", options: ["A multi-file refactor", "Unfamiliar architecture", "A single-line typo fix", "Adding a new subsystem"], answer: 2, explanation: "Planning is overhead for trivial, single-file changes." }
     ],
     challenge: [
-      "Enter plan mode and have Claude produce a plan for a small multi-step change.",
-      "Press <code>Ctrl+G</code> to open and tweak the plan in your editor.",
-      "Exit plan mode, let Claude implement, and confirm it verifies with tests or a build."
+      { text: "Enter plan mode and have Claude produce a plan for a small multi-step change.", link: DOC + "permission-modes" },
+      { text: "Press <code>Ctrl+G</code> to open and tweak the plan in your editor.", link: DOC + "interactive-mode" },
+      { text: "Exit plan mode, let Claude implement, and confirm it verifies with tests or a build.", link: DOC + "common-workflows" },
+      { text: "<b>Capstone:</b> pick a project feature that touches several files, have Claude plan it in plan mode, tweak the plan, then implement and verify.", link: DOC + "common-workflows", capstone: true }
     ]
   },
   {
@@ -362,9 +385,10 @@ window.CURRICULUM = [
       { q: "How do you keep a session running after detaching your terminal?", options: ["/clear", "/background, then check /tasks", "/resume", "Close the terminal"], answer: 1, explanation: "/background detaches the session; /tasks lets you check on it." }
     ],
     challenge: [
-      "Run a real one-off task with <code>claude -p \"…\"</code> and observe it finish without a session.",
-      "Add <code>--output-format json</code> and inspect the structured result.",
-      "Reflect: you've finished all 18 days — pick one feature to make part of your daily workflow."
+      { text: "Run a real one-off task with <code>claude -p \"…\"</code> and observe it finish without a session.", link: DOC + "headless" },
+      { text: "Add <code>--output-format json</code> and inspect the structured result.", link: DOC + "cli-reference" },
+      { text: "Reflect: you've finished all 18 days — pick one feature to make part of your daily workflow.", link: DOC + "best-practices" },
+      { text: "<b>Capstone graduation:</b> automate one real task on your project with <code>claude -p \"…\"</code> (e.g. generate its README or run a check), then choose the Claude Code habit you'll keep using.", link: DOC + "headless", capstone: true }
     ]
   }
 ];

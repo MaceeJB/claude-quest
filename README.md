@@ -57,9 +57,22 @@ Edit `curriculum.js`. Each day is an object:
   section: "Getting Started",
   lesson:    [ { heading: "...", body: "..." } ],
   quiz:      [ { q: "...", options: ["...","..."], answer: 0, explanation: "..." } ],
-  challenge: [ "Try this in Claude Code..." ]
+  challenge: [
+    { text: "Try this in Claude Code...", link: DOC + "quickstart" },
+    { text: "Capstone step that builds the running project...", link: DOC + "quickstart", capstone: true }
+  ]
 }
 ```
 
-`answer` is the 0-based index of the correct option. `body`/`challenge` may contain simple HTML
-(e.g. `<code>...</code>`). Add more days by appending more objects.
+`answer` is the 0-based index of the correct option. `body` and a challenge item's `text` may
+contain simple HTML (e.g. `<code>...</code>`).
+
+Each `challenge` item is an object:
+- `text` — the hands-on instruction.
+- `link` — a "Learn how →" URL shown under the task (the `DOC` constant at the top of
+  `curriculum.js` is the Claude Code docs base, so `DOC + "skills"` → the Skills page).
+- `capstone: true` — marks the one task per day that advances a single real project across
+  all 18 days. It renders with a gold "Capstone" badge.
+
+(Plain strings still work as challenge items too, for backward compatibility.) Add more days by
+appending more objects.

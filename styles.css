@@ -148,10 +148,22 @@ code { background: #0c0e16; border: 1px solid var(--border); border-radius: 5px;
 
 /* ---- Challenge ---- */
 .challenge-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
-.challenge-item { display: flex; gap: 12px; align-items: flex-start; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; }
-.challenge-item input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--good); cursor: pointer; }
+.challenge-item { display: flex; flex-direction: column; gap: 8px; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.challenge-item .ci-main { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.challenge-item input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--good); cursor: pointer; flex: none; }
+.challenge-item .ci-text { flex: 1; }
 .challenge-item.checked { border-color: var(--good); }
-.challenge-item label { cursor: pointer; }
+
+/* per-task "Learn how →" help link */
+.ci-link { align-self: flex-start; margin-left: 30px; font-size: .82rem; font-weight: 600; color: var(--accent); text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--accent) 60%, transparent); }
+.ci-link:hover { color: #a3b4ff; }
+
+/* capstone task — the one real project carried across all 18 days */
+.challenge-item.capstone { border-color: color-mix(in srgb, var(--gold) 55%, var(--border)); background: linear-gradient(180deg, rgba(245,196,81,.08), var(--bg-elev-2)); }
+.challenge-item.capstone.checked { border-color: var(--gold); }
+.challenge-item.capstone .ci-link { color: var(--gold); border-bottom-color: color-mix(in srgb, var(--gold) 60%, transparent); }
+.challenge-item.capstone .ci-link:hover { color: #ffd97a; }
+.cap-badge { flex: none; align-self: flex-start; margin-top: 2px; font-size: .62rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #1a1205; background: var(--gold); border-radius: 999px; padding: 2px 8px; }
 
 /* ---- Results ---- */
 .results-emoji { font-size: 3.4rem; }
