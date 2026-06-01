@@ -40,9 +40,12 @@ window.CURRICULUM = [
     title: "The Agentic Loop & How Claude Works",
     section: "Getting Started",
     lesson: [
-      { heading: "Gather → Act → Verify", body: "Claude works in a loop: gather context (read files, search code), take action (edit files, run commands), then verify results (run tests, compare output). These phases blend and repeat." },
-      { heading: "You're part of the loop", body: "Press <code>Esc</code> to stop Claude mid-action, type a correction to redirect it, or <code>Esc Esc</code> to rewind to an earlier checkpoint. You never lose the conversation by interrupting." },
-      { heading: "What fills your context", body: "Conversation history, file contents, command outputs, CLAUDE.md, auto memory, loaded skills, and system instructions. As it fills, Claude compacts older tool outputs and may summarize history." }
+      { heading: "Why understanding the loop makes you better at this", body: "Claude isn't a vending machine that spits out an answer — it works the way a careful teammate does: it looks around, does something, then checks whether it worked. Once you can see those steps happening, you stop micromanaging and start directing, which is exactly the skill that makes an operator effective with any assistant." },
+      { heading: "Gather → Act → Verify", body: "Every task moves through three phases: <b>gather</b> context (read the files, search for what's relevant), <b>act</b> (make the edit, run the command), and <b>verify</b> (check the result against what you asked for). There's no hidden 'compile' or 'build' step in the loop itself — just these three, repeating and blending as the work goes." },
+      { heading: "It checks its own work", body: "The verify phase is what separates this from a one-shot answer. After making a change, Claude re-reads the file, runs the check, or compares the output — and if something's off, it loops back and tries again. You can strengthen this by telling it how to know it's done (more on that on Day 14)." },
+      { heading: "You're part of the loop — jump in anytime", body: "If Claude heads in the wrong direction, press <code>Esc</code> to stop it mid-action. Your conversation is <b>not</b> lost — you simply type a correction and it adjusts from there. Press <code>Esc Esc</code> to rewind to an earlier checkpoint if you want to back up further." },
+      { heading: "Correcting it is a conversation, not a reset", body: "Say Claude proposes a fix and you realize the real problem is elsewhere — just tell it, in plain words, like 'no, the issue is in how sessions time out.' It reads your correction and changes its next step. You keep all the context you've built up; nothing starts over." },
+      { heading: "What's in the 'conversation' it remembers", body: "Claude's working memory holds your chat history, the files it has read, command outputs, your CLAUDE.md and saved notes, and any loaded skills. As that fills up, it automatically tidies older material so it stays sharp — a topic you'll dig into on Day 15." }
     ],
     quiz: [
       { q: "Which is NOT one of the three phases of the agentic loop?", options: ["Gather context", "Take action", "Verify results", "Compile to binary"], answer: 3, explanation: "The loop is gather → act → verify; there is no compile phase." },
@@ -61,9 +64,12 @@ window.CURRICULUM = [
     title: "Reading, Editing & Permissions",
     section: "Core Interaction",
     lesson: [
-      { heading: "Edits are safe by default", body: "In default mode Claude asks before editing a file, and snapshots it first so you can revert with <code>/rewind</code> or by pressing <code>Esc</code> twice." },
-      { heading: "Cycle modes with Shift+Tab", body: "Default mode prompts for each tool. Auto-accept edits auto-approves file edits and safe filesystem commands (mkdir, mv, cp). Plan mode is read-only exploration. Press <code>Shift+Tab</code> to cycle." },
-      { heading: "Allow / ask / deny rules", body: "Permission rules use allow/ask/deny precedence — deny always wins and removes the tool from Claude's context. Allowlist routine commands like <code>npm test</code> so Claude stops asking." }
+      { heading: "Why you can relax about letting it touch your files", body: "The biggest worry for a new operator is 'what if it changes something it shouldn't?' Claude Code is built so that, by default, nothing happens to your files without your say-so — and anything it does change can be undone. Knowing that lets you experiment freely." },
+      { heading: "It asks before it changes anything", body: "In the standard (default) mode, when Claude wants to edit a file it <b>stops and asks first</b>. You can approve that one change, or approve it for the rest of the session so it stops asking for similar edits. It can always read files freely; it's changes that need your nod." },
+      { heading: "Undo is built in", body: "Right before editing a file, Claude quietly takes a snapshot of it. If you don't like the result, press <code>Esc</code> twice or run <code>/rewind</code> to roll back to how things were. That safety net is always there, even several steps later." },
+      { heading: "Three speeds, one shortcut", body: "Press <code>Shift+Tab</code> to cycle through three modes: <b>default</b> (asks for each action), <b>auto-accept edits</b> (stops asking for routine edits), and <b>plan mode</b> (read-only — it can look but not touch). Pick the speed that matches how risky the work is." },
+      { heading: "What auto-accept actually auto-approves", body: "Auto-accept edits speeds you up by approving file edits and <b>safe</b> housekeeping commands — making folders, moving and copying files (<code>mkdir</code>, <code>mv</code>, <code>cp</code>). It still pauses for anything genuinely risky, so you're not handing over the keys entirely." },
+      { heading: "Setting your own guardrails: allow / ask / deny", body: "You can write rules that say always-allow, always-ask, or always-deny for specific commands. <b>Deny always wins</b> and even removes that tool from Claude's reach. The everyday win: allowlist a command you run constantly (like your test command) so Claude stops asking about it." }
     ],
     quiz: [
       { q: "In default mode, Claude wants to edit a file. What happens?", options: ["It edits immediately", "It asks; you can approve once or for the session", "It can read but never edit", "You must switch modes first"], answer: 1, explanation: "Default mode prompts for edits; approval can apply for the rest of the session." },
@@ -83,9 +89,12 @@ window.CURRICULUM = [
     title: "Essential Slash Commands (Part 1)",
     section: "Core Interaction",
     lesson: [
-      { heading: "Type / to see them all", body: "Slash commands control Claude within a session and are case-insensitive. <code>/help</code> lists them." },
-      { heading: "Navigation & context", body: "<code>/resume</code> reopens a previous session, <code>/clear</code> resets context between unrelated tasks, and <code>/memory</code> views and edits CLAUDE.md and auto memory files." },
-      { heading: "Model, effort, permissions", body: "<code>/model</code> switches models (sonnet, opus, haiku), <code>/effort</code> trades reasoning depth against cost, and <code>/permissions</code> manages tool approval rules." }
+      { heading: "Quick controls you type with a slash", body: "Slash commands are shortcuts you type right in the chat to control the session — no menus, no mouse. Type <code>/</code> on its own to see the whole list (they're not case-sensitive), and <code>/help</code> for a guided overview. You'll use a handful constantly." },
+      { heading: "/clear — a fresh desk between jobs", body: "When you finish one thing and start something unrelated, run <code>/clear</code>. It wipes the working context so leftover details from the last task don't muddle the new one. Think of it as clearing your desk before the next project — it also keeps Claude fast and focused." },
+      { heading: "/resume — pick up where you left off", body: "Closed your terminal yesterday mid-task? <code>/resume</code> reopens a previous session with its history intact, so you continue the conversation instead of re-explaining everything." },
+      { heading: "/memory — see and edit what Claude knows", body: "<code>/memory</code> opens the project's standing notes — your <code>CLAUDE.md</code> and Claude's own saved notes — so you can read or tweak what it remembers about your work. (Those two are the focus of Days 6 and 7.)" },
+      { heading: "/model and /effort — dial cost vs. depth", body: "<code>/model</code> switches which model you're using (such as sonnet, opus, or haiku), and <code>/effort</code> trades how hard Claude thinks against speed and cost. Use a lighter touch for simple chores, more depth for thorny problems." },
+      { heading: "/permissions — manage what needs approval", body: "<code>/permissions</code> shows every allow/ask/deny rule and lets you change them on the spot — the cleanest way to stop being asked about commands you trust." }
     ],
     quiz: [
       { q: "You finish a feature and want to start an unrelated bug fix. Run first:", options: ["/resume", "/clear", "/memory", "Esc"], answer: 1, explanation: "/clear resets context so old work doesn't clutter the new task." },
@@ -104,9 +113,12 @@ window.CURRICULUM = [
     title: "Slash Commands (Part 2) & Planning",
     section: "Core Interaction",
     lesson: [
-      { heading: "Plan & shape context", body: "<code>/plan</code> switches to read-only plan mode, <code>/compact</code> summarizes context (e.g. <code>/compact focus on API changes</code>), and <code>/context</code> shows what's consuming space." },
-      { heading: "Session management", body: "<code>/rename</code> names a session for easy resuming, and <code>/branch</code> (a.k.a. <code>/fork-session</code>) copies your history into a new independent session." },
-      { heading: "Coordination & goals", body: "<code>/agents</code> manages subagents, <code>/background</code> detaches the session to run in the background, <code>/code-review</code> reviews your diff in a fresh context, and <code>/goal</code> sets a completion condition Claude re-checks every turn." }
+      { heading: "The commands that shine on bigger jobs", body: "Day 4 covered the everyday commands; these come out when a task gets longer or trickier. They help you plan before acting, keep the session tidy, experiment safely, and set a clear finish line." },
+      { heading: "/plan and /context — look before you leap", body: "<code>/plan</code> drops Claude into read-only plan mode so it can study the problem and propose an approach without changing anything. <code>/context</code> shows you what's currently filling its working memory, so you can tell when it's time to trim." },
+      { heading: "/compact — summarize without losing the thread", body: "When a session gets long, <code>/compact</code> condenses the history to free up room. Add a focus — <code>/compact focus on the API changes</code> — and the details you care about survive the summary while the noise gets dropped." },
+      { heading: "/rename and /branch — organize and experiment", body: "<code>/rename</code> gives a session a memorable name so it's easy to find with <code>/resume</code>. <code>/branch</code> (also called <code>/fork-session</code>) copies your current conversation into a brand-new, independent session — perfect for trying a risky idea while leaving your original work untouched." },
+      { heading: "/goal — set a finish line Claude keeps checking", body: "<code>/goal</code> lets you state a completion condition, like 'all the tests pass' or 'the page loads with no errors.' Claude re-checks it after every turn and keeps working until it's actually met — instead of stopping when things merely look done." },
+      { heading: "/agents, /background, /code-review", body: "<code>/agents</code> manages specialized helpers (Day 9), <code>/background</code> detaches a session to keep running while you do other things, and <code>/code-review</code> reviews your recent changes with fresh eyes in a clean context." }
     ],
     quiz: [
       { q: "Mid-refactor, you want to try an experimental approach without losing current work. Best command?", options: ["/clear", "/branch (or /fork-session)", "/plan", "/background"], answer: 1, explanation: "/branch copies your conversation into a new independent session, leaving the original intact." },
@@ -125,9 +137,12 @@ window.CURRICULUM = [
     title: "CLAUDE.md — Project Memory",
     section: "Persistent Context",
     lesson: [
-      { heading: "What it is", body: "CLAUDE.md is a markdown file Claude reads at the start of every session: build commands, coding standards, architecture notes, common workflows. You write it; Claude treats it as advisory context." },
-      { heading: "Scopes", body: "Project (<code>./CLAUDE.md</code> or <code>./.claude/CLAUDE.md</code>, shared via git), User (<code>~/.claude/CLAUDE.md</code>, all your projects), Local (<code>./CLAUDE.local.md</code>, personal — gitignore it), and org-wide managed policy." },
-      { heading: "Loading & imports", body: "Files auto-load by walking up the directory tree; nested CLAUDE.md loads on demand when Claude reads files there. Use <code>@path/to/file</code> to import other files at session start." }
+      { heading: "Give your project a standing brief", body: "CLAUDE.md is a plain text (markdown) file that Claude reads at the start of <b>every</b> session — like a briefing note you'd hand a new contractor. You write it once; Claude treats it as helpful background, not unbreakable law. It's the single biggest lever for getting consistent results." },
+      { heading: "What's worth putting in it", body: "The things you'd otherwise re-explain every time: how to run or build the project, the conventions you follow, how the pieces fit together, and any common workflows. For a non-code project that might be 'reports live in /monthly, always keep the summary under one page.'" },
+      { heading: "Four places it can live", body: "<b>Project</b> (<code>./CLAUDE.md</code>, shared with your team via git), <b>User</b> (<code>~/.claude/CLAUDE.md</code>, applies to all your own projects), <b>Local</b> (<code>./CLAUDE.local.md</code>, just for you on this project), and an org-wide managed policy set by your company." },
+      { heading: "Team rules vs. personal notes", body: "A workflow the whole team should follow goes in the committed <code>./CLAUDE.md</code> so it loads for everyone. Anything personal or private — local credentials, your own reminders — goes in <code>./CLAUDE.local.md</code>, which you add to <code>.gitignore</code> so it never gets shared." },
+      { heading: "How loading works", body: "Claude looks up the folder tree and loads the CLAUDE.md files it finds. A CLAUDE.md tucked inside a subfolder loads <b>on demand</b> — only when Claude starts working with files in that folder — so deep detail doesn't weigh down every session." },
+      { heading: "Pull in other files with @", body: "Keep things modular by importing: a line like <code>@docs/style-guide.md</code> inside CLAUDE.md pulls that file in at session start. Handy for sharing one set of notes across several projects." }
     ],
     quiz: [
       { q: "You want personal, project-specific notes (like local DB creds) kept out of git. Where?", options: ["./CLAUDE.md", "./CLAUDE.local.md (gitignored)", "~/.claude/CLAUDE.md", ".claude/rules/"], answer: 1, explanation: "CLAUDE.local.md is for personal project notes; gitignore it so it isn't committed." },
@@ -147,9 +162,11 @@ window.CURRICULUM = [
     title: "Auto Memory — Claude's Own Notes",
     section: "Persistent Context",
     lesson: [
-      { heading: "Self-written memory", body: "Auto memory lets Claude save learnings across sessions without you writing anything — build commands, debugging insights, architecture patterns, your code-style habits. It only saves what's worth remembering." },
-      { heading: "Where it lives", body: "Each project gets <code>~/.claude/projects/&lt;project&gt;/memory/</code>. All worktrees of one git repo share a memory directory; outside a repo, the project root is used." },
-      { heading: "What loads", body: "Only the first 200 lines (or 25KB) of <code>MEMORY.md</code> load at session start. Claude keeps it concise by moving detail into topic files that load on demand. Toggle with <code>/memory</code> or <code>autoMemoryEnabled: false</code>." }
+      { heading: "Claude keeps its own notebook", body: "Auto memory is Claude writing down what it learns about your project so it doesn't start from zero next time — and you don't have to maintain it. This is different from CLAUDE.md, which <b>you</b> write; auto memory is what <b>Claude</b> chooses to remember on its own." },
+      { heading: "What it bothers to remember", body: "Useful, durable things: how to run the project, a tricky gotcha it figured out, recurring patterns, and your style habits. It's selective on purpose — it only saves what's genuinely worth keeping, not every passing detail." },
+      { heading: "Where the notes live", body: "Each project gets its own folder at <code>~/.claude/projects/&lt;project&gt;/memory/</code>. A nice detail for teams: if you use multiple git worktrees of the same repository, they all <b>share one memory directory</b>, so insights carry across them." },
+      { heading: "Only the top of the notebook loads", body: "At session start, Claude loads just the first 200 lines (about 25KB) of its <code>MEMORY.md</code> index. Deeper detail sits in separate topic files that load only when relevant — that's how months of accumulated notes never slow down your startup." },
+      { heading: "You stay in charge of it", body: "Run <code>/memory</code> anytime to see what's been saved, edit it, or open the folder. Want it off entirely? Toggle it from <code>/memory</code> or set <code>autoMemoryEnabled: false</code> in your settings." }
     ],
     quiz: [
       { q: "After a month away, how much auto memory loads at session start?", options: ["All of it", "First 200 lines of MEMORY.md (or 25KB)", "Only topic files you name", "None until you run /memory"], answer: 1, explanation: "Only the top of MEMORY.md loads; detail in topic files loads on demand." },
@@ -168,9 +185,12 @@ window.CURRICULUM = [
     title: "Skills — Reusable Workflows",
     section: "Advanced Features",
     lesson: [
-      { heading: "What skills are", body: "Skills are directories with a <code>SKILL.md</code> file under <code>.claude/skills/</code> that extend Claude's knowledge and package reusable workflows. Claude applies them automatically when relevant, or you invoke <code>/skill-name</code>." },
-      { heading: "Load on demand", body: "Unlike CLAUDE.md (every session), skills load only when needed — so long reference material costs no context until used." },
-      { heading: "Commands are skills too", body: "<code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> both create <code>/deploy</code>. Set <code>disable-model-invocation: true</code> in frontmatter to make a skill manual-only." }
+      { heading: "Teach Claude your repeatable routines", body: "A skill is a saved, reusable workflow — a set of instructions (and sometimes reference material) Claude can follow on demand. If you find yourself explaining the same multi-step procedure over and over, that's a skill waiting to happen." },
+      { heading: "What a skill actually is", body: "It's a small folder with a <code>SKILL.md</code> file inside <code>.claude/skills/</code>, giving it a name and a description of when to use it. Claude applies the right skill automatically when your request matches, or you can run it yourself by typing <code>/the-skill-name</code>." },
+      { heading: "A concrete example", body: "Say you keep pasting the same 'here's how we onboard a new client' checklist into chat. Save it once as <code>.claude/skills/onboard-client/SKILL.md</code> and from then on Claude just knows the procedure — no more copy-paste." },
+      { heading: "They load only when needed", body: "Unlike CLAUDE.md, which loads every single session, a skill loads <b>on demand</b> — only when it's relevant. That means you can keep long, detailed reference material in skills without it costing you anything until the moment you use it." },
+      { heading: "Make a skill manual-only", body: "If you want a skill to run <b>only</b> when you ask for it (never auto-triggered), set <code>disable-model-invocation: true</code> in its frontmatter. Good for sensitive or destructive procedures you want to fire deliberately." },
+      { heading: "Commands are skills too", body: "Slash commands and skills are two sides of the same coin: both <code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> create a <code>/deploy</code> command. Pick whichever layout fits how you like to organize things." }
     ],
     quiz: [
       { q: "You keep pasting the same bug-fix procedure into chat. Best fix?", options: ["Add it to CLAUDE.md", "Create a skill at .claude/skills/fix-bug/SKILL.md", "Keep pasting it", "Put it in auto memory"], answer: 1, explanation: "Skills are made for repeatable workflows — Claude applies them or you run /fix-bug." },
@@ -189,9 +209,11 @@ window.CURRICULUM = [
     title: "Subagents — Specialized Assistants",
     section: "Advanced Features",
     lesson: [
-      { heading: "Isolated helpers", body: "Subagents run in their own context with their own system prompt, tool access, and permissions. Claude delegates a matching task, the subagent works independently and returns a summary." },
-      { heading: "They protect your context", body: "Because each subagent has its own context window, heavy research or exploration doesn't bloat your main conversation." },
-      { heading: "Define your own", body: "Add markdown files in <code>.claude/agents/</code> with name, description, a <code>tools</code> field (the subset they may use), and a custom system prompt. Built-ins include Explore, Plan, and others." }
+      { heading: "Hand the heavy lifting to a specialist", body: "A subagent is a helper Claude can spin up for a specific job — research a large codebase, audit for a problem, draft something — that works on its own and reports back. Think of it as Claude delegating to a focused assistant instead of doing everything in one crowded conversation." },
+      { heading: "Each one works in its own space", body: "A subagent runs in its <b>own</b> context window, with its own instructions, its own set of tools, and its own permissions. It tackles the task independently of your main chat." },
+      { heading: "Why that protects you", body: "Big, messy jobs — like reading through hundreds of files — would normally flood your main conversation and slow Claude down. Because a subagent's work stays in its own space, your main conversation stays clean and focused on what you care about." },
+      { heading: "It reports back a summary", body: "When a subagent finishes, it doesn't dump its entire transcript on you — it returns a tidy <b>summary</b> of what it found or did. You get the conclusion without the clutter." },
+      { heading: "Build your own", body: "Beyond the built-ins (like Explore and Plan), you can define custom subagents as markdown files in <code>.claude/agents/</code>, each with a name, a description, a <code>tools</code> field listing the limited set of tools it may use, and its own instructions. For example, a 'reviewer' that can only read and search — never edit." }
     ],
     quiz: [
       { q: "You need heavy codebase research that would fill your main context. Best approach?", options: ["Do it inline and /compact later", "Use a subagent so research stays isolated", "Open a manual second session", "Skip the research"], answer: 1, explanation: "Subagents run in isolated contexts, keeping your main conversation clean." },
@@ -210,9 +232,11 @@ window.CURRICULUM = [
     title: "Hooks — Deterministic Automation",
     section: "Advanced Features",
     lesson: [
-      { heading: "Always-run shell commands", body: "Hooks are shell commands that fire at lifecycle events — unlike advisory CLAUDE.md, hooks are deterministic and always run. Events include PreToolUse, FileEdited (post-edit), CommandFinished, and Stop." },
-      { heading: "Where they live", body: "Configure hooks in <code>.claude/settings.json</code> under a <code>hooks</code> block. They can lint, format, validate, protect files, or notify external systems." },
-      { heading: "Blocking actions", body: "A PreToolUse hook can block a tool call: exit code 2 blocks before permission evaluation; 0 allows; JSON output can deny or require a prompt." }
+      { heading: "Make certain things happen automatically — every time", body: "A hook is a command that fires by itself at a set moment — for example, right after a file is edited. Where CLAUDE.md is a polite suggestion Claude usually follows, a hook is a guarantee: it runs whether or not Claude 'remembers' to." },
+      { heading: "Deterministic, not advisory", body: "This is the key distinction. Asking nicely in CLAUDE.md ('always format the file after editing') mostly works. A hook <b>always</b> runs at its event — no exceptions — which is exactly what you want for things that must never be skipped." },
+      { heading: "Where you set them up", body: "Hooks are configured in <code>.claude/settings.json</code> under a <code>hooks</code> section. Common uses: auto-format or lint after edits, validate or back up a file, protect important files from changes, or ping another system when something finishes." },
+      { heading: "The moments hooks can fire", body: "Lifecycle events include <b>PreToolUse</b> (just before Claude uses a tool), <b>FileEdited</b> (right after an edit), <b>CommandFinished</b>, and <b>Stop</b>. So 'run the formatter after every file edit' is simply a FileEdited hook." },
+      { heading: "A hook can also say 'no'", body: "A PreToolUse hook can block an action before it happens: exit code <b>2</b> blocks the call (even before permission rules are checked), <code>0</code> lets it through, and JSON output can deny or force a prompt. That's how you make a file truly off-limits." }
     ],
     quiz: [
       { q: "You want to run the linter after every file edit. Where/how?", options: ["CLAUDE.md directive", ".claude/settings.json FileEdited hook", "A permission rule", "A skill"], answer: 1, explanation: "Hooks in settings.json run shell commands at lifecycle events like FileEdited." },
@@ -231,9 +255,12 @@ window.CURRICULUM = [
     title: "MCP Servers — External Tools & Data",
     section: "Advanced Features",
     lesson: [
-      { heading: "An open integration standard", body: "MCP (Model Context Protocol) lets Claude reach external tools, databases, and APIs — GitHub, Sentry, PostgreSQL, Figma, Notion, Slack, and more." },
-      { heading: "Scopes", body: "Local (default, <code>~/.claude.json</code>, this project, private), Project (<code>.mcp.json</code>, shared via git), and User (all your projects, private). Local takes precedence if duplicated." },
-      { heading: "Transports & commands", body: "HTTP (remote, recommended), Stdio (local process), WebSocket, and deprecated SSE. Use <code>claude mcp add --transport http &lt;name&gt; &lt;url&gt;</code>, <code>claude mcp list</code>, and <code>/mcp</code> in-session to check status and authenticate." }
+      { heading: "Plug Claude into the tools you already use", body: "MCP (Model Context Protocol) is an open standard that lets Claude reach outside its own world to talk to other systems — GitHub, databases, Notion, Slack, Figma, Sentry, and many more. It's how Claude goes from working with your files to working with your whole stack." },
+      { heading: "Why an operator cares", body: "Connected to the right server, Claude can pull live data and take action where your work actually lives — 'summarize the open tickets,' 'query last month's orders,' 'post this update to the channel' — instead of you shuttling information back and forth by hand." },
+      { heading: "Three scopes (who can see it)", body: "<b>Local</b> (default, saved in <code>~/.claude.json</code>, private to you on this project), <b>Project</b> (<code>.mcp.json</code>, shared with the team via git), and <b>User</b> (all your own projects, private). If the same server is defined in more than one, Local wins." },
+      { heading: "How servers connect (transports)", body: "<b>HTTP</b> is the recommended option for remote services; <b>Stdio</b> is for a tool running as a local process right on your machine; there's also WebSocket, and an older SSE option that's being retired." },
+      { heading: "Adding one from the command line", body: "Use <code>claude mcp add --transport http &lt;name&gt; &lt;url&gt;</code> to add a server; adding <code>--scope project</code> writes it to <code>.mcp.json</code> so your team shares it. <code>claude mcp list</code> shows what's configured." },
+      { heading: "Checking status in a session", body: "Type <code>/mcp</code> while working to see which servers are connected and to handle any sign-in the server requires." }
     ],
     quiz: [
       { q: "You connect Claude to a local database tool running as a process on your machine. Transport?", options: ["HTTP", "Stdio", "SSE", "WebSocket"], answer: 1, explanation: "Stdio servers are local processes — ideal for tools with direct system access." },
@@ -252,9 +279,12 @@ window.CURRICULUM = [
     title: "Keyboard Shortcuts & Productivity",
     section: "Productivity",
     lesson: [
-      { heading: "Core shortcuts", body: "<code>Esc</code> stops Claude mid-action, <code>Esc Esc</code> opens the rewind menu, <code>Shift+Tab</code> cycles permission modes, <code>Tab</code> completes commands/arguments, and <code>↑</code> recalls history." },
-      { heading: "Customize bindings", body: "Edit <code>~/.claude/keybindings.json</code> to rebind keys, add chord bindings (e.g. <code>Ctrl+K Ctrl+M</code>), or change the submit key." },
-      { heading: "Modes & IDEs", body: "Set <code>terminalMode: vim</code> for Vi-style editing. VS Code and JetBrains integrations have their own shortcut schemes; Claude in Chrome has browser shortcuts." }
+      { heading: "A few keys that save a lot of time", body: "You don't need to memorize a hundred shortcuts — a small core handful covers almost everything and quickly becomes muscle memory. Learning them is the difference between fighting the tool and flowing with it." },
+      { heading: "The core five", body: "<code>Esc</code> stops Claude mid-action; <code>Esc Esc</code> opens the rewind menu; <code>Shift+Tab</code> cycles permission modes; <code>Tab</code> completes commands and arguments as you type; and <code>&uarr;</code> recalls your previous prompts." },
+      { heading: "Esc is your safety brake", body: "If you see Claude doing something you didn't intend, hit <code>Esc</code> immediately. It cancels the current action <b>without</b> throwing away your conversation — far better than closing the terminal and losing everything." },
+      { heading: "Esc Esc to travel back", body: "Pressing <code>Esc</code> twice opens the rewind menu, letting you restore an earlier checkpoint in the session. It's the 'undo' for the whole conversation, not just the last file." },
+      { heading: "Make the keys yours", body: "Edit <code>~/.claude/keybindings.json</code> to rebind keys across all your projects — add chord bindings (like <code>Ctrl+K Ctrl+M</code>) or change which key submits. Prefer Vi-style editing? Set <code>terminalMode: vim</code>." },
+      { heading: "Inside your editor", body: "The VS Code and JetBrains integrations have their own shortcut schemes, and Claude in Chrome has browser shortcuts — so the muscle memory carries over wherever you work." }
     ],
     quiz: [
       { q: "A long command is running and it's wrong. Stop it without losing history:", options: ["Close the terminal", "Press Esc", "Run /stop", "Wait, then /clear"], answer: 1, explanation: "Esc cancels immediately and preserves the conversation." },
@@ -273,9 +303,11 @@ window.CURRICULUM = [
     title: "Permission Modes in Depth",
     section: "Best Practices",
     lesson: [
-      { heading: "Default & auto-accept", body: "Default prompts on first use of each tool, then auto-approves it for the session. Auto-accept edits auto-approves file edits and safe filesystem commands (mkdir, touch, mv, cp) but still prompts for risky commands." },
-      { heading: "Plan mode (read-only)", body: "Claude can read files and run read-only commands (ls, grep, git status) but cannot edit or run side-effecting commands — best for exploring before coding." },
-      { heading: "Auto mode", body: "A research-preview mode that uses a background classifier to auto-approve routine work while blocking scope escalation and high-risk actions — useful for longer unattended runs." }
+      { heading: "Choose how much it checks with you", body: "Permission modes let you dial the friction up or down to match the task. Doing something delicate? Keep it cautious. Cranking through safe, repetitive edits? Loosen it up. The art is matching the mode to the risk." },
+      { heading: "Default mode, with precise allowlists", body: "Default mode prompts the first time it uses each tool, then auto-approves that tool for the rest of the session. The precise approach for 'auto-approve npm and git but still ask about <code>rm</code> and <code>curl</code>' is default mode <b>plus</b> allow rules in settings.json like <code>Bash(npm *)</code> and <code>Bash(git commit *)</code>." },
+      { heading: "Auto-accept edits", body: "This mode auto-approves file edits and <b>safe</b> filesystem commands — <code>mkdir</code>, <code>touch</code>, <code>mv</code>, <code>cp</code> — while still stopping to ask about genuinely risky things like <code>curl</code> downloads or <code>rm</code>. Great for a flurry of routine changes." },
+      { heading: "Plan mode (read-only)", body: "When you want to explore with <b>zero</b> chance of accidental changes, plan mode is the answer: Claude can read files and run read-only commands (<code>ls</code>, <code>grep</code>, <code>git status</code>) but cannot edit anything or run side-effecting commands." },
+      { heading: "Auto mode (for longer unattended runs)", body: "A research-preview mode that uses a background classifier to auto-approve routine work while blocking scope creep and high-risk actions. It's aimed at longer stretches where you can't sit and approve every step." }
     ],
     quiz: [
       { q: "You want npm and git auto-approved but still be prompted for rm/curl. Best setup?", options: ["Default mode + allowlist rules in settings.json", "Auto-accept edits mode", "Plan mode", "Auto mode"], answer: 0, explanation: "Default mode plus allow rules like Bash(npm *) and Bash(git commit *) is the precise approach." },
@@ -294,9 +326,12 @@ window.CURRICULUM = [
     title: "Effective Prompting & Scoping",
     section: "Best Practices",
     lesson: [
-      { heading: "Be specific", body: "Instead of 'fix the bug,' say what's broken, where to look, and what done means: 'login breaks on session timeout (blank screen) — check src/auth/sessionManager.ts, write a failing test first, then fix.'" },
-      { heading: "Give verification criteria", body: "Provide tests, a build command, screenshots to compare, or example cases. Without checks, Claude stops when work 'looks done' and you become the verifier." },
-      { heading: "Reference & break down", body: "Use <code>@src/api/routes.ts</code> to make Claude read a file first; paste images and error text directly. Break complex work into numbered steps." }
+      { heading: "The real skill is writing a good brief", body: "Claude is only as good as the instructions you give it — and this is precisely where operators have an edge over the tool itself. A clear, specific request beats a vague one every time, and learning to write them is the highest-leverage habit in this whole course." },
+      { heading: "Be specific", body: "Instead of 'fix the bug,' say what's broken, where to look, and what 'done' means: 'login breaks on session timeout (blank screen) — check <code>src/auth/sessionManager.ts</code>, write a failing test first, then fix it.' The more precise the brief, the better the result." },
+      { heading: "Tell it how to check itself", body: "Give Claude a way to know it succeeded — tests to pass, a build command, example inputs and outputs, or a screenshot to match. Without that, Claude stops when the work merely 'looks done' and <b>you</b> become the one who has to catch the mistakes." },
+      { heading: "Explore before building", body: "When you're pointing Claude at a file or system you don't know well, don't let it dive straight in. Have it explore and propose a plan first (plan mode) — reviewing the plan catches wrong turns before any work happens." },
+      { heading: "Point at the right things", body: "Type <code>@</code> and a path — like <code>@src/api/routes.ts</code> — to make Claude read that exact file before it responds. You can also paste images and error messages straight in; Claude reads them as context." },
+      { heading: "Break big jobs into steps", body: "For anything complex, lay it out as numbered steps. Small, ordered pieces are easier for Claude to get right — and easier for you to verify — than one giant request." }
     ],
     quiz: [
       { q: "Which prompt most reliably produces a working email validator?", options: ["Write a validateEmail function", "Write validateEmail with test cases: user@example.com→true, invalid→false, user@.com→false; run the tests", "Make the validator good", "Write email validation code"], answer: 1, explanation: "Explicit test cases give Claude a goal and verification criteria." },
@@ -315,9 +350,12 @@ window.CURRICULUM = [
     title: "Context Management & Compaction",
     section: "Best Practices",
     lesson: [
-      { heading: "Context is your scarcest resource", body: "It holds conversation, files, outputs, and memory. As it fills, model performance degrades. Claude auto-compacts by clearing old tool outputs, then summarizing history if needed." },
-      { heading: "See and shape it", body: "<code>/context</code> shows what's using space. <code>/compact focus on API changes</code> prioritizes what survives. Between unrelated tasks, <code>/clear</code> resets entirely." },
-      { heading: "Checkpoints survive", body: "Conversation history is saved locally, so you can <code>/rewind</code> to any earlier point even after auto-compaction." }
+      { heading: "Context is the resource to protect", body: "Everything Claude is juggling — your conversation, the files it's read, command outputs, its memory — lives in a limited working space called context. As it fills up, quality quietly drops, so managing it is a real skill, not an afterthought." },
+      { heading: "It tidies up on its own", body: "When space runs low, Claude auto-compacts: first it clears out old tool outputs, then, if needed, it summarizes earlier conversation. This happens automatically to keep things running — but you can steer it." },
+      { heading: "See what's using the space", body: "Run <code>/context</code> mid-session to see exactly what's taking up room. It's the diagnostic that tells you whether to trim, summarize, or just start fresh." },
+      { heading: "Shape it deliberately", body: "<code>/compact focus on the report formatting</code> condenses history while protecting the details you name. And when you switch to something completely unrelated, <code>/clear</code> resets the whole context so old work can't interfere." },
+      { heading: "When MCP tools eat your space", body: "If <code>/context</code> shows a pile of MCP tool definitions hogging room even though you haven't used them, tool search is likely turned off. Tool search defers those tool schemas until they're actually needed, instead of loading them all upfront." },
+      { heading: "Nothing is ever lost", body: "Even after auto-compaction, your full history is saved locally — so you can still <code>/rewind</code> to any earlier point. Compaction frees working space; it doesn't erase your trail." }
     ],
     quiz: [
       { q: "Context is full and you're about to start a totally different task. Do what?", options: ["Keep going; auto-compaction handles it", "Close the terminal", "/clear to reset context", "/compact only"], answer: 2, explanation: "/clear resets context between unrelated tasks so old work doesn't interfere." },
@@ -336,9 +374,12 @@ window.CURRICULUM = [
     title: "Collaboration & Team Best Practices",
     section: "Best Practices",
     lesson: [
-      { heading: "Share config via git", body: "Commit CLAUDE.md and hooks so the team shares one setup. Personal preferences go in CLAUDE.local.md (gitignored) or ~/.claude/settings.json." },
-      { heading: "Parallel, isolated work", body: "Each teammate runs their own session on their own branch (or worktree) so edits don't collide." },
-      { heading: "Review with fresh eyes", body: "Have one session write code and a fresh context review it — use <code>/code-review</code>. Name sessions descriptively with <code>/rename</code> and share rewind points to hand off context." }
+      { heading: "One shared setup for the whole team", body: "Everything you've configured — project notes, rules, automations — can be shared so your whole team works from the same playbook. That consistency is what turns Claude Code from a personal tool into a team capability." },
+      { heading: "Share the right things via git", body: "Commit <code>CLAUDE.md</code> and your hooks so everyone gets the same setup automatically. A workflow the whole team should follow belongs in the committed <code>./CLAUDE.md</code> — it loads for every teammate on the project." },
+      { heading: "Keep personal things personal", body: "Machine-specific or private preferences don't belong in shared files. Put them in <code>CLAUDE.local.md</code> (gitignored) or your own <code>~/.claude/settings.json</code> so they apply only to you." },
+      { heading: "Work in parallel without collisions", body: "Each teammate runs their own session on their own branch (or git worktree), so two people's edits never step on each other. Everyone moves fast independently." },
+      { heading: "Review with fresh eyes", body: "The strongest quality check is to have one session write the work and a <b>separate, fresh</b> context review it — run <code>/code-review</code> on a diff. A reviewer without the implementer's assumptions catches far more." },
+      { heading: "Hand off cleanly", body: "Name sessions descriptively with <code>/rename</code> and share rewind points so a teammate can pick up your context without a long explanation." }
     ],
     quiz: [
       { q: "A bug-fix workflow the whole team should follow belongs where?", options: ["~/.claude/CLAUDE.md", "./CLAUDE.md committed to git", "a skill nobody shares", "MEMORY.md"], answer: 1, explanation: "Project CLAUDE.md is shared via version control and loads for everyone on the project." },
@@ -357,9 +398,11 @@ window.CURRICULUM = [
     title: "Plan Mode & the Exploration Workflow",
     section: "Workflows",
     lesson: [
-      { heading: "Enter plan mode", body: "Press <code>Shift+Tab</code> until you reach plan mode (or set <code>defaultMode: plan</code>). Claude can read and run read-only commands but cannot edit." },
-      { heading: "Four phases", body: "Explore in plan mode → ask Claude for a detailed plan → exit plan mode and implement → Claude runs tests/build to verify." },
-      { heading: "When to use it", body: "Worth it for multi-file changes or unfamiliar code; it's overhead for typos, renames, and single-file fixes. Press <code>Ctrl+G</code> to open the plan in your editor." }
+      { heading: "Measure twice, cut once", body: "Plan mode is the discipline of looking before leaping: Claude studies the problem and proposes an approach <b>before</b> touching anything. For changes of any real size, the few minutes of planning save far more in avoided wrong turns." },
+      { heading: "How to enter it", body: "Press <code>Shift+Tab</code> until you reach plan mode (or set <code>defaultMode: plan</code> to start there). In this mode Claude can read files and run read-only commands, but it cannot edit or run anything that changes your system." },
+      { heading: "The four phases", body: "The workflow is: <b>explore</b> in plan mode &rarr; ask Claude for a detailed <b>plan</b> &rarr; exit plan mode and <b>implement</b> &rarr; let Claude <b>verify</b> by running tests or a build. Each step builds on the last." },
+      { heading: "Edit the plan yourself", body: "The plan isn't take-it-or-leave-it. Press <code>Ctrl+G</code> to open it in your text editor, adjust anything you'd do differently, and then let Claude proceed from your revised version." },
+      { heading: "When it's worth it (and when it isn't)", body: "Reach for plan mode on multi-file changes or unfamiliar territory — like adding a feature that touches several parts at once. Skip it for trivial work: a single-line typo fix or a rename is pure overhead to plan." }
     ],
     quiz: [
       { q: "Adding OAuth touches auth, sessions, and API routes. Recommended workflow?", options: ["Implement directly in default mode", "Plan mode to explore + plan, then implement", "Run /init for a plan", "Use a hook"], answer: 1, explanation: "Explore and plan in plan mode, then implement — best for multi-file changes." },
@@ -378,9 +421,12 @@ window.CURRICULUM = [
     title: "Running Claude Autonomously",
     section: "Workflows",
     lesson: [
-      { heading: "Non-interactive mode", body: "<code>claude -p \"prompt\"</code> runs a one-off task with no session — great for CI, pre-commit hooks, and scripts. Add <code>--output-format json</code> (or stream-json) to parse results programmatically." },
-      { heading: "Parallel & background", body: "Use git worktrees so isolated sessions don't collide. <code>/background</code> detaches the current session to keep running; check it with <code>/tasks</code> or reconnect later." },
-      { heading: "Unattended permissions", body: "<code>--permission-mode auto</code> uses background safety checks; <code>--permission-mode bypassPermissions</code> (isolated environments only) skips prompts except root/home removals." }
+      { heading: "From assistant to automation", body: "This is where everything pays off. Up to now you've worked <b>with</b> Claude in a session; today you learn to set it loose on a task with no session at all — so routine work can run on a schedule, in a script, or as part of a pipeline, without you sitting there." },
+      { heading: "One-off mode: claude -p", body: "<code>claude -p \"your task\"</code> runs a single task and exits — no interactive session. It's built for scripts, scheduled jobs, pre-commit checks, and CI. For example, dropping <code>claude -p \"analyze these test failures and suggest fixes\"</code> into your CI gives you instant analysis on every run." },
+      { heading: "Get results a program can read", body: "When a script needs to act on Claude's output, add <code>--output-format json</code> (or <code>stream-json</code>). Instead of prose, you get structured data your script can parse — essential when running across many files at once." },
+      { heading: "Parallel and background work", body: "Use git worktrees so several isolated runs don't collide. Within a session, <code>/background</code> detaches it to keep running while you do other things — check on it later with <code>/tasks</code> or reconnect." },
+      { heading: "Permissions when no one's watching", body: "For unattended runs, <code>--permission-mode auto</code> leans on background safety checks. <code>--permission-mode bypassPermissions</code> skips prompts entirely (except for root/home deletions) and should only ever be used in isolated, throwaway environments." },
+      { heading: "You made it — now keep one habit", body: "Eighteen days done. The goal was never to memorize everything, but to build real fluency — and you have. Pick the one feature that earns its place in your daily workflow and make it stick. That's graduation." }
     ],
     quiz: [
       { q: "Integrate Claude into CI to analyze test failures. Right approach?", options: ["Start an interactive session and wait", "claude -p \"analyze these failures and suggest fixes\"", "Auto mode in a terminal", "A scheduled routine"], answer: 1, explanation: "Non-interactive -p mode is built for CI, scripts, and automation." },
