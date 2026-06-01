@@ -357,42 +357,42 @@
     { surface: "Code", text: "Run a one-off chore with <code>claude -p \"clean up this CSV\"</code> without starting a whole session." }
   ];
 
-  // "If your quiz performance was a famous explorer..." — graded on first-try
-  // accuracy and tied to the team's "future-focused" motto (charting the unknown).
+  // "If your quiz performance was a famous astronaut..." — graded on first-try
+  // accuracy and tied to the team's "future-focused" motto (reaching for the stars).
   // Kept playful and kind; even the bottom tier is encouraging, not a roast.
   // Each pick links to a "learn more" page. Roster is generous so teammates with
-  // the same score still get different explorers.
+  // the same score still get different astronauts.
   var WIKI = "https://en.wikipedia.org/wiki/";
-  var EXPLORERS = [
+  var ASTRONAUTS = [
     { min: 1.00, picks: [
-      { text: "🌍 Ferdinand Magellan — first to circle the globe; you lapped this quiz.", link: WIKI + "Ferdinand_Magellan" },
-      { text: "🚀 Neil Armstrong — one giant leap, a flawless landing.", link: WIKI + "Neil_Armstrong" },
-      { text: "🧭 Roald Amundsen — first to the South Pole, first across this quiz.", link: WIKI + "Roald_Amundsen" },
-      { text: "⛰️ Tenzing Norgay — summited Everest; you topped the leaderboard.", link: WIKI + "Tenzing_Norgay" },
-      { text: "🌊 Zheng He — commanded vast voyages, and total command here.", link: WIKI + "Zheng_He" },
-      { text: "🛰️ Yuri Gagarin — first human in space; you're in orbit.", link: WIKI + "Yuri_Gagarin" } ] },
+      { text: "🌕 Neil Armstrong — one giant leap; you stuck the landing flawlessly.", link: WIKI + "Neil_Armstrong" },
+      { text: "🚀 Yuri Gagarin — first human in space; you reached orbit first.", link: WIKI + "Yuri_Gagarin" },
+      { text: "🌑 Buzz Aldrin — second on the Moon, first-rate performance.", link: WIKI + "Buzz_Aldrin" },
+      { text: "🛰️ Valentina Tereshkova — first woman in space; trailblazing and flawless.", link: WIKI + "Valentina_Tereshkova" },
+      { text: "👩‍🚀 Sally Ride — first American woman in space; you broke right through.", link: WIKI + "Sally_Ride" },
+      { text: "🌌 John Glenn — first American to orbit Earth; a textbook mission.", link: WIKI + "John_Glenn" } ] },
     { min: 0.75, picks: [
-      { text: "🗺️ Marco Polo — journeyed far and wide, just shy of the full map.", link: WIKI + "Marco_Polo" },
-      { text: "⛵ James Cook — charted new waters with a tiny gap or two.", link: WIKI + "James_Cook" },
-      { text: "🌲 Sacagawea — guided the expedition expertly, almost flawless.", link: WIKI + "Sacagawea" },
-      { text: "🧊 Ernest Shackleton — endured and very nearly conquered it all.", link: WIKI + "Ernest_Shackleton" },
-      { text: "🐫 Ibn Battuta — traveled the known world, missed a turn or two.", link: WIKI + "Ibn_Battuta" } ] },
+      { text: "🎸 Chris Hadfield — commanded the ISS (and a guitar); smooth and near-perfect.", link: WIKI + "Chris_Hadfield" },
+      { text: "🧑‍🚀 Jim Lovell — a steady hand on Apollo; almost flawless.", link: WIKI + "Jim_Lovell" },
+      { text: "🌠 Mae Jemison — first Black woman in space; soaring, just shy of perfect.", link: WIKI + "Mae_Jemison" },
+      { text: "🚀 Alan Shepard — first American in space; strong launch, tiny wobble.", link: WIKI + "Alan_Shepard" },
+      { text: "🛰️ Scott Kelly — a year in orbit; reliable and nearly spotless.", link: WIKI + "Scott_Kelly_(astronaut)" } ] },
     { min: 0.50, picks: [
-      { text: "🚣 Lewis & Clark — covered serious ground at a steady pace.", link: WIKI + "Lewis_and_Clark_Expedition" },
-      { text: "🏞️ David Livingstone — pressed on through tough terrain.", link: WIKI + "David_Livingstone" },
-      { text: "🧗 Junko Tabei — first woman atop Everest; climbing strong, midway up.", link: WIKI + "Junko_Tabei" },
-      { text: "⛴️ Vasco da Gama — found a route, with a few wrong turns.", link: WIKI + "Vasco_da_Gama" },
-      { text: "✈️ Amelia Earhart — bold and airborne, navigating the middle stretch.", link: WIKI + "Amelia_Earhart" } ] },
+      { text: "🧑‍🚀 Peggy Whitson — record time in orbit; steady, dependable progress.", link: WIKI + "Peggy_Whitson" },
+      { text: "🌍 Michael Collins — kept the command module steady; solid middle of the mission.", link: WIKI + "Michael_Collins_(astronaut)" },
+      { text: "🛰️ Tim Peake — a solid mission, halfway to the stars.", link: WIKI + "Tim_Peake" },
+      { text: "👩‍🚀 Eileen Collins — first woman to command a shuttle; steady at the helm.", link: WIKI + "Eileen_Collins" },
+      { text: "🌑 Gene Cernan — last to walk the Moon; covered good ground.", link: WIKI + "Gene_Cernan" } ] },
     { min: 0.25, picks: [
-      { text: "🧭 Christopher Columbus — not quite where you expected, but you landed somewhere.", link: WIKI + "Christopher_Columbus" },
-      { text: "🗺️ Henry Hudson — still searching for the passage; chart the retry.", link: WIKI + "Henry_Hudson" },
-      { text: "🏔️ George Mallory — the summit's in sight; one more attempt.", link: WIKI + "George_Mallory" },
-      { text: "🌴 Juan Ponce de León — still hunting the fountain; the quest continues.", link: WIKI + "Juan_Ponce_de_León" } ] },
+      { text: "🪐 Jack Swigert — Apollo 13 improviser; not the plan, but you adapted.", link: WIKI + "Jack_Swigert" },
+      { text: "🌑 Fred Haise — brought it home against the odds; chart the retry.", link: WIKI + "Fred_Haise" },
+      { text: "🛰️ Gordon Cooper — drifted a bit, then recovered the mission.", link: WIKI + "Gordon_Cooper" },
+      { text: "🧑‍🚀 Wally Schirra — a few system checks left; run it again.", link: WIKI + "Wally_Schirra" } ] },
     { min: 0.00, picks: [
-      { text: "🏕️ Robert Falcon Scott — reached the Pole on grit alone; regroup and push again.", link: WIKI + "Robert_Falcon_Scott" },
-      { text: "🛶 Jeanne Baret — first woman to circle the globe, against all odds; your voyage is just beginning.", link: WIKI + "Jeanne_Baret" },
-      { text: "⛺ Matthew Henson — overlooked but unstoppable; gear up for the next expedition.", link: WIKI + "Matthew_Henson" },
-      { text: "🌄 Fridtjof Nansen — turned back short of the Pole, then became a legend anyway. Try the route again.", link: WIKI + "Fridtjof_Nansen" } ] }
+      { text: "🚀 Gus Grissom — overcame a sunk capsule to fly again; bounce back.", link: WIKI + "Gus_Grissom" },
+      { text: "🌙 Ken Mattingly — bumped from Apollo 13, then saved the day from the ground. Your turn comes next.", link: WIKI + "Ken_Mattingly" },
+      { text: "🛰️ Story Musgrave — started over many times, flew six missions; persistence pays.", link: WIKI + "Story_Musgrave" },
+      { text: "🧑‍🚀 Deke Slayton — grounded for years, then finally flew. Patience and a retry.", link: WIKI + "Deke_Slayton" } ] }
   ];
   function computeAccuracy(quizPoints, nQ) {
     if (nQ <= 0) return 0;
@@ -400,19 +400,19 @@
     return Math.max(0, Math.min(1, firstTry / nQ));
   }
   function pickTier(ratio) {
-    for (var i = 0; i < EXPLORERS.length; i++) { if (ratio >= EXPLORERS[i].min) return EXPLORERS[i]; }
-    return EXPLORERS[EXPLORERS.length - 1];
+    for (var i = 0; i < ASTRONAUTS.length; i++) { if (ratio >= ASTRONAUTS[i].min) return ASTRONAUTS[i]; }
+    return ASTRONAUTS[ASTRONAUTS.length - 1];
   }
-  // Stable per-name hash so two players almost never collide on the same explorer.
+  // Stable per-name hash so two players almost never collide on the same astronaut.
   function nameHash(str) {
     var h = 0; str = str || "";
     for (var i = 0; i < str.length; i++) { h = (h * 31 + str.charCodeAt(i)) >>> 0; }
     return h;
   }
-  // Choose an explorer for this player from the right tier, skipping any they've
+  // Choose an astronaut for this player from the right tier, skipping any they've
   // already had (until the whole roster is used). Seeded by name so identical
   // scores still diverge across teammates. record=true persists the pick.
-  // Returns the explorer object { text, link }.
+  // Returns the astronaut object { text, link }.
   function chooseVerdict(ratio, record) {
     var pool = pickTier(ratio).picks;
     if (!state.verdictsUsed) state.verdictsUsed = [];
@@ -448,8 +448,8 @@
       badgeBox.appendChild(el("div", "step-label", "New badge" + (r.newBadges.length > 1 ? "s" : "") + " unlocked!"));
       r.newBadges.forEach(function (b) { badgeBox.appendChild(el("span", "results-badge", b.emoji + " " + b.name)); });
     }
-    // "If your quiz performance was a famous explorer..." verdict.
-    // Use the explorer chosen at completion (stable on replay); fall back for legacy days.
+    // "If your quiz performance was a famous astronaut..." verdict.
+    // Use the astronaut chosen at completion (stable on replay); fall back for legacy days.
     var d = CURRICULUM[session.day - 1];
     var accuracy = computeAccuracy(r.quiz, d.quiz.length);
     var verdict;
@@ -459,12 +459,12 @@
       verdict = (rec0 && rec0.verdict) ? rec0.verdict : chooseVerdict(accuracy, false);
     }
     var learnLink = verdict.link
-      ? "<a class=\"sv-link\" href=\"" + verdict.link + "\" target=\"_blank\" rel=\"noopener noreferrer\">Learn about this explorer →</a>"
+      ? "<a class=\"sv-link\" href=\"" + verdict.link + "\" target=\"_blank\" rel=\"noopener noreferrer\">Learn about this astronaut →</a>"
       : "";
-    $("results-singer").innerHTML = "<span class=\"sv-label\">If your quiz was a famous explorer…</span>" +
+    $("results-singer").innerHTML = "<span class=\"sv-label\">If your quiz was a famous astronaut…</span>" +
       "<span class=\"sv-text\">" + verdict.text + "</span>" + learnLink +
-      "<button id=\"singer-copy\" class=\"btn btn-ghost small sv-copy\">Copy my explorer</button>";
-    $("singer-copy").onclick = function () { copyToClipboard(verdict.text, $("singer-copy"), "Copy my explorer"); };
+      "<button id=\"singer-copy\" class=\"btn btn-ghost small sv-copy\">Copy my astronaut</button>";
+    $("singer-copy").onclick = function () { copyToClipboard(verdict.text, $("singer-copy"), "Copy my astronaut"); };
 
     var feedbackEmail = "MaceeJB@gmail.com";
     var subject = "Claude Quest — Day " + d.day + " (" + d.title + "): feedback";
