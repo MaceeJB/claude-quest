@@ -46,6 +46,21 @@ Everyone visits the URL and starts their own streak.
 | `app.js` | Game logic: state, scoring, streaks, gating, achievements |
 | `curriculum.js` | All 18 days of lessons, quizzes, and challenges |
 
+## Reviewing the content (for maintainers)
+
+Days 2–18 normally unlock one per calendar day, which makes it hard to review
+everything at once. Two tools help:
+
+- **Preview all days** — a button in the top-right of the home screen. Click it to
+  unlock every day immediately; each one opens in **review mode** (read the lesson,
+  take the quiz, see the hands-on tasks) with **no points awarded and no effect on
+  any streak**. Click again ("Preview: ON") to turn it off. This is safe to use on
+  the live site — it only affects your own view. (Console equivalents also exist:
+  `CCQ.previewAll()`, `CCQ.previewOff()`, and `CCQ.preview(n)` to jump to one day.)
+- **Suggest an improvement** — at the bottom of each day's results screen there's a
+  "💡 Suggest an improvement for this day" link that opens a pre-filled GitHub issue
+  for that specific day. Good for flagging changes without editing code directly.
+
 ## Customizing the content
 
 Edit `curriculum.js`. Each day is an object:
