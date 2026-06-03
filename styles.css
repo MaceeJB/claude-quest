@@ -98,6 +98,31 @@ h2 { font-size: 1.25rem; margin: .2em 0 .5em; }
 .topbar-right { display: flex; align-items: center; gap: 10px; }
 .player-chip { background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: .85rem; color: var(--muted); }
 
+/* ---- Bunker countdown ---- */
+.bunker-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(100deg, rgba(139,92,246,.18), rgba(196,181,253,.08));
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 16px; margin-bottom: 16px;
+}
+.bunker-banner .bunker-num {
+  font-size: 1.9rem; font-weight: 800; line-height: 1;
+  color: var(--primary-hi); flex: 0 0 auto;
+  min-width: 1.6em; text-align: center;
+}
+.bunker-banner .bunker-text { color: var(--text); font-size: .95rem; }
+.bunker-banner .bunker-text strong { color: var(--accent); }
+.bunker-banner.is-soon {
+  border-color: var(--primary); box-shadow: 0 0 0 1px rgba(139,92,246,.35), var(--shadow);
+}
+.bunker-banner.is-soon .bunker-num { color: var(--gold); }
+.bunker-banner.is-today {
+  justify-content: center; text-align: center;
+  background: linear-gradient(100deg, rgba(245,196,81,.22), rgba(139,92,246,.16));
+  border-color: var(--gold);
+}
+.bunker-banner.is-today .bunker-text { font-size: 1.05rem; font-weight: 600; }
+
 /* ---- Stats ---- */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
 .stat { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 12px; text-align: center; }

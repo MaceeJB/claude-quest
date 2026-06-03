@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Claude Quest</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260602" />
 </head>
 <body>
   <div id="app">
@@ -42,6 +42,8 @@
           <button id="sign-out" class="btn btn-ghost small hidden">Sign out</button>
         </div>
       </header>
+
+      <div id="bunker-countdown" class="bunker-banner hidden"></div>
 
       <div class="stats-row">
         <div class="stat">
@@ -153,8 +155,10 @@
 
   </div>
 
-  <script src="curriculum.js"></script>
+  <!-- Bump the ?v= token whenever curriculum.js / app.js / styles.css change so
+       returning players never get a stale cached copy from GitHub Pages. -->
+  <script src="curriculum.js?v=20260602"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260602"></script>
 </body>
 </html>

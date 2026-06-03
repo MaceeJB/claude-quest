@@ -132,6 +132,12 @@
   var LEAD_DAYS = 2;        // how far ahead of the daily pace you may work
   var FREEZE_COOLDOWN = 7;  // a streak freeze refills this many days after use
 
+  // ---- the finish line ----
+  // The whole quest builds toward an in-person event; the home screen shows a
+  // live countdown to it. Change the date/name here if the event moves.
+  var EVENT_DATE = "2026-07-07";              // first day of the in-person event
+  var EVENT_NAME = "Ops SLT AI Bunker";
+
   // ---- state ----
   var profile = null;   // current player name
   var state = null;     // current player state
@@ -382,10 +388,43 @@
       pv.classList.toggle("active", previewMode);
     }
 
+    renderCountdown();
     renderCTA();
     renderProjects();
     renderGrid();
     renderBadges();
+  }
+
+  // Live countdown to the in-person event. Hidden once the event has clearly passed.
+  function renderCountdown() {
+    var box = $("bunker-countdown");
+    if (!box) return;
+    var left = daysBetween(today(), EVENT_DATE); // calendar days until the event
+    box.innerHTML = "";
+    box.classList.remove("is-soon", "is-today", "hidden");
+
+    if (left > 1) {
+      if (left <= 7) box.classList.add("is-soon"); // final week glow
+      box.appendChild(el("span", "bunker-num", left));
+      var unit = el("span", "bunker-text", "");
+      unit.innerHTML = "days until the <strong>" + EVENT_NAME + "</strong> &mdash; keep leveling up!";
+      box.appendChild(unit);
+    } else if (left === 1) {
+      box.classList.add("is-soon");
+      var t1 = el("span", "bunker-text", "");
+      t1.innerHTML = "🚀 <strong>Tomorrow:</strong> the " + EVENT_NAME + ". You've trained for this!";
+      box.appendChild(t1);
+    } else if (left >= -3) {
+      // event day, or assume it runs a few days after
+      box.classList.add("is-today");
+      var t0 = el("span", "bunker-text", "");
+      t0.innerHTML = left === 0
+        ? "🎉 Today's the day &mdash; welcome to the <strong>" + EVENT_NAME + "</strong>!"
+        : "🎉 The <strong>" + EVENT_NAME + "</strong> is happening now. Go get 'em!";
+      box.appendChild(t0);
+    } else {
+      box.classList.add("hidden"); // event has passed
+    }
   }
 
   function renderProjects() {
