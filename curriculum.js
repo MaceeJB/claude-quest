@@ -193,7 +193,7 @@ window.CURRICULUM = [
       { heading: "Commands are skills too", body: "Slash commands and skills are two sides of the same coin: both <code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> create a <code>/deploy</code> command. Pick whichever layout fits how you like to organize things." }
     ],
     quiz: [
-      { q: "You keep pasting the same bug-fix procedure into chat. Best fix?", options: ["Add it to CLAUDE.md", "Create a skill at .claude/skills/fix-bug/SKILL.md", "Keep pasting it", "Put it in auto memory"], answer: 1, explanation: "Skills are made for repeatable workflows — Claude applies them or you run /fix-bug." },
+      { q: "You keep pasting the same monthly-report procedure into chat. Best fix?", options: ["Add it to CLAUDE.md", "Create a skill at .claude/skills/monthly-report/SKILL.md", "Keep pasting it", "Put it in auto memory"], answer: 1, explanation: "Skills are made for repeatable workflows — Claude applies them or you run /monthly-report." },
       { q: "Which frontmatter field stops a skill from auto-triggering?", options: ["manual: true", "disable-model-invocation: true", "invoke-only: true", "requires-approval: true"], answer: 1, explanation: "disable-model-invocation: true makes it run only when you invoke it." },
       { q: "A key benefit of skills over CLAUDE.md is that they…", options: ["Load every session", "Load on demand, saving context", "Can't be invoked manually", "Are stored in git history only"], answer: 1, explanation: "On-demand loading keeps long reference material out of context until needed." }
     ],
@@ -209,69 +209,70 @@ window.CURRICULUM = [
     title: "Subagents — Specialized Assistants",
     section: "Advanced Features",
     lesson: [
-      { heading: "Hand the heavy lifting to a specialist", body: "A subagent is a helper Claude can spin up for a specific job — research a large codebase, audit for a problem, draft something — that works on its own and reports back. Think of it as Claude delegating to a focused assistant instead of doing everything in one crowded conversation." },
+      { heading: "Hand the heavy lifting to a specialist", body: "A subagent is a helper Claude can spin up for a specific job — comb through a big folder of documents, fact-check a draft, research a topic — that works on its own and reports back. Think of it as Claude delegating to a focused assistant instead of doing everything in one crowded conversation." },
       { heading: "Each one works in its own space", body: "A subagent runs in its <b>own</b> context window, with its own instructions, its own set of tools, and its own permissions. It tackles the task independently of your main chat." },
       { heading: "Why that protects you", body: "Big, messy jobs — like reading through hundreds of files — would normally flood your main conversation and slow Claude down. Because a subagent's work stays in its own space, your main conversation stays clean and focused on what you care about." },
       { heading: "It reports back a summary", body: "When a subagent finishes, it doesn't dump its entire transcript on you — it returns a tidy <b>summary</b> of what it found or did. You get the conclusion without the clutter." },
-      { heading: "Build your own", body: "Beyond the built-ins (like Explore and Plan), you can define custom subagents as markdown files in <code>.claude/agents/</code>, each with a name, a description, a <code>tools</code> field listing the limited set of tools it may use, and its own instructions. For example, a 'reviewer' that can only read and search — never edit." }
+      { heading: "Build your own", body: "Beyond the built-ins (like Explore and Plan), you can define custom subagents as markdown files in <code>.claude/agents/</code>, each with a name, a description, a <code>tools</code> field listing the limited set of tools it may use, and its own instructions. For example, a 'fact-checker' that can only read and search — never edit." }
     ],
     quiz: [
-      { q: "You need heavy codebase research that would fill your main context. Best approach?", options: ["Do it inline and /compact later", "Use a subagent so research stays isolated", "Open a manual second session", "Skip the research"], answer: 1, explanation: "Subagents run in isolated contexts, keeping your main conversation clean." },
-      { q: "Where do you define a custom 'security-auditor' subagent limited to Read and Grep?", options: [".claude/skills/ with restrict-tools", ".claude/agents/ with a tools field", "CLAUDE.md with subagent-config", "Only via /agents interactively"], answer: 1, explanation: "Custom subagents live in .claude/agents/; the tools field limits their tools." },
+      { q: "You need to comb through a big folder of documents, which would fill your main context. Best approach?", options: ["Do it inline and /compact later", "Use a subagent so the research stays isolated", "Open a manual second session", "Skip it"], answer: 1, explanation: "Subagents run in isolated contexts, keeping your main conversation clean." },
+      { q: "Where do you define a custom 'fact-checker' subagent limited to reading and searching?", options: [".claude/skills/ with restrict-tools", ".claude/agents/ with a tools field", "CLAUDE.md with subagent-config", "Only via /agents interactively"], answer: 1, explanation: "Custom subagents live in .claude/agents/; the tools field limits their tools to read-only." },
       { q: "When a subagent finishes, it returns…", options: ["Its full raw transcript into your context", "A summary of its work", "Nothing — you must ask", "A new session you must resume"], answer: 1, explanation: "Subagents report back a concise summary, protecting your main context." }
     ],
     challenge: [
-      { text: "Ask Claude to use the Explore subagent to map an unfamiliar part of a codebase.", link: DOC + "sub-agents" },
+      { text: "Ask Claude to use the Explore subagent to map an unfamiliar folder of files.", link: DOC + "sub-agents" },
       { text: "Notice how the subagent's searching doesn't flood your main conversation.", link: DOC + "sub-agents" },
-      { text: "Sketch a custom subagent file in <code>.claude/agents/</code> with a restricted <code>tools</code> list.", link: DOC + "sub-agents" },
+      { text: "Sketch a custom read-only subagent file in <code>.claude/agents/</code> with a restricted <code>tools</code> list.", link: DOC + "sub-agents" },
       { text: "<b>Capstone:</b> ask a subagent to explore your growing project and summarize how its parts fit together.", link: DOC + "sub-agents", capstone: true }
     ]
   },
   {
     day: 10,
-    title: "Hooks — Deterministic Automation",
-    section: "Advanced Features",
+    title: "Working with Documents, PDFs & Spreadsheets",
+    section: "Everyday Work",
     lesson: [
-      { heading: "Make certain things happen automatically — every time", body: "A hook is a command that fires by itself at a set moment — for example, right after a file is edited. Where CLAUDE.md is a polite suggestion Claude usually follows, a hook is a guarantee: it runs whether or not Claude 'remembers' to." },
-      { heading: "Deterministic, not advisory", body: "This is the key distinction. Asking nicely in CLAUDE.md ('always format the file after editing') mostly works. A hook <b>always</b> runs at its event — no exceptions — which is exactly what you want for things that must never be skipped." },
-      { heading: "Where you set them up", body: "Hooks are configured in <code>.claude/settings.json</code> under a <code>hooks</code> section. Common uses: auto-format or lint after edits, validate or back up a file, protect important files from changes, or ping another system when something finishes." },
-      { heading: "The moments hooks can fire", body: "Lifecycle events include <b>PreToolUse</b> (just before Claude uses a tool), <b>FileEdited</b> (right after an edit), <b>CommandFinished</b>, and <b>Stop</b>. So 'run the formatter after every file edit' is simply a FileEdited hook." },
-      { heading: "A hook can also say 'no'", body: "A PreToolUse hook can block an action before it happens: exit code <b>2</b> blocks the call (even before permission rules are checked), <code>0</code> lets it through, and JSON output can deny or force a prompt. That's how you make a file truly off-limits." }
+      { heading: "Your files are the workspace", body: "Most knowledge work is really file work — reports, spreadsheets, PDFs, notes, exports. Claude Code lives right where those files are, so instead of opening five apps and copy-pasting between them, you point it at a folder and describe the outcome you want: 'pull the totals out of these invoices,' 'turn this messy export into a clean table,' 'summarize everything in /research into one page.'" },
+      { heading: "Reading PDFs, images, and docs", body: "Type <code>@</code> and a file path — like <code>@reports/q3-budget.pdf</code> — to make Claude read that exact file before it answers. You can also drag a file into the terminal or paste an image (a screenshot of a chart, a scanned page) straight in. Claude reads the contents as context, so you can ask 'what changed between these two versions?' or 'extract the figures from page 3.'" },
+      { heading: "CSV is the friendliest spreadsheet format", body: "Claude works best with spreadsheets when they're saved as <b>CSV</b> (plain-text rows and columns). From Excel or Google Sheets, just 'Save As' or 'Download as' CSV. Once it's a CSV, Claude can clean it, re-sort it, find duplicates, fill gaps, total columns, and explain anomalies — then you open the result back in your spreadsheet app." },
+      { heading: "Turning messy into tidy", body: "The everyday superpower is cleanup: inconsistent dates, stray blank rows, names typed five different ways, numbers stored as text. Describe the mess and the target — 'standardize every date to YYYY-MM-DD, drop empty rows, and flag any row missing an amount' — and Claude does the tedious pass for you, showing what it changed." },
+      { heading: "Bulk operations across a folder", body: "Claude shines when the same small task repeats across many files: 'rename every file in this folder to <code>YYYY-MM-DD-client.pdf</code>,' 'add a summary line to the top of each report,' 'find every document that mentions the Q3 budget.' What would be an hour of clicking becomes one clear instruction." },
+      { heading: "Always give it a way to check itself", body: "When you hand off a bulk cleanup, include a rule Claude can verify against — 'every row must have a valid date and a non-empty amount,' 'the summary must fit on one page.' That turns 'looks done' into 'provably done,' and means you're reviewing a result instead of hunting for mistakes." }
     ],
     quiz: [
-      { q: "You want to run the linter after every file edit. Where/how?", options: ["CLAUDE.md directive", ".claude/settings.json FileEdited hook", "A permission rule", "A skill"], answer: 1, explanation: "Hooks in settings.json run shell commands at lifecycle events like FileEdited." },
-      { q: "Which exit code in a PreToolUse hook blocks the tool call?", options: ["0", "1", "2", "-1"], answer: 2, explanation: "Exit code 2 blocks the call before permission rules are evaluated." },
-      { q: "How do hooks differ from CLAUDE.md instructions?", options: ["Hooks are advisory too", "Hooks are deterministic and always run", "Hooks only run on startup", "Hooks can't run shell commands"], answer: 1, explanation: "CLAUDE.md is advisory; hooks always execute at their event." }
+      { q: "What's the friendliest format for Claude to work with a spreadsheet?", options: ["A locked .xlsx with macros", "A CSV export of the sheet", "A screenshot of the spreadsheet", "A PDF print-out"], answer: 1, explanation: "CSV is plain-text rows and columns — Claude can clean, sort, total, and de-duplicate it directly." },
+      { q: "A PDF report has figures you need Claude to use. Best move?", options: ["Retype the numbers into the prompt", "Reference it with @reports/file.pdf and ask Claude to extract them", "Describe the PDF from memory", "Email the PDF to yourself first"], answer: 1, explanation: "Referencing the file with @ lets Claude read it directly and pull out the figures." },
+      { q: "You're about to let Claude bulk-clean a 2,000-row export. What makes that safe?", options: ["Hoping it gets it right", "Giving it a checkable rule, like 'every row needs a valid date and amount'", "Doing it one row at a time yourself", "Turning off permissions"], answer: 1, explanation: "A verifiable rule turns 'looks done' into 'provably done' and keeps you reviewing, not hunting." }
     ],
     challenge: [
-      { text: "Open or create <code>.claude/settings.json</code> and look at the <code>hooks</code> structure.", link: DOC + "hooks" },
-      { text: "Add a simple post-edit hook that echoes a message or runs your formatter.", link: DOC + "hooks-guide" },
-      { text: "Trigger an edit and confirm the hook fires.", link: DOC + "hooks-guide" },
-      { text: "<b>Capstone:</b> add a hook that auto-formats (or lints) your project's files after each edit, then make an edit and watch it run.", link: DOC + "hooks-guide", capstone: true }
+      { text: "Reference a real PDF or document with <code>@path/to/file</code> and ask Claude to summarize it.", link: DOC + "common-workflows" },
+      { text: "Export a messy spreadsheet to CSV and ask Claude to clean it (standardize dates, drop blanks).", link: DOC + "common-workflows" },
+      { text: "Ask Claude to find every file in a folder that mentions a specific topic.", link: DOC + "common-workflows" },
+      { text: "<b>Capstone:</b> take a real document, PDF, or spreadsheet for your project — clean it or extract its key figures — and give Claude a checkable rule (e.g. 'every row has a valid date') so the result is verifiable.", link: DOC + "common-workflows", capstone: true }
     ]
   },
   {
     day: 11,
-    title: "MCP Servers — External Tools & Data",
-    section: "Advanced Features",
+    title: "Connecting Your Everyday Apps",
+    section: "Everyday Work",
     lesson: [
-      { heading: "Plug Claude into the tools you already use", body: "MCP (Model Context Protocol) is an open standard that lets Claude reach outside its own world to talk to other systems — GitHub, databases, Notion, Slack, Figma, Sentry, and many more. It's how Claude goes from working with your files to working with your whole stack." },
-      { heading: "Why an operator cares", body: "Connected to the right server, Claude can pull live data and take action where your work actually lives — 'summarize the open tickets,' 'query last month's orders,' 'post this update to the channel' — instead of you shuttling information back and forth by hand." },
-      { heading: "Three scopes (who can see it)", body: "<b>Local</b> (default, saved in <code>~/.claude.json</code>, private to you on this project), <b>Project</b> (<code>.mcp.json</code>, shared with the team via git), and <b>User</b> (all your own projects, private). If the same server is defined in more than one, Local wins." },
-      { heading: "How servers connect (transports)", body: "<b>HTTP</b> is the recommended option for remote services; <b>Stdio</b> is for a tool running as a local process right on your machine; there's also WebSocket, and an older SSE option that's being retired." },
-      { heading: "Adding one from the command line", body: "Use <code>claude mcp add --transport http &lt;name&gt; &lt;url&gt;</code> to add a server; adding <code>--scope project</code> writes it to <code>.mcp.json</code> so your team shares it. <code>claude mcp list</code> shows what's configured." },
-      { heading: "Checking status in a session", body: "Type <code>/mcp</code> while working to see which servers are connected and to handle any sign-in the server requires." }
+      { heading: "Plug Claude into the tools you already use", body: "So far Claude has worked with files on your computer. <b>MCP</b> (Model Context Protocol) is the open standard that lets it also reach the apps where your work actually lives — Google Drive, Notion, Slack, your calendar, email, ticketing systems, and many more. It's the difference between Claude working with your files and Claude working across your whole day." },
+      { heading: "Why this is the payoff for an operator", body: "Once connected, Claude can pull live information and take action where it belongs: 'summarize the new docs added to our Drive folder this week,' 'pull my unread messages and draft replies,' 'find the open items assigned to me and list them.' No more copy-pasting between tabs to give Claude what it needs." },
+      { heading: "Three scopes (who can see the connection)", body: "<b>Local</b> (default, saved in <code>~/.claude.json</code>, private to you on this project), <b>Project</b> (<code>.mcp.json</code>, shared with the team via git so everyone gets the same connections), and <b>User</b> (applies across all your own projects, private). If the same app is configured in more than one place, Local wins." },
+      { heading: "How connections are made (transports)", body: "Most everyday apps connect over <b>HTTP</b> — the recommended option for an online service like Drive or Notion. <b>Stdio</b> is for a tool running as a program directly on your own machine. (There's also WebSocket, and an older SSE option being retired — you'll rarely touch those.)" },
+      { heading: "Adding one (or just asking IT)", body: "A connection is added with <code>claude mcp add --transport http &lt;name&gt; &lt;url&gt;</code>; adding <code>--scope project</code> writes it to <code>.mcp.json</code> so your whole team shares it. <code>claude mcp list</code> shows what's configured. In practice, your team lead or IT often sets these up once and shares the <code>.mcp.json</code>, so everyone is connected without doing the setup themselves." },
+      { heading: "Checking and signing in", body: "Type <code>/mcp</code> while working to see which apps are connected and to handle any sign-in (most services pop up a normal login the first time). It's also where you confirm a connection is healthy if something isn't responding." }
     ],
     quiz: [
-      { q: "You connect Claude to a local database tool running as a process on your machine. Transport?", options: ["HTTP", "Stdio", "SSE", "WebSocket"], answer: 1, explanation: "Stdio servers are local processes — ideal for tools with direct system access." },
-      { q: "claude mcp add --transport http github &lt;url&gt; --scope project saves config where?", options: ["~/.claude.json", ".mcp.json in project root", ".claude/settings.json", "~/.claude/mcp-config"], answer: 1, explanation: "--scope project writes to .mcp.json so the server is shared via git." },
-      { q: "Which in-session command checks MCP status and lets you authenticate?", options: ["/permissions", "/mcp", "/context", "/agents"], answer: 1, explanation: "/mcp shows server status and handles authentication." }
+      { q: "What does connecting an app via MCP let Claude do?", options: ["Make Claude run faster", "Reach apps like Drive, Notion, Slack, and your calendar to pull info and take action", "Replace your CLAUDE.md", "Only read local files"], answer: 1, explanation: "MCP connects Claude to outside services so it can work where your information actually lives." },
+      { q: "You want your whole team to share the same app connections. Which scope?", options: ["Local (~/.claude.json)", "Project (.mcp.json, shared via git)", "User scope", "It can't be shared"], answer: 1, explanation: "Project scope writes to .mcp.json, which is committed so every teammate gets the same connections." },
+      { q: "Which in-session command shows connected apps and handles sign-in?", options: ["/permissions", "/mcp", "/context", "/agents"], answer: 1, explanation: "/mcp shows connection status and walks you through any authentication." }
     ],
     challenge: [
-      { text: "Run <code>/mcp</code> (or <code>claude mcp list</code>) to see any servers already connected.", link: DOC + "mcp" },
-      { text: "Read about one MCP server you'd find useful (e.g. GitHub or your database).", link: DOC + "mcp" },
-      { text: "If you have one configured, ask Claude to use one of its tools.", link: DOC + "mcp" },
-      { text: "<b>Capstone:</b> connect one MCP server that's useful to your project (e.g. GitHub or your database) and have Claude use it on real work.", link: DOC + "mcp", capstone: true }
+      { text: "Run <code>/mcp</code> (or <code>claude mcp list</code>) to see which apps are already connected for you.", link: DOC + "mcp" },
+      { text: "Read about one connector you'd actually use day-to-day (e.g. Google Drive, Notion, or Slack).", link: DOC + "mcp" },
+      { text: "If you have one connected, ask Claude to do a real task with it (e.g. 'summarize the latest doc in this folder').", link: DOC + "mcp" },
+      { text: "<b>Capstone:</b> connect one everyday app that's useful to your project (or ask IT which is available), then have Claude do a real task through it.", link: DOC + "mcp", capstone: true }
     ]
   },
   {
@@ -304,15 +305,15 @@ window.CURRICULUM = [
     section: "Best Practices",
     lesson: [
       { heading: "Choose how much it checks with you", body: "Permission modes let you dial the friction up or down to match the task. Doing something delicate? Keep it cautious. Cranking through safe, repetitive edits? Loosen it up. The art is matching the mode to the risk." },
-      { heading: "Default mode, with precise allowlists", body: "Default mode prompts the first time it uses each tool, then auto-approves that tool for the rest of the session. The precise approach for 'auto-approve npm and git but still ask about <code>rm</code> and <code>curl</code>' is default mode <b>plus</b> allow rules in settings.json like <code>Bash(npm *)</code> and <code>Bash(git commit *)</code>." },
-      { heading: "Auto-accept edits", body: "This mode auto-approves file edits and <b>safe</b> filesystem commands — <code>mkdir</code>, <code>touch</code>, <code>mv</code>, <code>cp</code> — while still stopping to ask about genuinely risky things like <code>curl</code> downloads or <code>rm</code>. Great for a flurry of routine changes." },
-      { heading: "Plan mode (read-only)", body: "When you want to explore with <b>zero</b> chance of accidental changes, plan mode is the answer: Claude can read files and run read-only commands (<code>ls</code>, <code>grep</code>, <code>git status</code>) but cannot edit anything or run side-effecting commands." },
+      { heading: "Default mode, with precise allowlists", body: "Default mode prompts the first time it uses each tool, then auto-approves that tool for the rest of the session. The precise approach for 'auto-approve the conversion script I run constantly but still ask before deleting files' is default mode <b>plus</b> an allow rule in settings.json like <code>Bash(python convert.py *)</code> — that one command stops prompting while everything risky still does." },
+      { heading: "Auto-accept edits", body: "This mode auto-approves file edits and <b>safe</b> housekeeping commands — <code>mkdir</code>, <code>touch</code>, <code>mv</code>, <code>cp</code> — while still stopping to ask about genuinely risky things like deleting files or downloading from the internet. Great for a flurry of routine changes, like cleaning and renaming a folder of reports." },
+      { heading: "Plan mode (read-only)", body: "When you want to explore with <b>zero</b> chance of accidental changes, plan mode is the answer: Claude can read files and run read-only commands (like listing a folder or searching its contents) but cannot edit anything or run side-effecting commands." },
       { heading: "Auto mode (for longer unattended runs)", body: "A research-preview mode that uses a background classifier to auto-approve routine work while blocking scope creep and high-risk actions. It's aimed at longer stretches where you can't sit and approve every step." }
     ],
     quiz: [
-      { q: "You want npm and git auto-approved but still be prompted for rm/curl. Best setup?", options: ["Default mode + allowlist rules in settings.json", "Auto-accept edits mode", "Plan mode", "Auto mode"], answer: 0, explanation: "Default mode plus allow rules like Bash(npm *) and Bash(git commit *) is the precise approach." },
-      { q: "Best mode to explore code with zero risk of edits?", options: ["Default", "Auto-accept edits", "Plan mode", "Auto mode"], answer: 2, explanation: "Plan mode is read-only — read files and run safe commands, no edits." },
-      { q: "Auto-accept edits will auto-approve which of these?", options: ["curl downloads", "rm -rf", "mkdir / mv / cp", "git push"], answer: 2, explanation: "It auto-approves file edits and safe filesystem commands, still prompting for risky ones." }
+      { q: "You want a script you run constantly auto-approved, but still be asked before files are deleted. Best setup?", options: ["Default mode + an allowlist rule in settings.json", "Auto-accept edits mode", "Plan mode", "Auto mode"], answer: 0, explanation: "Default mode plus an allow rule like Bash(python convert.py *) auto-approves that one command while everything risky still prompts." },
+      { q: "Best mode to explore a folder of files with zero risk of changes?", options: ["Default", "Auto-accept edits", "Plan mode", "Auto mode"], answer: 2, explanation: "Plan mode is read-only — read files and run safe commands, no edits." },
+      { q: "Auto-accept edits will auto-approve which of these without asking?", options: ["Downloading a file from the internet", "Deleting files", "Making and moving folders (mkdir / mv / cp)", "Sending an email"], answer: 2, explanation: "It auto-approves file edits and safe housekeeping commands, still prompting for risky ones." }
     ],
     challenge: [
       { text: "Enter plan mode (<code>Shift+Tab</code> to it) and try to make Claude edit — watch it stay read-only.", link: DOC + "permission-modes" },
@@ -327,22 +328,22 @@ window.CURRICULUM = [
     section: "Best Practices",
     lesson: [
       { heading: "The real skill is writing a good brief", body: "Claude is only as good as the instructions you give it — and this is precisely where operators have an edge over the tool itself. A clear, specific request beats a vague one every time, and learning to write them is the highest-leverage habit in this whole course." },
-      { heading: "Be specific", body: "Instead of 'fix the bug,' say what's broken, where to look, and what 'done' means: 'login breaks on session timeout (blank screen) — check <code>src/auth/sessionManager.ts</code>, write a failing test first, then fix it.' The more precise the brief, the better the result." },
-      { heading: "Tell it how to check itself", body: "Give Claude a way to know it succeeded — tests to pass, a build command, example inputs and outputs, or a screenshot to match. Without that, Claude stops when the work merely 'looks done' and <b>you</b> become the one who has to catch the mistakes." },
-      { heading: "Explore before building", body: "When you're pointing Claude at a file or system you don't know well, don't let it dive straight in. Have it explore and propose a plan first (plan mode) — reviewing the plan catches wrong turns before any work happens." },
-      { heading: "Point at the right things", body: "Type <code>@</code> and a path — like <code>@src/api/routes.ts</code> — to make Claude read that exact file before it responds. You can also paste images and error messages straight in; Claude reads them as context." },
+      { heading: "Be specific", body: "Instead of 'clean up this report,' say what's wrong, where to look, and what 'done' means: 'in <code>@reports/q3.csv</code>, the dates are in three different formats and some amounts are blank — standardize every date to YYYY-MM-DD and flag any row missing an amount.' The more precise the brief, the better the result." },
+      { heading: "Tell it how to check itself", body: "Give Claude a way to know it succeeded — a rule every row must satisfy, an example of the right output, a total that should match, or a length limit. Without that, Claude stops when the work merely 'looks done' and <b>you</b> become the one who has to catch the mistakes." },
+      { heading: "Explore before building", body: "When you're pointing Claude at a folder or document you don't know well, don't let it dive straight in. Have it explore and propose a plan first (plan mode) — reviewing the plan catches wrong turns before any work happens." },
+      { heading: "Point at the right things", body: "Type <code>@</code> and a path — like <code>@reports/q3-summary.md</code> — to make Claude read that exact file before it responds. You can also paste images, screenshots, and PDFs straight in; Claude reads them as context." },
       { heading: "Break big jobs into steps", body: "For anything complex, lay it out as numbered steps. Small, ordered pieces are easier for Claude to get right — and easier for you to verify — than one giant request." }
     ],
     quiz: [
-      { q: "Which prompt most reliably produces a working email validator?", options: ["Write a validateEmail function", "Write validateEmail with test cases: user@example.com→true, invalid→false, user@.com→false; run the tests", "Make the validator good", "Write email validation code"], answer: 1, explanation: "Explicit test cases give Claude a goal and verification criteria." },
-      { q: "Claude will implement in a file you've never seen. Best first step?", options: ["Let it code immediately", "Explore and plan first (plan mode)", "Give an incomplete sketch", "Over-specify everything"], answer: 1, explanation: "Explore in plan mode, review the plan, then implement — better results on unfamiliar code." },
-      { q: "What does typing @src/api/routes.ts in a prompt do?", options: ["Nothing special", "Tells Claude to read that file before responding", "Deletes the file", "Runs the file"], answer: 1, explanation: "@path references a file so Claude reads it as context first." }
+      { q: "Which request most reliably produces the cleaned report you want?", options: ["Clean up this spreadsheet", "In @reports/q3.csv, standardize every date to YYYY-MM-DD, drop blank rows, and flag any row missing an amount", "Make the report look nice", "Fix the data"], answer: 1, explanation: "Naming the file, the exact changes, and a checkable rule gives Claude a goal and verification criteria." },
+      { q: "Claude will work in a folder of files you don't know well. Best first step?", options: ["Let it start changing things immediately", "Have it explore and propose a plan first (plan mode)", "Give an incomplete description", "Over-specify everything"], answer: 1, explanation: "Explore in plan mode, review the plan, then proceed — better results on unfamiliar material." },
+      { q: "What does typing @reports/q3-summary.md in a prompt do?", options: ["Nothing special", "Tells Claude to read that file before responding", "Deletes the file", "Emails the file"], answer: 1, explanation: "@path references a file so Claude reads it as context first." }
     ],
     challenge: [
       { text: "Rewrite a vague request you'd normally type into a specific one with a file reference and a 'done' condition.", link: DOC + "best-practices" },
-      { text: "Give Claude an explicit test case to satisfy and have it run the test.", link: DOC + "best-practices" },
-      { text: "Use <code>@file</code> to point Claude at a specific file before asking a question.", link: DOC + "common-workflows" },
-      { text: "<b>Capstone:</b> write one tightly-scoped prompt for your project's next feature — what's needed, which file, and a 'done' test — and let Claude satisfy it.", link: DOC + "best-practices", capstone: true }
+      { text: "Give Claude an explicit checkable rule to satisfy (e.g. 'every row has a valid date') and have it verify against it.", link: DOC + "best-practices" },
+      { text: "Use <code>@file</code> to point Claude at a specific document or spreadsheet before asking a question.", link: DOC + "common-workflows" },
+      { text: "<b>Capstone:</b> write one tightly-scoped prompt for your project's next step — what's needed, which file, and a 'done' rule — and let Claude satisfy it.", link: DOC + "best-practices", capstone: true }
     ]
   },
   {
@@ -375,22 +376,22 @@ window.CURRICULUM = [
     section: "Best Practices",
     lesson: [
       { heading: "One shared setup for the whole team", body: "Everything you've configured — project notes, rules, automations — can be shared so your whole team works from the same playbook. That consistency is what turns Claude Code from a personal tool into a team capability." },
-      { heading: "Share the right things via git", body: "Commit <code>CLAUDE.md</code> and your hooks so everyone gets the same setup automatically. A workflow the whole team should follow belongs in the committed <code>./CLAUDE.md</code> — it loads for every teammate on the project." },
+      { heading: "Share the right things via git", body: "Commit <code>CLAUDE.md</code> and your shared <b>skills</b> so everyone gets the same setup automatically. A workflow the whole team should follow belongs in the committed <code>./CLAUDE.md</code> — it loads for every teammate on the project." },
       { heading: "Keep personal things personal", body: "Machine-specific or private preferences don't belong in shared files. Put them in <code>CLAUDE.local.md</code> (gitignored) or your own <code>~/.claude/settings.json</code> so they apply only to you." },
       { heading: "Work in parallel without collisions", body: "Each teammate runs their own session on their own branch (or git worktree), so two people's edits never step on each other. Everyone moves fast independently." },
-      { heading: "Review with fresh eyes", body: "The strongest quality check is to have one session write the work and a <b>separate, fresh</b> context review it — run <code>/code-review</code> on a diff. A reviewer without the implementer's assumptions catches far more." },
+      { heading: "Review with fresh eyes", body: "The strongest quality check is to have one session do the work and a <b>separate, fresh</b> context review it — run <code>/code-review</code> on your recent changes. A reviewer without the original assumptions catches far more, whether it's reviewing a document or a spreadsheet cleanup." },
       { heading: "Hand off cleanly", body: "Name sessions descriptively with <code>/rename</code> and share rewind points so a teammate can pick up your context without a long explanation." }
     ],
     quiz: [
-      { q: "A bug-fix workflow the whole team should follow belongs where?", options: ["~/.claude/CLAUDE.md", "./CLAUDE.md committed to git", "a skill nobody shares", "MEMORY.md"], answer: 1, explanation: "Project CLAUDE.md is shared via version control and loads for everyone on the project." },
-      { q: "Best way to review freshly written code without bias?", options: ["Same session reviews itself", "A fresh session/subagent reviews the diff", "Skip review", "Only manual review"], answer: 1, explanation: "A fresh context (or /code-review) reviews without the implementer's bias." },
+      { q: "A report-writing workflow the whole team should follow belongs where?", options: ["~/.claude/CLAUDE.md", "./CLAUDE.md committed to git", "a skill nobody shares", "MEMORY.md"], answer: 1, explanation: "Project CLAUDE.md is shared via version control and loads for everyone on the project." },
+      { q: "Best way to review freshly produced work without bias?", options: ["The same session reviews itself", "A fresh session/subagent reviews the recent changes", "Skip review", "Only manual review"], answer: 1, explanation: "A fresh context (or /code-review) reviews without the original session's assumptions." },
       { q: "Where do personal, machine-specific preferences belong?", options: ["./CLAUDE.md (committed)", "CLAUDE.local.md or ~/.claude/settings.json", "the project README", ".mcp.json"], answer: 1, explanation: "Personal settings stay local/user-scoped, not in shared project files." }
     ],
     challenge: [
       { text: "Add one team convention to your project <code>CLAUDE.md</code> and commit it.", link: DOC + "memory" },
-      { text: "Run <code>/code-review</code> on a recent diff in a fresh session.", link: DOC + "slash-commands" },
+      { text: "Run <code>/code-review</code> on your recent changes in a fresh session.", link: DOC + "slash-commands" },
       { text: "Use <code>/rename</code> to give your session a descriptive, handoff-friendly name.", link: DOC + "slash-commands" },
-      { text: "<b>Capstone:</b> commit your project's <code>CLAUDE.md</code> and config to git, then run <code>/code-review</code> on your latest diff in a fresh session.", link: DOC + "best-practices", capstone: true }
+      { text: "<b>Capstone:</b> commit your project's <code>CLAUDE.md</code> and config to git, then run <code>/code-review</code> on your latest changes in a fresh session.", link: DOC + "best-practices", capstone: true }
     ]
   },
   {
@@ -402,12 +403,12 @@ window.CURRICULUM = [
       { heading: "How to enter it", body: "Press <code>Shift+Tab</code> until you reach plan mode (or set <code>defaultMode: plan</code> to start there). In this mode Claude can read files and run read-only commands, but it cannot edit or run anything that changes your system." },
       { heading: "The four phases", body: "The workflow is: <b>explore</b> in plan mode &rarr; ask Claude for a detailed <b>plan</b> &rarr; exit plan mode and <b>implement</b> &rarr; let Claude <b>verify</b> by running tests or a build. Each step builds on the last." },
       { heading: "Edit the plan yourself", body: "The plan isn't take-it-or-leave-it. Press <code>Ctrl+G</code> to open it in your text editor, adjust anything you'd do differently, and then let Claude proceed from your revised version." },
-      { heading: "When it's worth it (and when it isn't)", body: "Reach for plan mode on multi-file changes or unfamiliar territory — like adding a feature that touches several parts at once. Skip it for trivial work: a single-line typo fix or a rename is pure overhead to plan." }
+      { heading: "When it's worth it (and when it isn't)", body: "Reach for plan mode on jobs that touch many files or unfamiliar territory — like reorganizing a reports folder where the file names, an index, and a summary all have to stay in sync. Skip it for trivial work: fixing one typo or renaming a single file is pure overhead to plan." }
     ],
     quiz: [
-      { q: "Adding OAuth touches auth, sessions, and API routes. Recommended workflow?", options: ["Implement directly in default mode", "Plan mode to explore + plan, then implement", "Run /init for a plan", "Use a hook"], answer: 1, explanation: "Explore and plan in plan mode, then implement — best for multi-file changes." },
+      { q: "Reorganizing a reports folder touches file names, an index, and a summary at once. Recommended workflow?", options: ["Start changing things directly in default mode", "Plan mode to explore + plan, then proceed", "Run /init for a plan", "Do it one file at a time by hand"], answer: 1, explanation: "Explore and plan in plan mode, then proceed — best when a change touches many files." },
       { q: "How do you open a plan in your text editor before Claude proceeds?", options: ["/edit", "Ctrl+E", "Ctrl+G", "/open-plan"], answer: 2, explanation: "Ctrl+G opens the plan in your editor for direct edits." },
-      { q: "Plan mode is poor value for which task?", options: ["A multi-file refactor", "Unfamiliar architecture", "A single-line typo fix", "Adding a new subsystem"], answer: 2, explanation: "Planning is overhead for trivial, single-file changes." }
+      { q: "Plan mode is poor value for which task?", options: ["A change across many files", "Unfamiliar material you don't know well", "Fixing a single typo", "Restructuring a whole folder"], answer: 2, explanation: "Planning is overhead for trivial, single-file changes." }
     ],
     challenge: [
       { text: "Enter plan mode and have Claude produce a plan for a small multi-step change.", link: DOC + "permission-modes" },
@@ -422,22 +423,22 @@ window.CURRICULUM = [
     section: "Workflows",
     lesson: [
       { heading: "From assistant to automation", body: "This is where everything pays off. Up to now you've worked <b>with</b> Claude in a session; today you learn to set it loose on a task with no session at all — so routine work can run on a schedule, in a script, or as part of a pipeline, without you sitting there." },
-      { heading: "One-off mode: claude -p", body: "<code>claude -p \"your task\"</code> runs a single task and exits — no interactive session. It's built for scripts, scheduled jobs, pre-commit checks, and CI. For example, dropping <code>claude -p \"analyze these test failures and suggest fixes\"</code> into your CI gives you instant analysis on every run." },
-      { heading: "Get results a program can read", body: "When a script needs to act on Claude's output, add <code>--output-format json</code> (or <code>stream-json</code>). Instead of prose, you get structured data your script can parse — essential when running across many files at once." },
+      { heading: "One-off mode: claude -p", body: "<code>claude -p \"your task\"</code> runs a single task and exits — no interactive session. It's built for scripts and scheduled jobs. For example, a scheduled <code>claude -p \"summarize yesterday's notes in /journal and flag anything urgent\"</code> could land a morning brief in your inbox before you sit down, every day, on its own." },
+      { heading: "Get results a program can read", body: "When a script or spreadsheet needs to act on Claude's output, add <code>--output-format json</code> (or <code>stream-json</code>). Instead of prose, you get structured data a program can parse — essential when running the same task across many documents at once." },
       { heading: "Parallel and background work", body: "Use git worktrees so several isolated runs don't collide. Within a session, <code>/background</code> detaches it to keep running while you do other things — check on it later with <code>/tasks</code> or reconnect." },
       { heading: "Permissions when no one's watching", body: "For unattended runs, <code>--permission-mode auto</code> leans on background safety checks. <code>--permission-mode bypassPermissions</code> skips prompts entirely (except for root/home deletions) and should only ever be used in isolated, throwaway environments." },
       { heading: "You made it — now keep one habit", body: "Eighteen days done. The goal was never to memorize everything, but to build real fluency — and you have. Pick the one feature that earns its place in your daily workflow and make it stick. That's graduation." }
     ],
     quiz: [
-      { q: "Integrate Claude into CI to analyze test failures. Right approach?", options: ["Start an interactive session and wait", "claude -p \"analyze these failures and suggest fixes\"", "Auto mode in a terminal", "A scheduled routine"], answer: 1, explanation: "Non-interactive -p mode is built for CI, scripts, and automation." },
-      { q: "Running non-interactively over 50 files, you want structured output. Add:", options: ["--verbose", "--output-format json", "--streaming", "--results"], answer: 1, explanation: "--output-format json (or stream-json) makes results parseable in scripts." },
+      { q: "You want a daily brief that summarizes yesterday's notes automatically. Right approach?", options: ["Start an interactive session each morning and wait", "A scheduled claude -p \"summarize yesterday's notes and flag anything urgent\"", "Auto mode in a terminal", "Do it by hand each day"], answer: 1, explanation: "Non-interactive -p mode is built for scheduled jobs, scripts, and automation." },
+      { q: "Running the same task non-interactively over 50 documents, you want structured output. Add:", options: ["--verbose", "--output-format json", "--streaming", "--results"], answer: 1, explanation: "--output-format json (or stream-json) makes results parseable in scripts." },
       { q: "How do you keep a session running after detaching your terminal?", options: ["/clear", "/background, then check /tasks", "/resume", "Close the terminal"], answer: 1, explanation: "/background detaches the session; /tasks lets you check on it." }
     ],
     challenge: [
       { text: "Run a real one-off task with <code>claude -p \"…\"</code> and observe it finish without a session.", link: DOC + "headless" },
       { text: "Add <code>--output-format json</code> and inspect the structured result.", link: DOC + "cli-reference" },
       { text: "Reflect: you've finished all 18 days — pick one feature to make part of your daily workflow.", link: DOC + "best-practices" },
-      { text: "<b>Capstone graduation:</b> automate one real task on your project with <code>claude -p \"…\"</code> (e.g. generate its README or run a check), then choose the Claude Code habit you'll keep using.", link: DOC + "headless", capstone: true }
+      { text: "<b>Capstone graduation:</b> automate one real task on your project with <code>claude -p \"…\"</code> (e.g. generate a summary or run a routine check), then choose the Claude Code habit you'll keep using.", link: DOC + "headless", capstone: true }
     ]
   }
 ];
