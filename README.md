@@ -15,10 +15,14 @@ Each day has three steps (~15 min total):
 3. **Hands-on** — honor-system "try it in Claude Code" tasks, 5 pts each.
 
 Your day total is multiplied by a **streak bonus** (`×1.0` up to `×1.9` for a 10+ day streak),
-so daily play compounds. Miss a day and the streak resets — your longest streak is kept.
+so daily play compounds. Miss a day and the streak resets — but a **streak freeze** (one per
+week) automatically forgives a single missed day, and your longest streak is always kept.
 
-**One new day unlocks each calendar day.** Finished days can be replayed for review (no points).
-Earn **badges** for milestones (first day, 3/7/14-day streaks, flawless quizzes, finishing all 18).
+**The quest is paced at one lesson a day**, anchored to the day each player starts. Teammates can
+**work up to 2 days ahead** if they have time, or do **several lessons in a row to catch up** if
+they've fallen behind — the daily pace is the center of gravity, not a hard wall. Finished days can
+be replayed for review (no points). Earn **badges** for milestones (first day, 3/7/14-day streaks,
+flawless quizzes, finishing all 18).
 
 Progress is saved **per player, in your browser** (`localStorage`) by default — private, no account.
 Each teammate just picks a player name. Sharing a machine? Use "Switch player".

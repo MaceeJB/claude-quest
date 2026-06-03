@@ -67,6 +67,21 @@
     dt.setDate(dt.getDate() + n);
     return fmt(dt);
   }
+  // Whole calendar days from date string a to b (b - a). Negative if b is before a.
+  function daysBetween(a, b) {
+    var pa = a.split("-").map(Number), pb = b.split("-").map(Number);
+    var da = new Date(pa[0], pa[1] - 1, pa[2]), db = new Date(pb[0], pb[1] - 1, pb[2]);
+    return Math.round((db - da) / 86400000);
+  }
+
+  // ---- pacing ----
+  // The course is paced at one lesson per calendar day, anchored to the day each
+  // player first completed a lesson (state.startDate). Teammates may run up to
+  // LEAD_DAYS ahead of that pace, and may do several lessons in one sitting to
+  // catch up if they've fallen behind. A weekly "streak freeze" forgives one
+  // missed day so a single skip doesn't reset a long streak.
+  var LEAD_DAYS = 2;        // how far ahead of the daily pace you may work
+  var FREEZE_COOLDOWN = 7;  // a streak freeze refills this many days after use
 
   // ---- state ----
   var profile = null;   // current player name
@@ -75,11 +90,23 @@
 
   function blankState(name) {
     return { name: name, totalPoints: 0, currentStreak: 0, longestStreak: 0,
-      lastCompletedDate: null, perfectCount: 0, days: {}, badges: {}, verdictsUsed: [] };
+      lastCompletedDate: null, startDate: null, freezeUsedDate: null,
+      perfectCount: 0, days: {}, badges: {}, verdictsUsed: [] };
   }
   function key(name) { return "ccq:" + name; }
+  // Backfill fields added after a player's state was first saved, so existing
+  // players aren't suddenly mis-paced or locked out by a new pacing rule.
+  function normalize(s) {
+    if (s.freezeUsedDate === undefined) s.freezeUsedDate = null;
+    if (s.startDate === undefined) {
+      var done = completedCount(s);
+      // Treat existing players as exactly on-pace today so nothing locks behind them.
+      s.startDate = done > 0 ? addDays(today(), -(done - 1)) : null;
+    }
+    return s;
+  }
   function load(name) {
-    try { var raw = localStorage.getItem(key(name)); if (raw) return JSON.parse(raw); } catch (e) {}
+    try { var raw = localStorage.getItem(key(name)); if (raw) return normalize(JSON.parse(raw)); } catch (e) {}
     return blankState(name);
   }
   function save() {
@@ -117,12 +144,50 @@
   function completedCount(s) { return Object.keys(s.days).filter(function (k) { return s.days[k].completed; }).length; }
   function nextDayNumber(s) { return Math.min(completedCount(s) + 1, TOTAL_DAYS); }
   function playedToday(s) { return s.lastCompletedDate === today(); }
-  function availableToday(s) { return !playedToday(s) && completedCount(s) < TOTAL_DAYS; }
 
-  // If a day was missed, the live streak is broken — reconcile on load.
+  // The lesson number this player "should" be on at one-per-day, measured from the
+  // day they started. Before their first lesson, that's day 1.
+  function scheduledDay(s) {
+    if (!s.startDate) return 1;
+    return Math.min(daysBetween(s.startDate, today()) + 1, TOTAL_DAYS);
+  }
+  // The furthest day currently unlocked: today's paced lesson plus the lead window.
+  function maxUnlockedDay(s) { return Math.min(scheduledDay(s) + LEAD_DAYS, TOTAL_DAYS); }
+  // You can play the next sequential day if it's within the unlocked window. This
+  // naturally allows several lessons in one sitting (to catch up or work a little
+  // ahead) while capping how far ahead of the daily pace anyone can get.
+  function availableToday(s) {
+    return completedCount(s) < TOTAL_DAYS && nextDayNumber(s) <= maxUnlockedDay(s);
+  }
+  // How many more lessons can be started right now (0 when caught up / capped).
+  function unlockedAhead(s) { return Math.max(0, maxUnlockedDay(s) - completedCount(s)); }
+
+  // ---- streak freeze ----
+  // One freeze is available unless one was used within the last FREEZE_COOLDOWN days.
+  function freezeAvailable(s) {
+    return !s.freezeUsedDate || daysBetween(s.freezeUsedDate, today()) >= FREEZE_COOLDOWN;
+  }
+  function daysUntilFreezeRefill(s) {
+    if (freezeAvailable(s)) return 0;
+    return Math.max(0, FREEZE_COOLDOWN - daysBetween(s.freezeUsedDate, today()));
+  }
+
+  // Reconcile the live streak on load. A single missed day is automatically
+  // covered by a streak freeze (if one is available); a longer gap breaks it.
   function reconcileStreak() {
-    if (state.lastCompletedDate && state.lastCompletedDate !== today() && state.lastCompletedDate !== addDays(today(), -1)) {
-      if (state.currentStreak !== 0) { state.currentStreak = 0; save(); }
+    var last = state.lastCompletedDate;
+    if (!last) return;
+    var t = today();
+    if (last === t || last === addDays(t, -1)) return; // streak still alive
+    var missed = daysBetween(last, t) - 1;             // fully-skipped calendar days
+    if (missed === 1 && state.currentStreak > 0 && freezeAvailable(state)) {
+      // Spend a freeze: treat yesterday as covered so the chain stays unbroken.
+      state.freezeUsedDate = t;
+      state.lastCompletedDate = addDays(t, -1);
+      state.freezeJustUsed = true; // surfaced once on the home screen
+      save();
+    } else if (state.currentStreak !== 0) {
+      state.currentStreak = 0; save();
     }
   }
 
@@ -312,27 +377,57 @@
   function renderCTA() {
     var cta = $("today-cta");
     cta.innerHTML = "";
+
+    // One-time notice when a freeze rescued the streak since the last visit.
+    if (state.freezeJustUsed) {
+      cta.appendChild(el("div", "freeze-note",
+        "❄️ A streak freeze saved your " + state.currentStreak + "-day streak — one missed day is on us."));
+      delete state.freezeJustUsed; save();
+    }
+
     var done = completedCount(state);
     if (done >= TOTAL_DAYS) {
       cta.appendChild(el("h2", null, "🎊 You finished the quest!"));
       cta.appendChild(el("p", "muted", "All 18 days complete. Replay any day to review, and keep using what you learned."));
       return;
     }
+
+    var n = nextDayNumber(state);
+    var sched = scheduledDay(state);
     if (availableToday(state)) {
-      var n = nextDayNumber(state);
       var d = CURRICULUM[n - 1];
-      cta.appendChild(el("div", "step-label", "Today's lesson"));
+      var ahead = n > sched, behind = n < sched;
+      cta.appendChild(el("div", "step-label", ahead ? "Working ahead" : (behind ? "Catch up" : "Today's lesson")));
       cta.appendChild(el("h2", null, "Day " + n + ": " + d.title));
       cta.appendChild(el("p", "muted", d.lesson.length + " quick cards · " + d.quiz.length + " questions · " + d.challenge.length + " hands-on tasks — about 15 minutes."));
       var btn = el("button", "btn btn-primary", "Start Day " + n + " →");
       btn.onclick = function () { beginDay(n, false); };
       cta.appendChild(btn);
+      if (ahead) cta.appendChild(el("p", "cta-hint muted small",
+        "You're ahead of the daily pace — nice momentum. One lesson a day makes it stick best, but a little extra is welcome."));
+      else if (behind) cta.appendChild(el("p", "cta-hint muted small",
+        "A little behind? No problem — you can do a few in a row to catch back up to today."));
     } else {
-      cta.appendChild(el("h2", null, "✅ Nice work today!"));
-      var streakMsg = state.currentStreak > 1
-        ? "You're on a " + state.currentStreak + "-day streak. Come back tomorrow to keep it alive!"
-        : "Come back tomorrow for the next day and start building a streak.";
-      cta.appendChild(el("p", "muted", streakMsg));
+      cta.appendChild(el("h2", null, "✅ You're all set for today!"));
+      var lead = done - sched; // how many days ahead of pace
+      var msg = lead >= LEAD_DAYS
+        ? "You're " + LEAD_DAYS + " days ahead — as far as the pace allows. Come back tomorrow to keep going and protect your streak."
+        : (state.currentStreak > 1
+          ? "You're on a " + state.currentStreak + "-day streak. Come back tomorrow to keep it alive!"
+          : "Come back tomorrow for the next lesson and start building a streak.");
+      cta.appendChild(el("p", "muted", msg));
+    }
+
+    // Streak-freeze status (only once a streak or a used freeze exists).
+    if (state.currentStreak > 0 || state.freezeUsedDate) {
+      var fz = el("p", "freeze-status muted small");
+      if (freezeAvailable(state)) {
+        fz.textContent = "❄️ Streak freeze ready — one missed day won't break your streak.";
+      } else {
+        var dleft = daysUntilFreezeRefill(state);
+        fz.textContent = "❄️ Streak freeze used — refills in " + dleft + " day" + (dleft === 1 ? "" : "s") + ".";
+      }
+      cta.appendChild(fz);
     }
   }
 
@@ -512,8 +607,22 @@
 
     // advance streak for a real (first-time) completion
     var t = today();
-    if (state.lastCompletedDate === addDays(t, -1)) state.currentStreak += 1;
-    else state.currentStreak = 1;
+    if (!state.startDate) state.startDate = t; // anchor this player's daily pace
+    var last = state.lastCompletedDate;
+    if (last === t) {
+      // already showed up today (extra lesson worked ahead / caught up) — streak unchanged
+    } else if (!last || last === addDays(t, -1)) {
+      state.currentStreak = last ? state.currentStreak + 1 : 1;
+    } else {
+      // there's a gap since the last lesson
+      var missed = daysBetween(last, t) - 1;
+      if (missed === 1 && state.currentStreak > 0 && freezeAvailable(state)) {
+        state.freezeUsedDate = t;            // a freeze covers the one missed day
+        state.currentStreak += 1;
+      } else {
+        state.currentStreak = 1;             // streak broke — start fresh
+      }
+    }
     state.longestStreak = Math.max(state.longestStreak, state.currentStreak);
 
     var multiplier = 1 + Math.min(state.currentStreak - 1, 9) * 0.1;
