@@ -64,6 +64,9 @@
 
       <div id="today-cta" class="card cta"></div>
 
+      <h2 class="section-heading">Capstone projects</h2>
+      <div id="project-tracker" class="project-tracker"></div>
+
       <h2 class="section-heading">Your 18-day quest</h2>
       <div id="day-grid" class="day-grid"></div>
 
@@ -115,7 +118,8 @@
       <div class="card">
         <div class="step-label">Step 3 of 3 &middot; Hands-on</div>
         <h2>Try it in Claude Code</h2>
-        <p class="muted">Check off each task as you do it for real &mdash; you earn points for practicing. Stuck on one? Use its <strong>Learn how &rarr;</strong> link. The <strong>Capstone</strong> task carries one real project forward across all 18 days.</p>
+        <p class="muted">Check off each task as you do it for real &mdash; you earn points for practicing. Stuck on one? Use its <strong>Learn how &rarr;</strong> link. The <strong>Capstone</strong> task moves your current project forward.</p>
+        <div id="challenge-project" class="project-banner hidden"></div>
         <div id="challenge-list" class="challenge-list"></div>
         <button id="challenge-finish" class="btn btn-primary">Finish today &rarr;</button>
       </div>
@@ -127,6 +131,7 @@
         <div id="results-emoji" class="results-emoji">&#127881;</div>
         <h1 id="results-title">Day complete!</h1>
         <div id="results-singer" class="singer-verdict"></div>
+        <div id="results-project" class="project-celebrate hidden"></div>
         <div id="results-breakdown" class="breakdown"></div>
         <div id="results-badges" class="results-badges"></div>
         <div id="results-tip" class="tip-bubble">

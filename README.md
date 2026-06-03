@@ -151,8 +151,27 @@ Each `challenge` item is an object:
 - `text` — the hands-on instruction.
 - `link` — a "Learn how →" URL shown under the task (the `DOC` constant at the top of
   `curriculum.js` is the Claude Code docs base, so `DOC + "skills"` → the Skills page).
-- `capstone: true` — marks the one task per day that advances a single real project across
-  all 18 days. It renders with a gold "Capstone" badge.
+- `capstone: true` — marks the one task per day that advances the player's current **Capstone
+  project**. It renders with a gold "Capstone" badge.
 
 (Plain strings still work as challenge items too, for backward compatibility.) Add more days by
 appending more objects.
+
+### Capstone projects (`window.PROJECTS`)
+
+The 18 days are grouped into **three multi-day Capstone projects** (6 + 6 + 6 days), defined as
+`window.PROJECTS` at the bottom of `curriculum.js`. Project 1 ("Learn something new") lets each
+player pick a subject and have Claude build them a learning kit; Project 2 ("Build a work helper")
+builds a real tool connected to their apps and data; Project 3 ("Automate & ship it") automates it
+end to end and puts it in git. Each project is one object:
+
+```js
+{ id: 1, emoji: "📘", title: "Learn something new", tagline: "…", start: 1, end: 6 }
+```
+
+`start`/`end` are inclusive day numbers; the **last day of each block is its finale** (shown with a
+🎉 celebration on the results screen). Edit the themes, taglines, or block lengths freely — just
+keep the day ranges contiguous and covering 1…18. The app surfaces these in three places: a
+**Projects tracker** on the home screen, a **banner** on each day's hands-on screen, and the
+**project-complete celebration** on finale days. The capstone `text` of each day should tell a
+coherent story across its block (kickoff → middle days → finale).

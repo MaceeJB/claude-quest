@@ -126,6 +126,49 @@ h2 { font-size: 1.25rem; margin: .2em 0 .5em; }
 .badge .bname { font-size: .82rem; font-weight: 600; margin-top: 6px; }
 .badge .bdesc { font-size: .72rem; color: var(--muted); }
 
+/* ---- Capstone projects tracker (home) ---- */
+.project-tracker { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.project-card {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+  transition: border-color .15s;
+}
+.project-card .pc-emoji { font-size: 1.6rem; line-height: 1; flex: none; filter: grayscale(1) opacity(.45); }
+.project-card .pc-body { flex: 1; min-width: 0; }
+.project-card .pc-title { font-weight: 700; font-size: .9rem; }
+.project-card .pc-tag { font-size: .76rem; color: var(--muted); margin: 3px 0 9px; }
+.project-card .pc-bar { height: 6px; background: var(--bg-elev-2); border-radius: 999px; overflow: hidden; }
+.project-card .pc-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--gold)); transition: width .3s ease; }
+.project-card .pc-meta { font-size: .72rem; color: var(--muted); margin-top: 7px; }
+.project-card.active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary) inset; }
+.project-card.active .pc-emoji { filter: none; }
+.project-card.done { border-color: var(--gold); }
+.project-card.done .pc-emoji { filter: none; }
+.project-card.done .pc-meta { color: var(--gold); }
+.project-card.upcoming { opacity: .72; }
+
+/* ---- Project banner (challenge screen) ---- */
+.project-banner {
+  display: flex; gap: 10px; align-items: center; margin: 4px 0 14px;
+  background: linear-gradient(180deg, rgba(139,92,246,.12), var(--bg-elev-2));
+  border: 1px solid color-mix(in srgb, var(--primary) 55%, var(--border));
+  border-radius: 10px; padding: 11px 14px;
+}
+.project-banner .pb-emoji { font-size: 1.3rem; flex: none; }
+.project-banner .pb-text { font-size: .86rem; color: var(--text); }
+.project-banner .pb-text b { color: var(--accent); }
+
+/* ---- Project-complete celebration (results screen) ---- */
+.project-celebrate {
+  margin: 14px auto; max-width: 440px; padding: 16px;
+  background: linear-gradient(180deg, rgba(245,196,81,.12), var(--bg-elev-2));
+  border: 1px solid var(--gold); border-radius: 14px; text-align: center;
+}
+.project-celebrate .rp-emoji { font-size: 2rem; }
+.project-celebrate .rp-title { font-weight: 800; font-size: 1.02rem; margin-top: 4px; color: var(--gold); }
+.project-celebrate .rp-sub { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+.project-celebrate .rp-next { font-size: .82rem; font-weight: 600; color: var(--accent); margin-top: 10px; }
+
 /* ---- Lesson ---- */
 .step-label { font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-hi); font-weight: 700; margin-bottom: 6px; }
 #lesson-cards { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }

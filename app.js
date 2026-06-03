@@ -34,6 +34,27 @@
     { id: "all_18", emoji: "🥋", name: "Black Belt", desc: "Finish all 18 days", test: function (s) { return completedCount(s) >= TOTAL_DAYS; } }
   ];
 
+  // ===== Multi-day Capstone projects =====
+  // Defined in curriculum.js (window.PROJECTS); this is a safe fallback so the app
+  // still runs if that block is missing. Each project covers a contiguous block of
+  // days; the final day of a block is its celebration.
+  var PROJECTS = window.PROJECTS || [
+    { id: 1, emoji: "📘", title: "Learn something new", tagline: "Have Claude build you a personal learning kit.", start: 1,  end: 6  },
+    { id: 2, emoji: "🛠️", title: "Build a work helper", tagline: "Create a small tool — connected to your real apps and data — that takes a repetitive task off your plate.", start: 7,  end: 12 },
+    { id: 3, emoji: "🚀", title: "Automate & ship it",  tagline: "Plan it, automate it end to end, put it in git, and hand it to your team.", start: 13, end: 18 }
+  ];
+  // The project a given day belongs to, plus where the day sits within it.
+  function projectForDay(n) {
+    for (var i = 0; i < PROJECTS.length; i++) {
+      var p = PROJECTS[i];
+      if (n >= p.start && n <= p.end) {
+        return { project: p, index: n - p.start + 1, of: p.end - p.start + 1,
+          isFirst: n === p.start, isLast: n === p.end };
+      }
+    }
+    return null;
+  }
+
   // ---- date helpers (overridable for testing via localStorage 'ccq:debugDate') ----
   function fmt(d) {
     var y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, "0"), day = String(d.getDate()).padStart(2, "0");
@@ -243,8 +264,49 @@
     }
 
     renderCTA();
+    renderProjects();
     renderGrid();
     renderBadges();
+  }
+
+  function renderProjects() {
+    var tracker = $("project-tracker");
+    if (!tracker) return;
+    tracker.innerHTML = "";
+    var nextN = nextDayNumber(state);
+    var allDone = completedCount(state) >= TOTAL_DAYS;
+    PROJECTS.forEach(function (p) {
+      var span = p.end - p.start + 1;
+      var doneInBlock = 0;
+      for (var n = p.start; n <= p.end; n++) {
+        var rec = state.days[n];
+        if (rec && rec.completed) doneInBlock++;
+      }
+      var status;
+      if (doneInBlock >= span) status = "done";
+      else if (!allDone && nextN >= p.start && nextN <= p.end) status = "active";
+      else if (doneInBlock > 0) status = "active"; // partially done (e.g. via preview)
+      else status = "upcoming";
+
+      var card = el("div", "project-card " + status);
+      card.appendChild(el("div", "pc-emoji", p.emoji));
+      var body = el("div", "pc-body");
+      var title = el("div", "pc-title"); title.textContent = "Project " + p.id + ": " + p.title;
+      body.appendChild(title);
+      var tag = el("div", "pc-tag"); tag.textContent = p.tagline;
+      body.appendChild(tag);
+      var bar = el("div", "pc-bar");
+      var fill = el("div", "pc-fill");
+      fill.style.width = (doneInBlock / span * 100) + "%";
+      bar.appendChild(fill);
+      body.appendChild(bar);
+      var meta = el("div", "pc-meta");
+      meta.textContent = (status === "done" ? "✓ Complete" : doneInBlock + " / " + span + " days")
+        + " · Days " + p.start + "–" + p.end;
+      body.appendChild(meta);
+      card.appendChild(body);
+      tracker.appendChild(card);
+    });
   }
 
   function renderCTA() {
@@ -386,6 +448,28 @@
   function renderChallenge() {
     var d = CURRICULUM[session.day - 1];
     $("challenge-daytag").textContent = "Day " + d.day + (session.replay ? " · review" : "");
+
+    var banner = $("challenge-project");
+    var pf = projectForDay(d.day);
+    if (banner) {
+      if (pf) {
+        var p = pf.project;
+        var phase = pf.isFirst ? "Kicking off" : (pf.isLast ? "Finale" : "Continuing");
+        banner.innerHTML = "";
+        var em = el("span", "pb-emoji"); em.textContent = p.emoji;
+        var txt = el("span", "pb-text");
+        var strong = document.createElement("b");
+        strong.textContent = "Project " + p.id + ": " + p.title;
+        txt.appendChild(strong);
+        txt.appendChild(document.createTextNode(" — " + phase + " · day " + pf.index + " of " + pf.of));
+        banner.appendChild(em);
+        banner.appendChild(txt);
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+      }
+    }
+
     var list = $("challenge-list");
     list.innerHTML = "";
     session.checks = d.challenge.map(function () { return false; });
@@ -585,6 +669,31 @@
       "<span class=\"sv-text\">" + verdict.text + "</span>" + learnLink +
       "<button id=\"singer-copy\" class=\"btn btn-ghost small sv-copy\">Copy my astronaut</button>";
     $("singer-copy").onclick = function () { copyToClipboard(verdict.text, $("singer-copy"), "Copy my astronaut"); };
+
+    // Project-complete celebration — shown only when you finish the last day of a
+    // project block for real (not on replay).
+    var proj = $("results-project");
+    if (proj) {
+      var pf = projectForDay(d.day);
+      if (!r.replay && pf && pf.isLast) {
+        var p = pf.project;
+        proj.innerHTML = "";
+        proj.appendChild(el("div", "rp-emoji", p.emoji + " 🎉"));
+        var h = el("div", "rp-title"); h.textContent = "Project " + p.id + " complete: " + p.title;
+        proj.appendChild(h);
+        var sub = el("div", "rp-sub"); sub.textContent = p.tagline;
+        proj.appendChild(sub);
+        var nextP = PROJECTS[p.id]; // ids are 1-based, so index p.id is the next project
+        var teaser = el("div", "rp-next");
+        teaser.textContent = nextP
+          ? "Up next → Project " + nextP.id + ": " + nextP.title
+          : "🎓 All four projects shipped — you're a Claude Code black belt!";
+        proj.appendChild(teaser);
+        proj.classList.remove("hidden");
+      } else {
+        proj.classList.add("hidden");
+      }
+    }
 
     var feedbackEmail = "MaceeJB@gmail.com";
     var subject = "Claude Quest — Day " + d.day + " (" + d.title + "): feedback";
