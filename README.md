@@ -1,7 +1,7 @@
 # Claude Quest
 
 A small, zero-dependency game that teaches your team **Claude Code** in ~15 minutes a day.
-One curated topic per day for 18 days, beginner → advanced. You score points for quiz
+One curated topic per day for 19 days (18 core lessons plus a bonus), beginner → advanced. You score points for quiz
 answers and hands-on practice, and earn a streak bonus for showing up every day.
 
 No build step, no server, no dependencies — it's plain HTML/CSS/JS.
@@ -27,7 +27,7 @@ Juneteenth and the observed July 4th; edit that list for your own calendar.)
 **work up to 2 days ahead** if they have time, or do **several lessons in a row to catch up** if
 they've fallen behind — the daily pace is the center of gravity, not a hard wall. Finished days can
 be replayed for review (no points). Earn **badges** for milestones (first day, 3/7/14-day streaks,
-flawless quizzes, finishing all 18).
+flawless quizzes, finishing all 19).
 
 Progress is saved **per player, in your browser** (`localStorage`) by default — private, no account.
 Each teammate just picks a player name. Sharing a machine? Use "Switch player".
@@ -117,11 +117,11 @@ If you ever need to move this to a new Supabase project (new owner, new org, etc
 | `index.html` | App shell and screens |
 | `styles.css` | Theme, layout, badge/streak visuals |
 | `app.js` | Game logic: state, scoring, streaks, gating, achievements, and cross-device sync |
-| `curriculum.js` | All 18 days of lessons, quizzes, and challenges |
+| `curriculum.js` | All 19 days of lessons, quizzes, and challenges |
 
 ## Reviewing the content (for maintainers)
 
-Days 2–18 normally unlock one per calendar day, which makes it hard to review
+Days 2–19 normally unlock one per calendar day, which makes it hard to review
 everything at once. Two tools help:
 
 - **Preview all days** — a button in the top-right of the home screen. Click it to
@@ -168,7 +168,7 @@ appending more objects.
 
 ### Capstone projects (`window.PROJECTS`)
 
-The 18 days are grouped into **three multi-day Capstone projects** (6 + 6 + 6 days), defined as
+The first 18 days are grouped into **three multi-day Capstone projects** (6 + 6 + 6 days), defined as
 `window.PROJECTS` at the bottom of `curriculum.js`. Project 1 ("Learn something new") lets each
 player pick a subject and have Claude build them a learning kit; Project 2 ("Build a work helper")
 builds a real tool connected to their apps and data; Project 3 ("Automate & ship it") automates it
@@ -184,3 +184,9 @@ keep the day ranges contiguous and covering 1…18. The app surfaces these in th
 **Projects tracker** on the home screen, a **banner** on each day's hands-on screen, and the
 **project-complete celebration** on finale days. The capstone `text` of each day should tell a
 coherent story across its block (kickoff → middle days → finale).
+
+**Day 19 is a standalone bonus lesson** (on the `/goal` command, inspired by an AI Daily Brief
+episode) that sits *outside* the three projects — it has no capstone task and no project banner, so
+the projects cleanly cover days 1…18 while the quest itself runs 19 days. Adding more bonus days
+works the same way: append a day object with no `capstone: true` item and leave it out of
+`window.PROJECTS`.

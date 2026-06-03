@@ -440,6 +440,30 @@ window.CURRICULUM = [
       { text: "Reflect: you've finished all 18 days — pick one feature to make part of your daily workflow.", link: DOC + "best-practices" },
       { text: "<b>Project 3 finale 🎉🎓:</b> automate one real task — a desktop <b>Routine</b> (<code>/schedule</code>) or a terminal <code>claude -p \"…\"</code> (e.g. generate a summary or run a routine check) — then choose the Claude Code habit you'll keep using. All three projects shipped &mdash; congratulations!", link: DOC + "headless", capstone: true }
     ]
+  },
+  {
+    day: 19,
+    title: "Bonus: Doing More with /goal",
+    section: "Bonus Round",
+    lesson: [
+      { heading: "A victory lap — from the AI Daily Brief", body: "You graduated on Day 18 — consider this a bonus round. It's inspired by an episode of <b>The AI Daily Brief</b> with Nathaniel Whittemore, 'How to use /goal to do more with AI.' You met <code>/goal</code> briefly back on Day 5; here's the deeper idea, because it's one of the highest-leverage ways to get Claude to do more in a single go." },
+      { heading: "From turn-taking to a finish line", body: "Normally you work turn by turn: ask &rarr; wait &rarr; check &rarr; ask again. <code>/goal</code> flips that. You state a completion condition <b>once</b>, and Claude keeps working across many turns until that condition is actually met. As the episode puts it: you set the destination, the agent navigates, and you come back when it's done." },
+      { heading: "What a goal actually is", body: "A goal is a clear, checkable <b>finish line</b> — not just a task. You type <code>/goal</code> and then the condition that means 'done', e.g. <code>/goal every row in the export has a valid date and a non-blank amount, and the summary fits on one page</code>. Claude re-checks that condition after each turn and won't stop until it's satisfied (or you stop it)." },
+      { heading: "It's not just for code", body: "The episode's big point: <code>/goal</code> shines on everyday knowledge work, not only coding. Think <b>audits</b> ('every vendor has a renewal date and an owner'), <b>research</b> ('a one-page brief on each competitor with a source link'), <b>vendor reviews</b>, and <b>market landscapes</b> — anywhere the AI needs a clear finish line and evidence it actually got there." },
+      { heading: "What makes a good goal (and a bad one)", body: "Good goals are specific and verifiable: 'all figures reconcile to the totals tab; no blank cells in column D.' Bad goals are vague ('make this better') or boundless ('redo everything') — Claude can't tell when those are done, so it stops when the work merely <i>looks</i> finished. The whole skill is naming the test it has to pass." },
+      { heading: "Keep an eye on the meters", body: "Because a goal can run for a while, Claude tracks <b>elapsed time, turns, and tokens</b> as it goes — glance at those to see how hard it's working, and stop it if a goal turns out too broad. For a big job, pair this with plan mode (Day 17): plan first, then set the goal, then let it run to the finish line." }
+    ],
+    quiz: [
+      { q: "What does /goal do that a normal prompt doesn't?", options: ["Switches the model", "Sets a completion condition Claude works toward across many turns until it's met", "Deletes your context", "Connects an outside app"], answer: 1, explanation: "/goal gives Claude a finish line it re-checks every turn, so it keeps working until the condition is satisfied." },
+      { q: "Which is the strongest /goal for an operator?", options: ["Make this spreadsheet better", "Clean everything up", "Every row has a valid date and a non-blank amount, and totals reconcile to the summary tab", "Do your best"], answer: 2, explanation: "A good goal is specific and verifiable — Claude can actually test whether it's done." },
+      { q: "The AI Daily Brief episode's key point about /goal was that it's…", options: ["Only useful for writing code", "Useful well beyond coding — audits, research, vendor reviews, market landscapes", "A replacement for CLAUDE.md", "A way to turn off permissions"], answer: 1, explanation: "The episode stressed /goal's value for knowledge work that needs a clear finish line and evidence of completion." }
+    ],
+    challenge: [
+      { text: "Pick a real task with a clear 'done' and set it with <code>/goal</code> — e.g. <code>/goal every row in @export.csv has a valid date and a non-blank amount</code> — then let Claude work until it's met.", link: DOC + "goal" },
+      { text: "Watch the meters (time, turns, tokens) as it runs, and stop it if the goal turns out too broad.", link: DOC + "goal" },
+      { text: "Try a non-coding goal from your real work — an audit, a research brief, or a vendor review — with a finish line that includes evidence (e.g. 'each item has a source link').", link: DOC + "goal" },
+      { text: "Listen to the episode that inspired this bonus — 'How to use /goal to do more with AI' on The AI Daily Brief — and steal one idea for your own work.", link: "https://pod.link/1680633614" }
+    ]
   }
 ];
 

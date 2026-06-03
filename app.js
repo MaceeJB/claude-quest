@@ -31,7 +31,7 @@
     { id: "streak_14", emoji: "🏆", name: "Unstoppable", desc: "14-day streak", test: function (s) { return s.longestStreak >= 14; } },
     { id: "perfect_day", emoji: "🎯", name: "Sharpshooter", desc: "A flawless quiz", test: function (s) { return s.perfectCount >= 1; } },
     { id: "perfect_5", emoji: "💎", name: "Quiz Master", desc: "5 flawless quizzes", test: function (s) { return s.perfectCount >= 5; } },
-    { id: "all_18", emoji: "🥋", name: "Black Belt", desc: "Finish all 18 days", test: function (s) { return completedCount(s) >= TOTAL_DAYS; } }
+    { id: "all_18", emoji: "🥋", name: "Black Belt", desc: "Finish all 19 days", test: function (s) { return completedCount(s) >= TOTAL_DAYS; } }
   ];
 
   // ===== Multi-day Capstone projects =====
@@ -481,7 +481,7 @@
     var done = completedCount(state);
     if (done >= TOTAL_DAYS) {
       cta.appendChild(el("h2", null, "🎊 You finished the quest!"));
-      cta.appendChild(el("p", "muted", "All 18 days complete. Replay any day to review, and keep using what you learned."));
+      cta.appendChild(el("p", "muted", "All 19 days complete. Replay any day to review, and keep using what you learned."));
       return;
     }
 
