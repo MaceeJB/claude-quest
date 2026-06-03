@@ -14,7 +14,17 @@
       <div class="card center">
         <h1 class="logo">Claude Quest</h1>
         <p class="tagline">Learn Claude Code in 15 minutes a day. Build a streak. Level up your team.</p>
-        <label for="profile-name" class="field-label">Pick a player name to track your progress</label>
+
+        <!-- Sign in to sync progress across devices (revealed by JS when sync is available) -->
+        <div id="auth-box" class="hidden">
+          <label for="auth-email" class="field-label">Sign in with your email to save your progress on any device</label>
+          <input id="auth-email" type="email" placeholder="you@company.com" autocomplete="email" />
+          <button id="auth-send" class="btn btn-primary">Email me a sign-in link</button>
+          <p id="auth-msg" class="muted small"></p>
+          <div class="or-divider"><span>or</span></div>
+        </div>
+
+        <label for="profile-name" class="field-label">Just play on this device</label>
         <input id="profile-name" type="text" maxlength="24" placeholder="e.g. Macee" autocomplete="off" />
         <button id="profile-start" class="btn btn-primary">Start questing</button>
         <p id="profile-existing" class="muted small"></p>
@@ -29,6 +39,7 @@
           <span id="home-player" class="player-chip"></span>
           <button id="preview-toggle" class="btn btn-ghost small" title="Unlock every day for content review — no points or streak changes.">Preview all days</button>
           <button id="switch-profile" class="btn btn-ghost small">Switch player</button>
+          <button id="sign-out" class="btn btn-ghost small hidden">Sign out</button>
         </div>
       </header>
 
@@ -138,6 +149,7 @@
   </div>
 
   <script src="curriculum.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
 </html>

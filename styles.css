@@ -74,12 +74,16 @@ h2 { font-size: 1.25rem; margin: .2em 0 .5em; }
 
 /* ---- Profile gate ---- */
 .field-label { display: block; text-align: left; color: var(--muted); font-size: .9rem; margin-bottom: 6px; }
-#profile-name {
+#profile-name, #auth-email {
   width: 100%; font: inherit; padding: 12px 14px; margin-bottom: 14px;
   background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 10px; color: var(--text);
 }
-#profile-name:focus { outline: none; border-color: var(--accent); }
-#profile-start { width: 100%; }
+#profile-name:focus, #auth-email:focus { outline: none; border-color: var(--accent); }
+#profile-start, #auth-send { width: 100%; }
+#auth-msg:not(:empty) { margin-top: 10px; }
+.or-divider { display: flex; align-items: center; text-align: center; color: var(--muted); font-size: .78rem; margin: 20px 0 14px; }
+.or-divider::before, .or-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.or-divider span { padding: 0 12px; text-transform: uppercase; letter-spacing: .5px; }
 
 /* ---- Topbar ---- */
 .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }

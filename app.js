@@ -8,6 +8,22 @@
   var POINTS_AFTER_MISS = 5;
   var POINTS_CHALLENGE = 5;
 
+  // ===== Cross-device sync (Supabase) =====
+  // These two values are PUBLIC and safe to ship in the page — the Row Level
+  // Security policies in Supabase are what actually protect each player's data.
+  // To point this at a different Supabase project, change these three lines.
+  var SUPABASE_URL = "https://ezcrydamiplzywppvhri.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_RUaWCuxx1_VZ0rGsVfBQgw_qB-zmAC1";
+  var REDIRECT_URL = "https://maceejb.github.io/claude-quest/";
+
+  var sb = null;        // Supabase client (stays null if the library didn't load)
+  var authUser = null;  // signed-in user, or null for local-only play
+  try {
+    if (window.supabase && window.supabase.createClient) {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+  } catch (e) { sb = null; }
+
   var BADGES = [
     { id: "first_day", emoji: "🌱", name: "First Steps", desc: "Complete day 1", test: function (s) { return completedCount(s) >= 1; } },
     { id: "streak_3", emoji: "🔥", name: "On a Roll", desc: "3-day streak", test: function (s) { return s.longestStreak >= 3; } },
@@ -45,7 +61,37 @@
     try { var raw = localStorage.getItem(key(name)); if (raw) return JSON.parse(raw); } catch (e) {}
     return blankState(name);
   }
-  function save() { localStorage.setItem(key(profile), JSON.stringify(state)); }
+  function save() {
+    try { localStorage.setItem(key(profile), JSON.stringify(state)); } catch (e) {}
+    saveCloud();
+  }
+
+  // ---- cloud sync helpers (no-ops when not signed in) ----
+  var cloudSaveTimer = null;
+  function saveCloud() {
+    if (!sb || !authUser || !state) return;
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer = setTimeout(function () {
+      sb.from("progress").upsert({
+        user_id: authUser.id,
+        player_name: state.name,
+        data: state,
+        updated_at: new Date().toISOString()
+      }).then(function (res) {
+        if (res && res.error) console.warn("Cloud save failed:", res.error.message);
+      });
+    }, 700);
+  }
+  function fetchCloud() {
+    return sb.from("progress").select("data").eq("user_id", authUser.id).maybeSingle()
+      .then(function (res) {
+        if (res.error) { console.warn("Cloud load failed:", res.error.message); return null; }
+        return res.data ? res.data.data : null;
+      });
+  }
+  function deriveName(user) {
+    return (user && user.email) ? user.email.split("@")[0] : "Player";
+  }
 
   function completedCount(s) { return Object.keys(s.days).filter(function (k) { return s.days[k].completed; }).length; }
   function nextDayNumber(s) { return Math.min(completedCount(s) + 1, TOTAL_DAYS); }
@@ -107,9 +153,83 @@
     show("screen-home");
   }
 
+  // ================= AUTH (cross-device sync) =================
+  function initAuth() {
+    if (!sb) return; // library missing → app runs in local-only mode
+    $("auth-box").classList.remove("hidden");
+    $("profile-start").className = "btn btn-ghost"; // sign-in becomes the primary path
+    $("auth-send").onclick = sendLink;
+    $("auth-email").addEventListener("keydown", function (e) { if (e.key === "Enter") sendLink(); });
+
+    // Returning from a magic-link email? Show a brief note while the session settles.
+    if (location.hash.indexOf("access_token") !== -1) $("auth-msg").textContent = "Signing you in…";
+
+    sb.auth.onAuthStateChange(function (event, sessionObj) {
+      if (event === "SIGNED_IN" && sessionObj && sessionObj.user) {
+        if (!authUser) enterSignedIn(sessionObj.user);
+      } else if (event === "SIGNED_OUT") {
+        authUser = null;
+      }
+    });
+    // Restore an existing session on this device (so signed-in users skip the gate).
+    sb.auth.getSession().then(function (res) {
+      var sess = res && res.data ? res.data.session : null;
+      if (sess && sess.user && !authUser) enterSignedIn(sess.user);
+    });
+  }
+
+  function sendLink() {
+    var email = ($("auth-email").value || "").trim();
+    if (!email || email.indexOf("@") === -1) { $("auth-email").focus(); return; }
+    $("auth-msg").textContent = "Sending…";
+    $("auth-send").disabled = true;
+    sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: REDIRECT_URL } })
+      .then(function (res) {
+        $("auth-send").disabled = false;
+        $("auth-msg").textContent = res.error
+          ? "Couldn't send the link: " + res.error.message
+          : "Check your inbox — click the link in the email to sign in. (You can close this tab.)";
+      });
+  }
+
+  // Sign-in succeeded: load this player's cloud progress, importing any local
+  // progress on this device the first time the account is used.
+  function enterSignedIn(user) {
+    authUser = user;
+    $("auth-msg").textContent = "";
+    fetchCloud().then(function (cloud) {
+      if (cloud) {
+        state = cloud;
+        profile = state.name || deriveName(user);
+      } else {
+        var localName = localStorage.getItem("ccq:lastProfile");
+        if (localName) { profile = localName; state = load(localName); }
+        else { profile = deriveName(user); state = blankState(profile); }
+        state.name = profile;
+      }
+      if (!state.verdictsUsed) state.verdictsUsed = [];
+      localStorage.setItem("ccq:lastProfile", profile);
+      reconcileStreak();
+      saveCloud(); // ensure the account has a row from now on
+      renderHome();
+      show("screen-home");
+    });
+  }
+
+  function signOut() {
+    if (sb) sb.auth.signOut();
+    authUser = null; profile = null; state = null;
+    $("profile-existing").textContent = "";
+    $("auth-msg").textContent = "";
+    show("screen-profile");
+  }
+
   // ================= HOME =================
   function renderHome() {
-    $("home-player").textContent = "👤 " + profile;
+    var signedIn = !!authUser;
+    $("home-player").textContent = "👤 " + profile + (signedIn ? " · ☁️ synced" : "");
+    $("sign-out").classList.toggle("hidden", !signedIn);
+    $("switch-profile").classList.toggle("hidden", signedIn);
     $("stat-points").textContent = state.totalPoints;
     $("stat-streak").textContent = state.currentStreak;
     $("stat-longest").textContent = state.longestStreak;
@@ -486,6 +606,7 @@
   // ================= WIRE-UP =================
   function init() {
     initProfile();
+    initAuth();
     setupQuizNav();
     Array.prototype.forEach.call(document.querySelectorAll(".back-home"), function (b) {
       b.onclick = function () { renderHome(); show("screen-home"); };
@@ -500,6 +621,7 @@
       previewMode = !previewMode;
       if (state) renderHome();
     };
+    $("sign-out").onclick = signOut;
     show("screen-profile");
   }
 
