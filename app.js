@@ -787,19 +787,17 @@
     var streakBonus = Math.round(base * multiplier) - base;
     var dayScore = base + streakBonus;
 
-    var verdict = chooseVerdict(computeAccuracy(session.quizPoints, d.quiz.length), true);
-
     state.totalPoints += dayScore;
     state.lastCompletedDate = t;
     if (session.perfect) state.perfectCount += 1;
-    state.days[d.day] = { completed: true, score: dayScore, perfect: session.perfect, date: t, verdict: verdict };
+    state.days[d.day] = { completed: true, score: dayScore, perfect: session.perfect, date: t };
 
     var newBadges = evaluateBadges();
     save();
 
     showResults({ replay: false, quiz: session.quizPoints, challenge: challengePoints,
       multiplier: multiplier, streakBonus: streakBonus, total: dayScore,
-      perfect: session.perfect, streak: state.currentStreak, newBadges: newBadges, verdict: verdict });
+      perfect: session.perfect, streak: state.currentStreak, newBadges: newBadges });
   }
 
   function evaluateBadges() {
@@ -828,73 +826,6 @@
     { surface: "Code", text: "Run a one-off chore with <code>claude -p \"clean up this CSV\"</code> without starting a whole session." }
   ];
 
-  // "If your quiz performance was a famous astronaut..." — graded on first-try
-  // accuracy and tied to the team's "future-focused" motto (reaching for the stars).
-  // Kept playful and kind; even the bottom tier is encouraging, not a roast.
-  // Each pick links to a "learn more" page. Roster is generous so teammates with
-  // the same score still get different astronauts.
-  var WIKI = "https://en.wikipedia.org/wiki/";
-  var ASTRONAUTS = [
-    { min: 1.00, picks: [
-      { text: "🌕 Neil Armstrong — one giant leap; you stuck the landing flawlessly.", link: WIKI + "Neil_Armstrong" },
-      { text: "🚀 Yuri Gagarin — first human in space; you reached orbit first.", link: WIKI + "Yuri_Gagarin" },
-      { text: "🌑 Buzz Aldrin — second on the Moon, first-rate performance.", link: WIKI + "Buzz_Aldrin" },
-      { text: "🛰️ Valentina Tereshkova — first woman in space; trailblazing and flawless.", link: WIKI + "Valentina_Tereshkova" },
-      { text: "👩‍🚀 Sally Ride — first American woman in space; you broke right through.", link: WIKI + "Sally_Ride" },
-      { text: "🌌 John Glenn — first American to orbit Earth; a textbook mission.", link: WIKI + "John_Glenn" } ] },
-    { min: 0.75, picks: [
-      { text: "🎸 Chris Hadfield — commanded the ISS (and a guitar); smooth and near-perfect.", link: WIKI + "Chris_Hadfield" },
-      { text: "🧑‍🚀 Jim Lovell — a steady hand on Apollo; almost flawless.", link: WIKI + "Jim_Lovell" },
-      { text: "🌠 Mae Jemison — first Black woman in space; soaring, just shy of perfect.", link: WIKI + "Mae_Jemison" },
-      { text: "🚀 Alan Shepard — first American in space; strong launch, tiny wobble.", link: WIKI + "Alan_Shepard" },
-      { text: "🛰️ Scott Kelly — a year in orbit; reliable and nearly spotless.", link: WIKI + "Scott_Kelly_(astronaut)" } ] },
-    { min: 0.50, picks: [
-      { text: "🧑‍🚀 Peggy Whitson — record time in orbit; steady, dependable progress.", link: WIKI + "Peggy_Whitson" },
-      { text: "🌍 Michael Collins — kept the command module steady; solid middle of the mission.", link: WIKI + "Michael_Collins_(astronaut)" },
-      { text: "🛰️ Tim Peake — a solid mission, halfway to the stars.", link: WIKI + "Tim_Peake" },
-      { text: "👩‍🚀 Eileen Collins — first woman to command a shuttle; steady at the helm.", link: WIKI + "Eileen_Collins" },
-      { text: "🌑 Gene Cernan — last to walk the Moon; covered good ground.", link: WIKI + "Gene_Cernan" } ] },
-    { min: 0.25, picks: [
-      { text: "🪐 Jack Swigert — Apollo 13 improviser; not the plan, but you adapted.", link: WIKI + "Jack_Swigert" },
-      { text: "🌑 Fred Haise — brought it home against the odds; chart the retry.", link: WIKI + "Fred_Haise" },
-      { text: "🛰️ Gordon Cooper — drifted a bit, then recovered the mission.", link: WIKI + "Gordon_Cooper" },
-      { text: "🧑‍🚀 Wally Schirra — a few system checks left; run it again.", link: WIKI + "Wally_Schirra" } ] },
-    { min: 0.00, picks: [
-      { text: "🚀 Gus Grissom — overcame a sunk capsule to fly again; bounce back.", link: WIKI + "Gus_Grissom" },
-      { text: "🌙 Ken Mattingly — bumped from Apollo 13, then saved the day from the ground. Your turn comes next.", link: WIKI + "Ken_Mattingly" },
-      { text: "🛰️ Story Musgrave — started over many times, flew six missions; persistence pays.", link: WIKI + "Story_Musgrave" },
-      { text: "🧑‍🚀 Deke Slayton — grounded for years, then finally flew. Patience and a retry.", link: WIKI + "Deke_Slayton" } ] }
-  ];
-  function computeAccuracy(quizPoints, nQ) {
-    if (nQ <= 0) return 0;
-    var firstTry = quizPoints / POINTS_AFTER_MISS - nQ; // pts = 10a + 5b, N=a+b → a = pts/5 - N
-    return Math.max(0, Math.min(1, firstTry / nQ));
-  }
-  function pickTier(ratio) {
-    for (var i = 0; i < ASTRONAUTS.length; i++) { if (ratio >= ASTRONAUTS[i].min) return ASTRONAUTS[i]; }
-    return ASTRONAUTS[ASTRONAUTS.length - 1];
-  }
-  // Stable per-name hash so two players almost never collide on the same astronaut.
-  function nameHash(str) {
-    var h = 0; str = str || "";
-    for (var i = 0; i < str.length; i++) { h = (h * 31 + str.charCodeAt(i)) >>> 0; }
-    return h;
-  }
-  // Choose an astronaut for this player from the right tier, skipping any they've
-  // already had (until the whole roster is used). Seeded by name so identical
-  // scores still diverge across teammates. record=true persists the pick.
-  // Returns the astronaut object { text, link }.
-  function chooseVerdict(ratio, record) {
-    var pool = pickTier(ratio).picks;
-    if (!state.verdictsUsed) state.verdictsUsed = [];
-    var used = state.verdictsUsed;
-    var avail = pool.filter(function (p) { return used.indexOf(p.text) === -1; });
-    if (!avail.length) avail = pool.slice(); // whole tier seen → allow reuse
-    var pick = avail[nameHash(profile) % avail.length];
-    if (record) used.push(pick.text);
-    return pick;
-  }
-
   function showResults(r) {
     lastResults = r;
     $("results-emoji").innerHTML = r.replay ? "📖" : (r.perfect ? "🎯" : "🎉");
@@ -920,23 +851,7 @@
       badgeBox.appendChild(el("div", "step-label", "New badge" + (r.newBadges.length > 1 ? "s" : "") + " unlocked!"));
       r.newBadges.forEach(function (b) { badgeBox.appendChild(el("span", "results-badge", b.emoji + " " + b.name)); });
     }
-    // "If your quiz performance was a famous astronaut..." verdict.
-    // Use the astronaut chosen at completion (stable on replay); fall back for legacy days.
     var d = CURRICULUM[session.day - 1];
-    var accuracy = computeAccuracy(r.quiz, d.quiz.length);
-    var verdict;
-    if (!r.replay && r.verdict) verdict = r.verdict;
-    else {
-      var rec0 = state.days[d.day];
-      verdict = (rec0 && rec0.verdict) ? rec0.verdict : chooseVerdict(accuracy, false);
-    }
-    var learnLink = verdict.link
-      ? "<a class=\"sv-link\" href=\"" + verdict.link + "\" target=\"_blank\" rel=\"noopener noreferrer\">Learn about this astronaut →</a>"
-      : "";
-    $("results-singer").innerHTML = "<span class=\"sv-label\">If your quiz was a famous astronaut…</span>" +
-      "<span class=\"sv-text\">" + verdict.text + "</span>" + learnLink +
-      "<button id=\"singer-copy\" class=\"btn btn-ghost small sv-copy\">Copy my astronaut</button>";
-    $("singer-copy").onclick = function () { copyToClipboard(verdict.text, $("singer-copy"), "Copy my astronaut"); };
 
     // Project-complete celebration — shown only when you finish the last day of a
     // project block for real (not on replay).
