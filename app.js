@@ -54,9 +54,9 @@
   // still runs if that block is missing. Each project covers a contiguous block of
   // days; the final day of a block is its celebration.
   var PROJECTS = window.PROJECTS || [
-    { id: 1, emoji: "📘", title: "Learn something new", tagline: "Have Claude build you a personal learning kit.", start: 1,  end: 6  },
-    { id: 2, emoji: "🛠️", title: "Build a work helper", tagline: "Create a small tool, connected to your real apps and data, that takes a repetitive task off your plate.", start: 7,  end: 12 },
-    { id: 3, emoji: "🚀", title: "Automate & ship it",  tagline: "Plan it, automate it end to end, put it in git, and hand it to your team.", start: 13, end: 18 }
+    { id: 1, emoji: "📘", title: "Week 1 Sprint", tagline: "Have Claude build you a personal learning kit.", start: 1,  end: 6  },
+    { id: 2, emoji: "🛠️", title: "Week 2 Sprint", tagline: "Create a small tool, connected to your real apps and data, that takes a repetitive task off your plate.", start: 7,  end: 12 },
+    { id: 3, emoji: "🚀", title: "Week 3 Sprint",  tagline: "Plan it, automate it end to end, put it in git, and hand it to your team.", start: 13, end: 18 }
   ];
   // The project a given day belongs to, plus where the day sits within it.
   function projectForDay(n) {
@@ -537,7 +537,7 @@
       var card = el("div", "project-card " + status);
       card.appendChild(el("div", "pc-emoji", icon(projectIcon(p.id))));
       var body = el("div", "pc-body");
-      var title = el("div", "pc-title"); title.textContent = "Project " + p.id + ": " + p.title;
+      var title = el("div", "pc-title"); title.textContent = p.title;
       body.appendChild(title);
       var tag = el("div", "pc-tag"); tag.textContent = p.tagline;
       body.appendChild(tag);
@@ -737,7 +737,7 @@
         var em = el("span", "pb-emoji", icon(projectIcon(p.id)));
         var txt = el("span", "pb-text");
         var strong = document.createElement("b");
-        strong.textContent = "Project " + p.id + ": " + p.title;
+        strong.textContent = p.title;
         txt.appendChild(strong);
         txt.appendChild(document.createTextNode(" · " + phase + " · day " + pf.index + " of " + pf.of));
         banner.appendChild(em);
@@ -889,15 +889,15 @@
         var p = pf.project;
         proj.innerHTML = "";
         proj.appendChild(el("div", "rp-emoji", icon("award")));
-        var h = el("div", "rp-title"); h.textContent = "Project " + p.id + " complete: " + p.title;
+        var h = el("div", "rp-title"); h.textContent = p.title + " complete";
         proj.appendChild(h);
         var sub = el("div", "rp-sub"); sub.textContent = p.tagline;
         proj.appendChild(sub);
         var nextP = PROJECTS[p.id]; // ids are 1-based, so index p.id is the next project
         var teaser = el("div", "rp-next");
         teaser.textContent = nextP
-          ? "Up next: Project " + nextP.id + " (" + nextP.title + ")"
-          : "All three projects shipped. You're a Claude Code black belt.";
+          ? "Up next: " + nextP.title
+          : "All three sprints shipped. You're a Claude Code black belt.";
         proj.appendChild(teaser);
         proj.classList.remove("hidden");
       } else {

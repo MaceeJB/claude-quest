@@ -33,7 +33,7 @@ window.CURRICULUM = [
       { text: "Open the Claude Code desktop app, go to the <b>Code</b> tab, and click <b>Select folder</b> to open a project. (Terminal users: run <code>claude</code> instead.)", link: DOC + "quickstart" },
       { text: "Send your first plain-English request, e.g. 'what files are in this folder and what are they?', and watch Claude read your project before doing anything.", link: DOC + "quickstart" },
       { text: "Try a hands-off one-off: in the desktop app just type 'summarize the files in this folder'. (Terminal: <code>claude -p \"summarize the files in this folder\"</code> runs it and exits.)", link: DOC + "headless" },
-      { text: "<b>Project 1 kickoff, Learn something new:</b> pick a subject you're curious about (a hobby, a tool, a topic at work). Make an empty folder and open it in Claude Code (desktop: <b>Select folder</b>; terminal: run <code>claude</code> inside it), and <b>you choose what to build</b> over the next 5 days: a <b>study guide</b>, a set of <b>flashcards</b>, a <b>self-quiz</b>, a <b>glossary</b>, or a <b>learning roadmap</b>. To start, ask Claude to scaffold a <code>learning-plan.md</code> that breaks your subject into about 5 subtopics.", link: DOC + "quickstart", capstone: true }
+      { text: "<b>Week 1 Sprint kickoff, Learn something new:</b> pick a subject you're curious about (a hobby, a tool, a topic at work). Make an empty folder and open it in Claude Code (desktop: <b>Select folder</b>; terminal: run <code>claude</code> inside it), and <b>you choose what to build</b> over the next 5 days: a <b>study guide</b>, a set of <b>flashcards</b>, a <b>self-quiz</b>, a <b>glossary</b>, or a <b>learning roadmap</b>. To start, ask Claude to scaffold a <code>learning-plan.md</code> that breaks your subject into about 5 subtopics.", link: DOC + "quickstart", capstone: true }
     ]
   },
   {
@@ -57,7 +57,7 @@ window.CURRICULUM = [
       { text: "Give Claude a small multi-step task and watch it gather → act → verify.", link: DOC + "common-workflows" },
       { text: "While it's working, click the <b>stop button</b> (or press <code>Esc</code> in the terminal) to interrupt, then type a redirection and continue.", link: DOC + "interactive-mode" },
       { text: "Run <code>/rewind</code> (terminal: <code>Esc Esc</code>) to open the rewind menu and look at your checkpoints.", link: DOC + "interactive-mode" },
-      { text: "<b>Project 1, Day 2:</b> describe the first piece of your learning kit in plain English (e.g. 'write a one-page overview of my subject plus a glossary of key terms') and watch the gather → act → verify loop build it end-to-end.", link: DOC + "common-workflows", capstone: true }
+      { text: "<b>Week 1 Sprint, Day 2:</b> describe the first piece of your learning kit in plain English (e.g. 'write a one-page overview of my subject plus a glossary of key terms') and watch the gather → act → verify loop build it end-to-end.", link: DOC + "common-workflows", capstone: true }
     ]
   },
   {
@@ -82,7 +82,7 @@ window.CURRICULUM = [
       { text: "Switch modes with the <b>mode selector</b> (desktop) or <code>Shift+Tab</code> (terminal) and watch the mode indicator change.", link: DOC + "permission-modes" },
       { text: "Ask Claude to make a small edit, approve it, then run <code>/rewind</code> (terminal: <code>Esc Esc</code>) to undo it.", link: DOC + "interactive-mode" },
       { text: "Run <code>/permissions</code> and add an allow rule for a command you trust (e.g. your test command).", link: DOC + "permissions" },
-      { text: "<b>Project 1, Day 3:</b> have Claude expand your hardest subtopic into a deeper explainer, review the diff before approving, then add an allow-rule for a command you'll reuse.", link: DOC + "permissions", capstone: true }
+      { text: "<b>Week 1 Sprint, Day 3:</b> have Claude expand your hardest subtopic into a deeper explainer, review the diff before approving, then add an allow-rule for a command you'll reuse.", link: DOC + "permissions", capstone: true }
     ]
   },
   {
@@ -106,7 +106,7 @@ window.CURRICULUM = [
       { text: "Type <code>/</code> and skim the full command list; open <code>/help</code>.", link: DOC + "slash-commands" },
       { text: "Run <code>/clear</code> between two unrelated tasks and notice the fresh context.", link: DOC + "slash-commands" },
       { text: "Try <code>/model</code> to see which models you can switch to.", link: DOC + "slash-commands" },
-      { text: "<b>Project 1, Day 4:</b> turn your notes into <b>flashcards</b> or a <b>10-question self-quiz</b>, running <code>/clear</code> between subtopics so each one starts from clean context.", link: DOC + "slash-commands", capstone: true }
+      { text: "<b>Week 1 Sprint, Day 4:</b> turn your notes into <b>flashcards</b> or a <b>10-question self-quiz</b>, running <code>/clear</code> between subtopics so each one starts from clean context.", link: DOC + "slash-commands", capstone: true }
     ]
   },
   {
@@ -130,7 +130,7 @@ window.CURRICULUM = [
       { text: "Run <code>/context</code> and see what's taking up space in your window.", link: DOC + "slash-commands" },
       { text: "Name your current session with <code>/rename</code>.", link: DOC + "slash-commands" },
       { text: "Set a <code>/goal</code> like 'all tests pass' on a small task and watch Claude re-check it.", link: DOC + "goal" },
-      { text: "<b>Project 1, Day 5:</b> set a <code>/goal</code> for your learning kit (e.g. 'covers all 5 subtopics, fits on one page, and has a 10-question quiz') and let Claude iterate until it's met.", link: DOC + "goal", capstone: true }
+      { text: "<b>Week 1 Sprint, Day 5:</b> set a <code>/goal</code> for your learning kit (e.g. 'covers all 5 subtopics, fits on one page, and has a 10-question quiz') and let Claude iterate until it's met.", link: DOC + "goal", capstone: true }
     ]
   },
   {
@@ -155,7 +155,7 @@ window.CURRICULUM = [
       { text: "Create or open a project <code>CLAUDE.md</code> and add one build command and one coding standard.", link: DOC + "memory" },
       { text: "Add an <code>@import</code> line pulling in another notes file.", link: DOC + "memory" },
       { text: "Start a fresh session and confirm Claude already knows your build command.", link: DOC + "memory" },
-      { text: "<b>Project 1 finale:</b> write a <code>CLAUDE.md</code> for your learning kit, its structure and how you like to study, then start a fresh session and confirm Claude already knows them. Your first project is complete!", link: DOC + "memory", capstone: true }
+      { text: "<b>Week 1 Sprint finale:</b> write a <code>CLAUDE.md</code> for your learning kit, its structure and how you like to study, then start a fresh session and confirm Claude already knows them. Your first sprint is complete!", link: DOC + "memory", capstone: true }
     ]
   },
   {
@@ -178,7 +178,7 @@ window.CURRICULUM = [
       { text: "Run <code>/memory</code> and look at what Claude has saved (or the empty folder if new).", link: DOC + "memory" },
       { text: "Tell Claude a project fact worth remembering and confirm it offers to save it.", link: DOC + "memory" },
       { text: "Open <code>MEMORY.md</code> and read how Claude structures its index vs. topic files.", link: DOC + "memory" },
-      { text: "<b>Project 2 kickoff, Build a work helper:</b> start a new folder for a small tool that takes a repetitive task off your plate (a weekly-report generator, a CSV cleaner, a meeting-prep brief…). Build its first feature, then run <code>/memory</code> and see what Claude chose to remember about it.", link: DOC + "memory", capstone: true }
+      { text: "<b>Week 2 Sprint kickoff, Build a work helper:</b> start a new folder for a small tool that takes a repetitive task off your plate (a weekly-report generator, a CSV cleaner, a meeting-prep brief…). Build its first feature, then run <code>/memory</code> and see what Claude chose to remember about it.", link: DOC + "memory", capstone: true }
     ]
   },
   {
@@ -202,7 +202,7 @@ window.CURRICULUM = [
       { text: "Type <code>/</code> and look for skills already available in your setup.", link: DOC + "skills" },
       { text: "Create a tiny skill at <code>.claude/skills/hello/SKILL.md</code> with a name and description.", link: DOC + "skills" },
       { text: "Invoke it with <code>/hello</code> and confirm Claude follows it.", link: DOC + "skills" },
-      { text: "<b>Project 2, Day 2:</b> turn your helper's core repetitive step into a skill, then invoke it on real work.", link: DOC + "skills", capstone: true }
+      { text: "<b>Week 2 Sprint, Day 2:</b> turn your helper's core repetitive step into a skill, then invoke it on real work.", link: DOC + "skills", capstone: true }
     ]
   },
   {
@@ -225,7 +225,7 @@ window.CURRICULUM = [
       { text: "Ask Claude to use the Explore subagent to map an unfamiliar folder of files.", link: DOC + "sub-agents" },
       { text: "Notice how the subagent's searching doesn't flood your main conversation.", link: DOC + "sub-agents" },
       { text: "Sketch a custom read-only subagent file in <code>.claude/agents/</code> with a restricted <code>tools</code> list.", link: DOC + "sub-agents" },
-      { text: "<b>Project 2, Day 3:</b> ask a subagent to explore your growing helper and summarize how its parts fit together.", link: DOC + "sub-agents", capstone: true }
+      { text: "<b>Week 2 Sprint, Day 3:</b> ask a subagent to explore your growing helper and summarize how its parts fit together.", link: DOC + "sub-agents", capstone: true }
     ]
   },
   {
@@ -249,7 +249,7 @@ window.CURRICULUM = [
       { text: "Reference a real PDF or document with <code>@path/to/file</code> and ask Claude to summarize it.", link: DOC + "common-workflows" },
       { text: "Export a messy spreadsheet to CSV and ask Claude to clean it (standardize dates, drop blanks).", link: DOC + "common-workflows" },
       { text: "Ask Claude to find every file in a folder that mentions a specific topic.", link: DOC + "common-workflows" },
-      { text: "<b>Project 2, Day 4:</b> point your helper at a real document, PDF, or spreadsheet, clean it or extract its key figures, and give Claude a checkable rule (e.g. 'every row has a valid date') so the result is verifiable.", link: DOC + "common-workflows", capstone: true }
+      { text: "<b>Week 2 Sprint, Day 4:</b> point your helper at a real document, PDF, or spreadsheet, clean it or extract its key figures, and give Claude a checkable rule (e.g. 'every row has a valid date') so the result is verifiable.", link: DOC + "common-workflows", capstone: true }
     ]
   },
   {
@@ -273,7 +273,7 @@ window.CURRICULUM = [
       { text: "Run <code>/mcp</code> (or open <b>connector settings</b> in the desktop app) to see which apps are already connected for you.", link: DOC + "mcp" },
       { text: "Read about one connector you'd actually use day-to-day (e.g. Google Drive, Notion, or Slack).", link: DOC + "mcp" },
       { text: "If you have one connected, ask Claude to do a real task with it (e.g. 'summarize the latest doc in this folder').", link: DOC + "mcp" },
-      { text: "<b>Project 2, Day 5:</b> connect one everyday app to Claude (or ask IT which is available) so your helper can pull real data in or post a result out, then have Claude do one real task through the connection.", link: DOC + "mcp", capstone: true }
+      { text: "<b>Week 2 Sprint, Day 5:</b> connect one everyday app to Claude (or ask IT which is available) so your helper can pull real data in or post a result out, then have Claude do one real task through the connection.", link: DOC + "mcp", capstone: true }
     ]
   },
   {
@@ -297,7 +297,7 @@ window.CURRICULUM = [
       { text: "Drag a file straight into the chat (desktop) and ask Claude about it. Or in the terminal, practice <code>Tab</code> completion on a slash command.", link: DOC + "interactive-mode" },
       { text: "Open the <b>diff viewer</b> on a change before approving it (desktop), or press <code>↑</code> to recall a previous prompt (terminal).", link: DOC + "interactive-mode" },
       { text: "Try running two things at once: start a second session in the sidebar (desktop) while the first works. (Terminal power users: explore <code>~/.claude/keybindings.json</code>.)", link: DOC + "keybindings" },
-      { text: "<b>Project 2 finale:</b> add your helper's finishing touches fast, moving with the desktop workspace (drag-drop files, the diff viewer to approve changes, the mode selector), then run it end to end on real work. Your helper is done.", link: DOC + "interactive-mode", capstone: true }
+      { text: "<b>Week 2 Sprint finale:</b> add your helper's finishing touches fast, moving with the desktop workspace (drag-drop files, the diff viewer to approve changes, the mode selector), then run it end to end on real work. Your helper is done.", link: DOC + "interactive-mode", capstone: true }
     ]
   },
   {
@@ -320,7 +320,7 @@ window.CURRICULUM = [
       { text: "Enter plan mode (the mode selector, or <code>Shift+Tab</code> in the terminal) and try to make Claude edit. Watch it stay read-only.", link: DOC + "permission-modes" },
       { text: "Add two allow rules with <code>/permissions</code> for commands you trust.", link: DOC + "permissions" },
       { text: "Switch to auto-accept edits for a small safe task and feel the difference.", link: DOC + "permission-modes" },
-      { text: "<b>Project 3 kickoff, Automate &amp; ship it:</b> pick a routine you want to automate end to end. Explore it in plan mode first (no edits), then switch to auto-accept edits to implement a small, safe first change.", link: DOC + "permission-modes", capstone: true }
+      { text: "<b>Week 3 Sprint kickoff, Automate &amp; ship it:</b> pick a routine you want to automate end to end. Explore it in plan mode first (no edits), then switch to auto-accept edits to implement a small, safe first change.", link: DOC + "permission-modes", capstone: true }
     ]
   },
   {
@@ -344,7 +344,7 @@ window.CURRICULUM = [
       { text: "Rewrite a vague request you'd normally type into a specific one with a file reference and a 'done' condition.", link: DOC + "best-practices" },
       { text: "Give Claude an explicit checkable rule to satisfy (e.g. 'every row has a valid date') and have it verify against it.", link: DOC + "best-practices" },
       { text: "Use <code>@file</code> to point Claude at a specific document or spreadsheet before asking a question.", link: DOC + "common-workflows" },
-      { text: "<b>Project 3, Day 2:</b> write one tightly-scoped prompt for your automation's next step (what's needed, which file, and a 'done' rule), and let Claude satisfy it.", link: DOC + "best-practices", capstone: true }
+      { text: "<b>Week 3 Sprint, Day 2:</b> write one tightly-scoped prompt for your automation's next step (what's needed, which file, and a 'done' rule), and let Claude satisfy it.", link: DOC + "best-practices", capstone: true }
     ]
   },
   {
@@ -368,7 +368,7 @@ window.CURRICULUM = [
       { text: "Run <code>/context</code> mid-session and identify the biggest consumers.", link: DOC + "slash-commands" },
       { text: "Try <code>/compact focus on …</code> with a focus relevant to your task.", link: DOC + "slash-commands" },
       { text: "Practice <code>/clear</code> when switching to an unrelated task and feel the speed-up.", link: DOC + "slash-commands" },
-      { text: "<b>Project 3, Day 3:</b> during a long building session, run <code>/context</code>, then <code>/compact focus on …</code> to keep Claude sharp and finish the next piece without starting over.", link: DOC + "slash-commands", capstone: true }
+      { text: "<b>Week 3 Sprint, Day 3:</b> during a long building session, run <code>/context</code>, then <code>/compact focus on …</code> to keep Claude sharp and finish the next piece without starting over.", link: DOC + "slash-commands", capstone: true }
     ]
   },
   {
@@ -392,7 +392,7 @@ window.CURRICULUM = [
       { text: "Add one team convention to your project <code>CLAUDE.md</code> and commit it.", link: DOC + "memory" },
       { text: "Run <code>/code-review</code> on your recent changes in a fresh session.", link: DOC + "slash-commands" },
       { text: "Use <code>/rename</code> to give your session a descriptive, handoff-friendly name.", link: DOC + "slash-commands" },
-      { text: "<b>Project 3, Day 4:</b> get your automation ready to share, commit your <code>CLAUDE.md</code> and config to git, then run <code>/code-review</code> on your latest changes in a fresh session.", link: DOC + "best-practices", capstone: true }
+      { text: "<b>Week 3 Sprint, Day 4:</b> get your automation ready to share, commit your <code>CLAUDE.md</code> and config to git, then run <code>/code-review</code> on your latest changes in a fresh session.", link: DOC + "best-practices", capstone: true }
     ]
   },
   {
@@ -415,7 +415,7 @@ window.CURRICULUM = [
       { text: "Enter plan mode and have Claude produce a plan for a small multi-step change.", link: DOC + "permission-modes" },
       { text: "Review the plan and tweak anything you'd do differently (in the terminal, <code>Ctrl+G</code> opens it in your editor).", link: DOC + "interactive-mode" },
       { text: "Exit plan mode, let Claude implement, and confirm it verifies with tests or a build.", link: DOC + "common-workflows" },
-      { text: "<b>Project 3, Day 5:</b> pick a finishing feature that touches several files, have Claude plan it in plan mode, tweak the plan, then implement and verify.", link: DOC + "common-workflows", capstone: true }
+      { text: "<b>Week 3 Sprint, Day 5:</b> pick a finishing feature that touches several files, have Claude plan it in plan mode, tweak the plan, then implement and verify.", link: DOC + "common-workflows", capstone: true }
     ]
   },
   {
@@ -439,7 +439,7 @@ window.CURRICULUM = [
       { text: "Set up a hands-off task: a desktop <b>Routine</b> via <code>/schedule</code>, or a terminal <code>claude -p \"…\"</code> that finishes without a session.", link: DOC + "headless" },
       { text: "(Terminal/CLI) Add <code>--output-format json</code> to a <code>claude -p</code> run and inspect the structured result.", link: DOC + "cli-reference" },
       { text: "Reflect: you've finished all 18 days. Pick one feature to make part of your daily workflow.", link: DOC + "best-practices" },
-      { text: "<b>Project 3 finale:</b> automate one real task, a desktop <b>Routine</b> (<code>/schedule</code>) or a terminal <code>claude -p \"…\"</code> (e.g. generate a summary or run a routine check), then choose the Claude Code habit you'll keep using. All three projects shipped. Congratulations!", link: DOC + "headless", capstone: true }
+      { text: "<b>Week 3 Sprint finale:</b> automate one real task, a desktop <b>Routine</b> (<code>/schedule</code>) or a terminal <code>claude -p \"…\"</code> (e.g. generate a summary or run a routine check), then choose the Claude Code habit you'll keep using. All three sprints shipped. Congratulations!", link: DOC + "headless", capstone: true }
     ]
   },
   {
@@ -473,9 +473,9 @@ window.CURRICULUM = [
  * Edit these freely. Change the themes, taglines, or block lengths (just keep the
  * start/end day numbers contiguous and within 1..18). */
 window.PROJECTS = [
-  { id: 1, emoji: "📘", title: "Learn something new", tagline: "Pick a subject you're curious about and have Claude build you a personal learning kit.", start: 1,  end: 6  },
-  { id: 2, emoji: "🛠️", title: "Build a work helper", tagline: "Create a small tool, connected to your real apps and data, that takes a repetitive task off your plate.", start: 7,  end: 12 },
-  { id: 3, emoji: "🚀", title: "Automate & ship it", tagline: "Plan it, automate it end to end, put it in git, and hand it to your team.", start: 13, end: 18 }
+  { id: 1, emoji: "📘", title: "Week 1 Sprint", tagline: "Pick a subject you're curious about and have Claude build you a personal learning kit.", start: 1,  end: 6  },
+  { id: 2, emoji: "🛠️", title: "Week 2 Sprint", tagline: "Create a small tool, connected to your real apps and data, that takes a repetitive task off your plate.", start: 7,  end: 12 },
+  { id: 3, emoji: "🚀", title: "Week 3 Sprint", tagline: "Plan it, automate it end to end, put it in git, and hand it to your team.", start: 13, end: 18 }
 ];
 
 /* "Go deeper" flashcards. Shown AFTER a day is completed, as an optional,
