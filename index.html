@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Claude Quest</title>
-  <link rel="stylesheet" href="styles.css?v=20260603d" />
+  <link rel="stylesheet" href="styles.css?v=20260603e" />
 </head>
 <body>
   <div id="app">
@@ -37,6 +37,7 @@
         <span class="logo small">Claude Quest</span>
         <div class="topbar-right">
           <span id="home-player" class="player-chip"></span>
+          <button id="share-progress" class="btn btn-ghost small" title="Copy a friendly status to paste in your team chat.">&#128226; Share</button>
           <button id="preview-toggle" class="btn btn-ghost small" title="Unlock every day for content review — no points or streak changes.">Preview all days</button>
           <button id="switch-profile" class="btn btn-ghost small">Switch player</button>
           <button id="sign-out" class="btn btn-ghost small hidden">Sign out</button>
@@ -63,6 +64,8 @@
           <div class="stat-label">Days complete</div>
         </div>
       </div>
+
+      <div id="team-progress" class="team-progress hidden"></div>
 
       <div id="today-cta" class="card cta"></div>
 
@@ -164,6 +167,7 @@
         <a class="headline-bubble" href="https://pod.link/1680633614" target="_blank" rel="noopener noreferrer">
           <span class="headline-text">&#128240; Listen to Today's AI Daily Brief &rarr;</span>
         </a>
+        <button id="results-share" class="btn btn-ghost">&#128226; Share my progress</button>
         <button id="results-home" class="btn btn-primary">Back to home</button>
         <p class="suggest-line">
           <a id="results-suggest" class="suggest-link" target="_blank" rel="noopener noreferrer">&#128161; Suggest an improvement for this day &rarr;</a>
@@ -177,6 +181,6 @@
        returning players never get a stale cached copy from GitHub Pages. -->
   <script src="curriculum.js?v=20260603d"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=20260603d"></script>
+  <script src="app.js?v=20260603e"></script>
 </body>
 </html>

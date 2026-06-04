@@ -110,6 +110,56 @@ If you ever need to move this to a new Supabase project (new owner, new org, etc
 > sometimes land in spam. That's fine for a team signing in over a few days; if a whole team signs
 > up within the same few minutes, tell them to check their junk folder if the link is slow.
 
+## Team engagement features
+
+Two lightweight, **non-competitive** features encourage the team without a leaderboard:
+
+- **Share my progress** — a "📣 Share" button (home top bar) and a "📣 Share my progress" button
+  (results screen) copy a friendly, ready-made status to paste into Slack/Teams, e.g.
+  *"🚀 Just finished Day 7 (Auto Memory) of Claude Quest — on a 5-day streak 🔥 (7/19 days done).
+  My AI floor is rising. Play along: …"*. It's opt-in, names no one but the sharer, and needs **no
+  backend** — it works the moment you deploy.
+- **Team progress bar** — a cooperative "🤝 Team progress" panel on the home screen showing the
+  whole team's **combined** lessons completed and how many teammates played today. No ranking, no
+  individual call-outs — just shared momentum. This one reads aggregate stats from Supabase, so it
+  needs the one-time setup below. **Until you run that SQL, the panel simply stays hidden** (the app
+  degrades gracefully), so the Share button works regardless.
+
+### Enabling the team progress bar (one-time Supabase setup)
+
+Only **signed-in (synced)** teammates count toward the totals — local-only players aren't stored in
+the cloud, so encourage the team to sign in with their email (the magic-link flow above).
+
+In the Supabase **SQL Editor**, run this once. It creates a function that returns **only aggregates**
+(counts and a sum — never names or individual rows), so it's safe to expose to the app's public key:
+
+```sql
+create or replace function public.team_stats(p_today text)
+returns json
+language sql
+security definer
+set search_path = public
+as $$
+  select json_build_object(
+    'players',      count(*),
+    'lessons',      coalesce(sum(done.cnt), 0),
+    'played_today', coalesce(sum(case when data->>'lastCompletedDate' = p_today then 1 else 0 end), 0)
+  )
+  from public.progress p
+  left join lateral (
+    select count(*) as cnt
+    from jsonb_each(coalesce(p.data->'days', '{}'::jsonb)) e
+    where (e.value->>'completed') = 'true'
+  ) done on true;
+$$;
+
+grant execute on function public.team_stats(text) to anon, authenticated;
+```
+
+The app calls this with `sb.rpc("team_stats", { p_today: <today> })` in `renderTeamProgress()`
+(`app.js`). The progress bar's denominator is `players × 19` (each teammate can finish 19 days). To
+turn the panel off again, just `drop function public.team_stats(text);` — the app will hide it.
+
 ## Files
 
 | File | Purpose |

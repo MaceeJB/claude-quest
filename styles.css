@@ -276,6 +276,15 @@ code { background: #0c0e16; border: 1px solid var(--border); border-radius: 5px;
 .dd-summary { font-size: 1.1rem; line-height: 1.5; padding: 22px 12px; text-align: center; }
 #dd-action { margin-top: 16px; }
 
+/* ---- Cooperative team progress (no ranking) ---- */
+.team-progress { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
+.team-head { font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+.team-bar { height: 12px; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.team-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-hi)); border-radius: 999px; transition: width .5s ease; }
+.team-line { margin-top: 8px; color: var(--text); font-size: .95rem; }
+.team-line.muted { color: var(--muted); margin-top: 4px; }
+#results-share { display: block; margin: 0 auto 10px; }
+
 /* ---- "If your quiz was an '80s singer…" verdict ---- */
 .singer-verdict { margin: 12px auto 4px; max-width: 420px; padding: 12px 16px; border-radius: 14px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 16%, var(--bg-elev-2)), var(--bg-elev-2));

@@ -410,6 +410,50 @@
     renderProjects();
     renderGrid();
     renderBadges();
+    renderTeamProgress();
+  }
+
+  // ---- Sharing & team engagement ----
+  // Build a friendly, paste-into-chat status from the player's own progress.
+  function buildShareText(opts) {
+    var url = REDIRECT_URL;
+    var done = completedCount(state);
+    var streak = state.currentStreak;
+    var head = (opts && opts.day)
+      ? "🚀 Just finished Day " + opts.day + (opts.dayTitle ? " (" + opts.dayTitle + ")" : "") + " of Claude Quest"
+      : "🚀 Leveling up with Claude Quest";
+    var streakBit = streak > 1 ? " — on a " + streak + "-day streak 🔥" : "";
+    var progressBit = " (" + done + "/" + TOTAL_DAYS + " days done)";
+    return head + streakBit + progressBit + ". My AI floor is rising. Play along: " + url;
+  }
+
+  // Cooperative team progress — no ranking, just shared momentum. Reads
+  // aggregate-only stats from a Supabase function (team_stats); silently hidden
+  // if cloud sync isn't available or the function hasn't been set up yet. Only
+  // signed-in (synced) teammates contribute to the totals.
+  function renderTeamProgress() {
+    var box = $("team-progress");
+    if (!box) return;
+    if (!sb) { box.classList.add("hidden"); return; }
+    sb.rpc("team_stats", { p_today: today() }).then(function (res) {
+      if (!res || res.error || !res.data) { box.classList.add("hidden"); return; }
+      var d = res.data;
+      var players = d.players || 0;
+      if (players < 1) { box.classList.add("hidden"); return; }
+      var lessons = d.lessons || 0;
+      var playedToday = d.played_today || 0;
+      var max = players * TOTAL_DAYS;
+      var pct = max > 0 ? Math.min(100, Math.round(lessons / max * 100)) : 0;
+      box.innerHTML = "";
+      box.appendChild(el("div", "team-head", "🤝 Team progress"));
+      var track = el("div", "team-bar");
+      var fill = el("div", "team-bar-fill"); fill.style.width = pct + "%";
+      track.appendChild(fill);
+      box.appendChild(track);
+      box.appendChild(el("div", "team-line", "<b>" + lessons + "</b> of " + max + " lessons completed together"));
+      box.appendChild(el("div", "team-line muted", "👋 " + playedToday + " of " + players + " teammate" + (players === 1 ? "" : "s") + " played today"));
+      box.classList.remove("hidden");
+    }, function () { box.classList.add("hidden"); });
   }
 
   // Live countdown to the in-person event. Hidden once the event has clearly passed.
@@ -950,6 +994,7 @@
       }
     }
 
+    $("results-share").onclick = function () { copyToClipboard(buildShareText({ day: d.day, dayTitle: d.title }), this, "📣 Share my progress"); };
     $("results-home").onclick = function () { renderHome(); show("screen-home"); };
     show("screen-results");
   }
@@ -1029,6 +1074,9 @@
     $("preview-toggle").onclick = function () {
       previewMode = !previewMode;
       if (state) renderHome();
+    };
+    $("share-progress").onclick = function () {
+      if (state) copyToClipboard(buildShareText(null), this, "📣 Share");
     };
     $("sign-out").onclick = signOut;
     show("screen-profile");
