@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Claude Quest</title>
-  <link rel="stylesheet" href="styles.css?v=20260603b" />
+  <link rel="stylesheet" href="styles.css?v=20260603c" />
 </head>
 <body>
   <div id="app">
@@ -80,6 +80,20 @@
       </footer>
     </section>
 
+    <!-- ===== Go deeper (optional flashcards, after a day is completed) ===== -->
+    <section id="screen-deepdive" class="screen hidden">
+      <header class="topbar">
+        <button class="btn btn-ghost small back-results">&larr; Back</button>
+        <span id="dd-daytag" class="player-chip"></span>
+      </header>
+      <div class="card">
+        <div class="step-label">&#128302; Go deeper &middot; optional</div>
+        <div id="dd-counter" class="muted small"></div>
+        <div id="dd-body"></div>
+        <button id="dd-action" class="btn btn-primary"></button>
+      </div>
+    </section>
+
     <!-- ===== Lesson ===== -->
     <section id="screen-lesson" class="screen hidden">
       <header class="topbar">
@@ -136,6 +150,7 @@
         <div id="results-project" class="project-celebrate hidden"></div>
         <div id="results-breakdown" class="breakdown"></div>
         <div id="results-badges" class="results-badges"></div>
+        <div id="results-deepdive" class="results-deepdive"></div>
         <div id="results-tip" class="tip-bubble">
           <span class="tip-head">
             <span class="tip-label">&#10024; Try this in Claude today</span>
@@ -157,8 +172,8 @@
 
   <!-- Bump the ?v= token whenever curriculum.js / app.js / styles.css change so
        returning players never get a stale cached copy from GitHub Pages. -->
-  <script src="curriculum.js?v=20260603b"></script>
+  <script src="curriculum.js?v=20260603c"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=20260603b"></script>
+  <script src="app.js?v=20260603c"></script>
 </body>
 </html>

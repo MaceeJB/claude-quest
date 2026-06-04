@@ -476,3 +476,89 @@ window.PROJECTS = [
   { id: 2, emoji: "🛠️", title: "Build a work helper", tagline: "Create a small tool — connected to your real apps and data — that takes a repetitive task off your plate.", start: 7,  end: 12 },
   { id: 3, emoji: "🚀", title: "Automate & ship it", tagline: "Plan it, automate it end to end, put it in git, and hand it to your team.", start: 13, end: 18 }
 ];
+
+/* "Go deeper" flashcards — shown AFTER a day is completed, as an optional,
+ * interactive reveal-style round (think recall practice, not the step-1 cards).
+ * Finishing a day's round awards a small one-time bonus (POINTS_DEEPDIVE in app.js)
+ * and counts toward the "Curious Mind" badge. Keyed by day number; a day with no
+ * entry simply won't show the Go-deeper option. Each card: { q, a } where q is a
+ * prompt the teammate thinks about, then clicks to reveal the deeper answer (a).
+ * `a` may contain simple HTML (e.g. <code>, <b>, <i>). */
+window.DEEP_DIVE = {
+  1: [
+    { q: "You set up the desktop app on one computer and the terminal on another. Does your work move between them automatically?", a: "Your <b>sign-in</b> follows your account, but <b>sessions don't sync</b> between the desktop app and the terminal — they're independent. Pick one main workspace per project; the files on disk are the shared source of truth." },
+    { q: "Why does Claude load your CLAUDE.md and auto-memory before you've typed anything?", a: "So it starts with your project's context — conventions, how to run things, past gotchas — instead of a blank slate. It's the difference between briefing a brand-new contractor and one who already knows the project." }
+  ],
+  2: [
+    { q: "You hit the stop button mid-task, give a correction, and Claude carries on. Why didn't you lose your place?", a: "The loop is <b>conversational</b> — stopping cancels the current <i>action</i>, not the conversation. Everything you've built up (files read, decisions made) stays, so your correction just steers the next step." },
+    { q: "How is the 'verify' phase different from just trusting the output?", a: "In verify, Claude re-reads the file, runs the check, or compares against your criteria — and loops back if it's wrong. Giving it a way to check ('every row has a date') turns 'looks done' into 'provably done.'" }
+  ],
+  3: [
+    { q: "When would you allowlist one command versus switching to auto-accept edits mode?", a: "<b>Allowlist</b> a single trusted command (like your test script) when you want everything else to still prompt. <b>Auto-accept edits</b> loosens approvals broadly for a flurry of routine edits. Allowlist = surgical; auto-accept = a mode for a work session." },
+    { q: "Why is a 'deny' rule safer than simply not using a tool?", a: "A <b>deny</b> rule removes the tool from Claude's reach entirely and always wins over allow/ask — so even a confused model can't call it. Not configuring a tool isn't the same as actively blocking it." }
+  ],
+  4: [
+    { q: "You've been on one task an hour, then start something unrelated but skip /clear. What's the risk?", a: "Leftover context from the old task can bleed into the new one — wrong assumptions, slower replies. <code>/clear</code> wipes the working context so the new task starts clean and fast." },
+    { q: "What's the difference between /clear and /resume?", a: "<code>/clear</code> throws away the current context to start fresh <i>now</i>; <code>/resume</code> reopens a <i>previous</i> session with its history intact. Opposite directions — one forgets, one remembers." }
+  ],
+  5: [
+    { q: "When is /branch (fork-session) better than just being careful?", a: "When you want to try a risky or experimental approach without endangering current work — <code>/branch</code> copies the conversation into an independent session, so the original is untouched no matter how the experiment goes." },
+    { q: "How does /goal change when Claude decides it's 'done'?", a: "Without a goal, Claude stops when work <i>looks</i> finished. <code>/goal</code> gives it a condition it re-checks every turn (e.g. 'all tests pass'), so it keeps going until the condition is actually met. (Day 19 dives deeper.)" }
+  ],
+  6: [
+    { q: "A workflow should apply to the whole team. Which file — and why does that matter?", a: "The committed <code>./CLAUDE.md</code> — it's shared via git, so it loads for every teammate automatically. Personal notes go in <code>./CLAUDE.local.md</code> (gitignored) so they stay yours." },
+    { q: "Why put deep detail in a nested subfolder's CLAUDE.md instead of the main one?", a: "A nested CLAUDE.md loads <b>on demand</b> — only when Claude works in that folder — so heavy detail doesn't weigh down every session. The root CLAUDE.md loads every time, so keep it lean." }
+  ],
+  7: [
+    { q: "What's the practical difference between CLAUDE.md and auto memory?", a: "<b>You</b> write CLAUDE.md (your standing brief); <b>Claude</b> writes auto memory on its own as it learns the project. One is your instructions, the other is its accumulated notes." },
+    { q: "After months of work, why doesn't auto memory slow down your startup?", a: "Only the top ~200 lines of <code>MEMORY.md</code> load at start; deeper detail sits in topic files that load only when relevant. The index stays small no matter how much accumulates." }
+  ],
+  8: [
+    { q: "When is a skill the right home for something, versus CLAUDE.md?", a: "Use a <b>skill</b> for a repeatable multi-step procedure you only sometimes need — it loads on demand, so long reference material costs nothing until used. CLAUDE.md is for always-on context that should load every session." },
+    { q: "Why might you set disable-model-invocation: true on a skill?", a: "So it runs <b>only</b> when you explicitly type its command, never auto-triggered. Good for sensitive or destructive procedures you want to fire deliberately, not have Claude reach for on its own." }
+  ],
+  9: [
+    { q: "Why does combing through 200 files with a subagent keep your main chat sharp?", a: "The subagent works in its <b>own</b> context window and returns just a summary — so all that file-reading never floods your main conversation. You get the conclusion without the clutter." },
+    { q: "Why limit a custom subagent's tools to read and search only?", a: "It guarantees the subagent <i>can't</i> change anything — perfect for a fact-checker or reviewer. Restricting tools is a safety boundary, not just tidiness." }
+  ],
+  10: [
+    { q: "Why is CSV the friendliest spreadsheet format for Claude?", a: "CSV is plain-text rows and columns, so Claude can directly clean, sort, total, and de-duplicate it. A locked .xlsx with macros or a screenshot is far harder to work with reliably — save/download as CSV first." },
+    { q: "Before a 2,000-row bulk cleanup, what one thing makes it safe to hand off?", a: "A <b>checkable rule</b> — 'every row must have a valid date and a non-empty amount.' It turns 'looks done' into 'provably done,' so you review a verified result instead of hunting for mistakes." }
+  ],
+  11: [
+    { q: "Your whole team should share the same app connections. Which MCP scope?", a: "<b>Project</b> scope — it writes to <code>.mcp.json</code>, committed via git, so every teammate gets the same connectors. Local scope stays private to you; if both define the same app, Local wins." },
+    { q: "What does connecting an app via MCP actually unlock?", a: "Claude can reach where your work lives — Drive, Notion, Slack, calendar — to <i>pull live info and take action</i>, not just read local files. It's the jump from working with your files to working across your whole day." }
+  ],
+  12: [
+    { q: "Name two desktop-app features the terminal can't give you.", a: "Examples: the <b>diff viewer</b> (eyeball every change before approving), <b>drag-and-drop</b> files into chat, image paste, the file editor beside the chat, and <b>parallel sessions</b> in the sidebar — each in its own isolated copy of the project." },
+    { q: "Why run two sessions in the sidebar at once?", a: "A long job can run in one while you start another — each works in an isolated copy of your project, so they don't collide. It's how you parallelize without stepping on your own work." }
+  ],
+  13: [
+    { q: "You want one script auto-approved but still be asked before deletes. Which setup — and why not auto-accept edits?", a: "<b>Default mode + an allow rule</b> like <code>Bash(python convert.py *)</code> — only that command stops prompting, everything risky still asks. Auto-accept edits would loosen approvals far more broadly than you want." },
+    { q: "Why explore an unfamiliar folder in plan mode first?", a: "Plan mode is <b>read-only</b> — zero chance of accidental changes while you and Claude figure out the lay of the land. You switch to an editing mode only once you know what you're doing." }
+  ],
+  14: [
+    { q: "Turn 'clean up this report' into a brief Claude can nail. What did you add?", a: "Name the file, the exact changes, and a 'done' rule: 'In <code>@reports/q3.csv</code>, standardize dates to YYYY-MM-DD, drop blank rows, and flag any row missing an amount.' Specificity plus a checkable finish line." },
+    { q: "Why is 'tell it how to check itself' the highest-leverage prompting habit?", a: "Without a success criterion, Claude stops at 'looks done' and <i>you</i> become the error-catcher. With one (a rule, an example, a matching total), it self-verifies and you review a finished result." }
+  ],
+  15: [
+    { q: "/context shows MCP tool definitions eating space you never used. What's the fix?", a: "Turn on <b>tool search</b> — it defers MCP tool schemas until they're actually needed instead of loading them all upfront, reclaiming the context they were silently consuming." },
+    { q: "After auto-compaction, is your earlier history gone?", a: "No — compaction frees <i>working</i> space, but your full history is saved locally, so you can still <code>/rewind</code> to any earlier checkpoint. It declutters; it doesn't erase." }
+  ],
+  16: [
+    { q: "Why have a separate, fresh session review work instead of the one that made it?", a: "A fresh context (or <code>/code-review</code>) doesn't carry the original session's assumptions, so it catches far more — the same blind spots that hid the issue won't hide it again." },
+    { q: "What belongs in committed CLAUDE.md versus your personal settings?", a: "Team workflows everyone should follow → committed <code>./CLAUDE.md</code>. Machine-specific or private preferences → <code>CLAUDE.local.md</code> (gitignored) or <code>~/.claude/settings.json</code>. Shared vs. personal." }
+  ],
+  17: [
+    { q: "Name a job worth planning first and one that isn't.", a: "<b>Worth it:</b> reorganizing a reports folder where filenames, an index, and a summary must stay in sync (many files / unfamiliar). <b>Not worth it:</b> fixing one typo — planning is pure overhead for trivial, single-file changes." },
+    { q: "The plan Claude proposes isn't quite right. What's your move?", a: "Edit it before implementing — tell Claude what you'd do differently, or revise the plan directly (in the terminal, <code>Ctrl+G</code> opens it in your editor). Then it proceeds from <i>your</i> version." }
+  ],
+  18: [
+    { q: "You want a daily brief generated automatically. Desktop versus terminal — what do you reach for?", a: "Desktop: a scheduled <b>Routine</b> via <code>/schedule</code> (runs in the cloud). Terminal/CLI: <code>claude -p \"…\"</code> on a schedule. Both run the task hands-off; pick the one matching your workflow." },
+    { q: "When is bypassPermissions mode ever appropriate?", a: "Only in an <b>isolated, throwaway environment</b> — it skips prompts entirely (except root/home deletions). Never on real work or your main machine; it removes the safety net on purpose for sandboxed automation." }
+  ],
+  19: [
+    { q: "Turn 'make this audit better' into a real /goal. What makes yours work?", a: "Name a verifiable finish line, e.g. <code>/goal every vendor has a renewal date and an owner, and each flagged risk has a one-line mitigation</code>. Claude can <i>test</i> that — it can't test 'better.'" },
+    { q: "Your /goal has been running a while. How do you tell if it's productive or stuck?", a: "Glance at the <b>meters</b> — elapsed time, turns, tokens. If they climb without progress toward the condition, the goal is probably too broad; stop it and tighten the finish line." }
+  ]
+};

@@ -4,9 +4,16 @@
 
   var CURRICULUM = window.CURRICULUM || [];
   var TOTAL_DAYS = CURRICULUM.length;
+  // Attach optional "Go deeper" flashcards (window.DEEP_DIVE, keyed by day number).
+  if (window.DEEP_DIVE) {
+    CURRICULUM.forEach(function (d) {
+      if (!d.deepDive && window.DEEP_DIVE[d.day]) d.deepDive = window.DEEP_DIVE[d.day];
+    });
+  }
   var POINTS_FIRST_TRY = 10;
   var POINTS_AFTER_MISS = 5;
   var POINTS_CHALLENGE = 5;
+  var POINTS_DEEPDIVE = 10; // one-time bonus for finishing a day's "Go deeper" round
 
   // ===== Cross-device sync (Supabase) =====
   // These two values are PUBLIC and safe to ship in the page — the Row Level
@@ -31,8 +38,16 @@
     { id: "streak_14", emoji: "🏆", name: "Unstoppable", desc: "14-day streak", test: function (s) { return s.longestStreak >= 14; } },
     { id: "perfect_day", emoji: "🎯", name: "Sharpshooter", desc: "A flawless quiz", test: function (s) { return s.perfectCount >= 1; } },
     { id: "perfect_5", emoji: "💎", name: "Quiz Master", desc: "5 flawless quizzes", test: function (s) { return s.perfectCount >= 5; } },
-    { id: "all_18", emoji: "🥋", name: "Black Belt", desc: "Finish all 19 days", test: function (s) { return completedCount(s) >= TOTAL_DAYS; } }
+    { id: "all_18", emoji: "🥋", name: "Black Belt", desc: "Finish all 19 days", test: function (s) { return completedCount(s) >= TOTAL_DAYS; } },
+    { id: "deep_5", emoji: "🔭", name: "Curious Mind", desc: "Go deeper on 5 days", test: function (s) { return deepDiveCount(s) >= 5; } }
   ];
+
+  // How many completed days the player has finished the "Go deeper" round on.
+  function deepDiveCount(s) {
+    var n = 0;
+    for (var k in s.days) { if (s.days[k] && s.days[k].deepDiveDone) n++; }
+    return n;
+  }
 
   // ===== Multi-day Capstone projects =====
   // Defined in curriculum.js (window.PROJECTS); this is a safe fallback so the app
@@ -142,6 +157,8 @@
   var profile = null;   // current player name
   var state = null;     // current player state
   var previewMode = false; // when on (via CCQ.previewAll), every day tile opens in review mode for content review
+  var lastResults = null;  // last payload passed to showResults, so "Go deeper" can return to it
+  var ddIndex = 0, ddRevealed = false; // "Go deeper" flashcard position + reveal state
 
   function blankState(name) {
     return { name: name, totalPoints: 0, currentStreak: 0, longestStreak: 0,
@@ -257,7 +274,7 @@
   // ---- DOM helpers ----
   function $(id) { return document.getElementById(id); }
   function show(screenId) {
-    ["screen-profile", "screen-home", "screen-lesson", "screen-quiz", "screen-challenge", "screen-results"]
+    ["screen-profile", "screen-home", "screen-lesson", "screen-quiz", "screen-challenge", "screen-results", "screen-deepdive"]
       .forEach(function (s) { $(s).classList.toggle("hidden", s !== screenId); });
     window.scrollTo(0, 0);
   }
@@ -835,6 +852,7 @@
   }
 
   function showResults(r) {
+    lastResults = r;
     $("results-emoji").innerHTML = r.replay ? "📖" : (r.perfect ? "🎯" : "🎉");
     $("results-title").textContent = r.replay ? "Review complete" : "Day complete!";
     var bd = $("results-breakdown");
@@ -914,8 +932,81 @@
     $("results-tip-surface").className = "tip-surface surface-" + tip.surface.toLowerCase();
     $("results-tip-text").innerHTML = tip.text;
 
+    // "Go deeper" — optional interactive flashcards on today's topic (small bonus).
+    var ddBox = $("results-deepdive");
+    if (ddBox) {
+      ddBox.innerHTML = "";
+      var ddRec = state.days[d.day];
+      var ddCards = d.deepDive || [];
+      if (ddCards.length) {
+        var ddDone = !!(ddRec && ddRec.deepDiveDone);
+        var ddBtn = el("button", "btn dd-cta " + (ddDone ? "btn-ghost" : "btn-primary"));
+        ddBtn.innerHTML = ddDone
+          ? "🔭 Revisit the deeper dive"
+          : "🔭 Go deeper on today's topic <span class=\"dd-pts\">+" + POINTS_DEEPDIVE + " pts</span>";
+        ddBtn.onclick = openDeepDive;
+        ddBox.appendChild(ddBtn);
+        if (ddDone) ddBox.appendChild(el("div", "dd-earned muted small", "✓ Bonus already earned"));
+      }
+    }
+
     $("results-home").onclick = function () { renderHome(); show("screen-home"); };
     show("screen-results");
+  }
+
+  // ================= GO DEEPER (optional flashcards) =================
+  function openDeepDive() { ddIndex = 0; ddRevealed = false; renderDeepDive(); show("screen-deepdive"); }
+
+  function renderDeepDive() {
+    var d = CURRICULUM[session.day - 1];
+    var cards = d.deepDive || [];
+    $("dd-daytag").textContent = "Day " + d.day + " · go deeper";
+    var body = $("dd-body"); body.innerHTML = "";
+    var action = $("dd-action");
+    if (ddIndex >= cards.length) { renderDeepDiveSummary(); return; }
+    $("dd-counter").textContent = "Card " + (ddIndex + 1) + " of " + cards.length;
+    var card = cards[ddIndex];
+    body.appendChild(el("div", "dd-q", card.q));
+    if (ddRevealed) body.appendChild(el("div", "dd-a", card.a));
+    if (!ddRevealed) {
+      action.textContent = "Reveal answer →";
+      action.onclick = function () { ddRevealed = true; renderDeepDive(); };
+    } else if (ddIndex < cards.length - 1) {
+      action.textContent = "Next card →";
+      action.onclick = function () { ddIndex++; ddRevealed = false; renderDeepDive(); };
+    } else {
+      action.textContent = "Finish (+" + POINTS_DEEPDIVE + " pts) →";
+      action.onclick = function () { ddIndex++; renderDeepDive(); };
+    }
+  }
+
+  function renderDeepDiveSummary() {
+    var d = CURRICULUM[session.day - 1];
+    var rec = state.days[d.day];
+    $("dd-counter").textContent = "";
+    var body = $("dd-body"); body.innerHTML = "";
+    var awardedNow = false, newB = [];
+    if (!previewMode && rec && rec.completed && !rec.deepDiveDone) {
+      rec.deepDiveDone = true;
+      state.totalPoints += POINTS_DEEPDIVE;
+      newB = evaluateBadges();
+      save();
+      awardedNow = true;
+    }
+    var head = el("div", "dd-summary");
+    if (awardedNow) head.innerHTML = "🎉 <b>+" + POINTS_DEEPDIVE + " points</b> for going deeper on today's topic!";
+    else if (rec && rec.deepDiveDone) head.innerHTML = "✓ You already earned this day's bonus — nice review!";
+    else head.innerHTML = "Preview mode — no points awarded.";
+    body.appendChild(head);
+    if (newB.length) {
+      var bb = el("div", "results-badges");
+      bb.appendChild(el("div", "step-label", "New badge" + (newB.length > 1 ? "s" : "") + " unlocked!"));
+      newB.forEach(function (b) { bb.appendChild(el("span", "results-badge", b.emoji + " " + b.name)); });
+      body.appendChild(bb);
+    }
+    var action = $("dd-action");
+    action.textContent = "Back to home →";
+    action.onclick = function () { renderHome(); show("screen-home"); };
   }
 
   // ================= WIRE-UP =================
@@ -925,6 +1016,9 @@
     setupQuizNav();
     Array.prototype.forEach.call(document.querySelectorAll(".back-home"), function (b) {
       b.onclick = function () { renderHome(); show("screen-home"); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".back-results"), function (b) {
+      b.onclick = function () { if (lastResults) showResults(lastResults); else { renderHome(); show("screen-home"); } };
     });
     $("switch-profile").onclick = function () {
       $("profile-existing").textContent = "";
