@@ -468,7 +468,7 @@
       if (left <= 7) box.classList.add("is-soon"); // final week glow
       box.appendChild(el("span", "bunker-num", left));
       var unit = el("span", "bunker-text", "");
-      unit.innerHTML = "days until the <strong>" + EVENT_NAME + "</strong> &mdash; keep leveling up!";
+      unit.innerHTML = "days until the <strong>" + EVENT_NAME + "</strong>";
       box.appendChild(unit);
     } else if (left === 1) {
       box.classList.add("is-soon");
