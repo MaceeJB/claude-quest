@@ -1051,5 +1051,11 @@
     notOwner: function () { localStorage.removeItem("ccq:owner"); previewMode = false; if (state) renderHome(); return "Owner mode OFF for this device."; }
   };
 
-  document.addEventListener("DOMContentLoaded", init);
+  // app.js is injected asynchronously by the version loader, so DOMContentLoaded
+  // may already have fired by the time we get here — run init immediately if so.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();

@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Claude Quest</title>
-  <link rel="stylesheet" href="styles.css?v=20260603n" />
+  <!-- Critical inline style keeps the page dark until the real stylesheet loads (no white flash). -->
+  <style>html,body{margin:0;background:#0c0d12}</style>
+  <!-- styles.css, curriculum.js and app.js are injected by the version loader at the end of <body>,
+       tagged with the current version from version.json so the team always gets the latest. -->
 </head>
 <body>
   <div id="app">
@@ -177,10 +180,39 @@
 
   </div>
 
-  <!-- Bump the ?v= token whenever curriculum.js / app.js / styles.css change so
-       returning players never get a stale cached copy from GitHub Pages. -->
-  <script src="curriculum.js?v=20260603l"></script>
+  <!-- Supabase client (third-party CDN, version-pinned at @2; loads before our app). -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=20260603o"></script>
+
+  <!-- ===== Version loader =====
+       Always serve the team the latest build. This reads version.json fresh on every
+       load (no-store, cache-busted), then injects styles.css / curriculum.js / app.js
+       tagged with that version. To ship an update: change the code, bump "v" in
+       version.json, and push. Returning visitors pick it up on their next load with no
+       manual refresh, because version.json itself is never cached. -->
+  <script>
+  (function () {
+    function loadAssets(v) {
+      var q = v ? ("?v=" + encodeURIComponent(v)) : "";
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "styles.css" + q;
+      document.head.appendChild(link);
+      function js(src) {
+        var s = document.createElement("script");
+        s.src = src + q;
+        s.async = false; // preserve order: curriculum.js must run before app.js
+        document.body.appendChild(s);
+      }
+      js("curriculum.js");
+      js("app.js");
+    }
+    try {
+      fetch("version.json?ts=" + Date.now(), { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { loadAssets(d && d.v ? d.v : null); })
+        .catch(function () { loadAssets(null); });
+    } catch (e) { loadAssets(null); }
+  })();
+  </script>
 </body>
 </html>

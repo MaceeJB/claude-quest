@@ -183,11 +183,31 @@ in `app.js` (currently `"Macee"`), or any device flagged by running `CCQ.owner()
 console. Use `CCQ.notOwner()` to turn it back off. The console review commands (`CCQ.previewAll()`,
 `CCQ.previewOff()`, `CCQ.preview(n)`) still work regardless, as a maintainer backdoor.
 
+## Shipping updates (always-latest versioning)
+
+The team always gets the newest build automatically — no "hard refresh" needed. `index.html`
+contains a tiny **version loader** that, on every visit, reads `version.json` fresh (with
+`cache: no-store`, so it's never cached) and then injects `styles.css`, `curriculum.js`, and
+`app.js` tagged with that version. Because the version string changes, browsers fetch the new files
+instead of stale cached ones.
+
+**To ship an update:**
+
+1. Make your code change (`curriculum.js`, `app.js`, and/or `styles.css`).
+2. Change the `"v"` value in **`version.json`** to anything new (e.g. bump `2026-06-03a` →
+   `2026-06-03b`).
+3. Commit and push. Returning visitors pick it up on their **next page load** — usually within a
+   minute or two of GitHub Pages rebuilding.
+
+That single `version.json` bump is the only "remember to do this" step. (If `version.json` ever
+fails to load, the loader falls back to loading the assets un-versioned so the app still runs.)
+
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | App shell and screens |
+| `index.html` | App shell, screens, and the version loader |
+| `version.json` | Single source of the current build version (bump `"v"` to ship an update) |
 | `styles.css` | Theme, layout, badge/streak visuals |
 | `app.js` | Game logic: state, scoring, streaks, gating, achievements, and cross-device sync |
 | `curriculum.js` | All 19 days of lessons, quizzes, and challenges |
