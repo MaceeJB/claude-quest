@@ -31,7 +31,7 @@ window.CURRICULUM = [
     ],
     challenge: [
       { text: "Open the Claude desktop app, go to the <b>Code</b> tab, click <b>New session</b> (left sidebar), and send your first message. Notice the folder name at the top of the window, next to your session name; that's where Claude is working. (Terminal users: run <code>claude</code> inside a folder instead.)", link: DOC + "desktop-quickstart" },
-      { text: "Send your first plain-English request, e.g. 'what files are in this folder and what are they?', and watch Claude read your project before doing anything.", link: DOC + "quickstart" },
+      { text: "Send your first plain-English request, e.g. 'what files are in this folder and what are they?', and watch how Claude looks around before answering.", link: DOC + "quickstart" },
       { text: "Try a hands-off one-off: in the desktop app just type 'summarize the files in this folder'. (Terminal: <code>claude -p \"summarize the files in this folder\"</code> runs it and exits.)", link: DOC + "headless" },
       { text: "<b>Week 1 Sprint kickoff, Learn something new:</b> pick a subject you're curious about (a hobby, a tool, a topic at work). Start a fresh session and ask Claude to create an empty folder for it and work in there (terminal: make the folder and run <code>claude</code> inside it), and <b>you choose what to build</b> over the next 5 days: a <b>study guide</b>, a set of <b>flashcards</b>, a <b>self-quiz</b>, a <b>glossary</b>, or a <b>learning roadmap</b>. To start, ask Claude to scaffold a <code>learning-plan.md</code> that breaks your subject into about 5 subtopics.", link: DOC + "quickstart", capstone: true }
     ]
