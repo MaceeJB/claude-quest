@@ -783,7 +783,7 @@
       var cb = el("input"); cb.type = "checkbox";
       cb.onchange = function () { session.checks[i] = cb.checked; row.classList.toggle("checked", cb.checked); };
       main.appendChild(cb);
-      if (isCap) main.appendChild(el("span", "cap-badge", "Capstone"));
+      if (isCap) main.appendChild(el("span", "cap-badge", "Sprint"));
       main.appendChild(el("span", "ci-text", text));
       row.appendChild(main);
 
@@ -942,7 +942,7 @@
     var feedbackEmail = "MaceeJB@gmail.com";
     var subject = "Claude Quest, Day " + d.day + " (" + d.title + "): feedback";
     var body = "Day " + d.day + ": " + d.title + "\n\n" +
-      "What would you improve? (lesson, quiz, a hands-on task, the capstone, or anything else)\n\n";
+      "What would you improve? (lesson, quiz, a hands-on task, the sprint task, or anything else)\n\n";
     $("results-suggest").href = "mailto:" + feedbackEmail +
       "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 
