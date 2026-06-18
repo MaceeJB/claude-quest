@@ -22,7 +22,14 @@
         <div id="auth-box" class="hidden">
           <label for="auth-email" class="field-label">Sign in with your email to save your progress on any device</label>
           <input id="auth-email" type="email" placeholder="you@company.com" autocomplete="email" />
-          <button id="auth-send" class="btn btn-primary">Email me a sign-in link</button>
+          <button id="auth-send" class="btn btn-primary">Email me a sign-in code</button>
+
+          <div id="auth-code-box" class="hidden">
+            <label for="auth-code" class="field-label">Enter the 6-digit code we emailed you</label>
+            <input id="auth-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
+            <button id="auth-verify" class="btn btn-primary">Verify code</button>
+          </div>
+
           <p id="auth-msg" class="muted small"></p>
           <div class="or-divider"><span>or</span></div>
         </div>

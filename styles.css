@@ -45,7 +45,7 @@ html, body {
 .card, .stat, .day-tile, .badge, .project-card, .team-progress, .bunker-banner,
 .player-chip, .tip-bubble, .headline-bubble, .btn-ghost, .freeze-note,
 .lesson-card, .option, .feedback, .challenge-item, .dd-q, .dd-a, .results-badge, .dd-pts,
-#profile-name, #auth-email {
+#profile-name, #auth-email, #auth-code {
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
 }
@@ -111,11 +111,13 @@ h2 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: .2e
 
 /* ---- Profile gate ---- */
 .field-label { display: block; text-align: left; color: var(--muted); font-size: .9rem; margin-bottom: 6px; }
-#profile-name, #auth-email {
+#profile-name, #auth-email, #auth-code {
   width: 100%; font: inherit; padding: 12px 14px; margin-bottom: 14px;
   background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text);
 }
-#profile-name:focus, #auth-email:focus { outline: none; border-color: var(--accent); }
+#profile-name:focus, #auth-email:focus, #auth-code:focus { outline: none; border-color: var(--accent); }
+#auth-code { letter-spacing: 6px; font-size: 1.25rem; text-align: center; }
+#auth-code-box { margin-top: 14px; }
 #profile-start, #auth-send { width: 100%; }
 #auth-msg:not(:empty) { margin-top: 10px; }
 .or-divider { display: flex; align-items: center; text-align: center; color: var(--muted); font-size: .78rem; margin: 20px 0 14px; }

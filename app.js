@@ -32,6 +32,7 @@
 
   var sb = null;        // Supabase client (stays null if the library didn't load)
   var authUser = null;  // signed-in user, or null for local-only play
+  var pendingEmail = null; // email a sign-in code was just sent to (for verifyOtp)
   try {
     if (window.supabase && window.supabase.createClient) {
       sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -362,8 +363,10 @@
     if (!sb) return; // library missing → app runs in local-only mode
     $("auth-box").classList.remove("hidden");
     $("profile-start").className = "btn btn-ghost"; // sign-in becomes the primary path
-    $("auth-send").onclick = sendLink;
-    $("auth-email").addEventListener("keydown", function (e) { if (e.key === "Enter") sendLink(); });
+    $("auth-send").onclick = sendCode;
+    $("auth-email").addEventListener("keydown", function (e) { if (e.key === "Enter") sendCode(); });
+    $("auth-verify").onclick = verifyCode;
+    $("auth-code").addEventListener("keydown", function (e) { if (e.key === "Enter") verifyCode(); });
 
     // Returning from a magic-link email? Show a brief note while the session settles.
     if (location.hash.indexOf("access_token") !== -1) $("auth-msg").textContent = "Signing you in…";
@@ -382,18 +385,48 @@
     });
   }
 
-  function sendLink() {
+  // Email the player a 6-digit sign-in code, then reveal the code-entry box.
+  // (A code, not a clickable link, so corporate email scanners can't consume it.)
+  function sendCode() {
     var email = ($("auth-email").value || "").trim();
     if (!email || email.indexOf("@") === -1) { $("auth-email").focus(); return; }
+    pendingEmail = email;
     $("auth-msg").textContent = "Sending…";
     $("auth-send").disabled = true;
     sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: REDIRECT_URL } })
       .then(function (res) {
         $("auth-send").disabled = false;
-        $("auth-msg").textContent = res.error
-          ? "Couldn't send the link: " + res.error.message
-          : "Check your inbox and click the link in the email to sign in. (You can close this tab.)";
+        if (res.error) {
+          $("auth-msg").textContent = "Couldn't send the code: " + res.error.message;
+        } else {
+          $("auth-code-box").classList.remove("hidden");
+          $("auth-send").textContent = "Resend code";
+          $("auth-msg").textContent = "We emailed a 6-digit code to " + email + ". Enter it below.";
+          $("auth-code").focus();
+        }
       });
+  }
+
+  // Verify the typed code. New accounts get a "signup"-type code and existing
+  // ones an "email"-type code, so try email first and fall back to signup.
+  function verifyCode() {
+    var code = ($("auth-code").value || "").replace(/\D/g, "");
+    if (code.length !== 6) { $("auth-msg").textContent = "Enter the 6-digit code from the email."; $("auth-code").focus(); return; }
+    if (!pendingEmail) { $("auth-msg").textContent = "Request a code first."; return; }
+    $("auth-verify").disabled = true;
+    $("auth-msg").textContent = "Checking your code…";
+    sb.auth.verifyOtp({ email: pendingEmail, token: code, type: "email" })
+      .then(function (res) { return res && res.error ? sb.auth.verifyOtp({ email: pendingEmail, token: code, type: "signup" }) : res; })
+      .then(function (res) {
+        $("auth-verify").disabled = false;
+        if (res && res.error) {
+          $("auth-msg").textContent = "That code didn't work: " + res.error.message + " — request a new one and try again.";
+        } else {
+          $("auth-msg").textContent = "";
+          if (res && res.data && res.data.user && !authUser) enterSignedIn(res.data.user);
+        }
+      })
+      .catch(function () { $("auth-verify").disabled = false; $("auth-msg").textContent = "Something went wrong checking the code. Request a new one and try again."; });
   }
 
   // Sign-in succeeded: load this player's cloud progress, importing any local
@@ -422,9 +455,12 @@
 
   function signOut() {
     if (sb) sb.auth.signOut();
-    authUser = null; profile = null; state = null;
+    authUser = null; profile = null; state = null; pendingEmail = null;
     $("profile-existing").textContent = "";
     $("auth-msg").textContent = "";
+    if ($("auth-code-box")) $("auth-code-box").classList.add("hidden");
+    if ($("auth-code")) $("auth-code").value = "";
+    if ($("auth-send")) $("auth-send").textContent = "Email me a sign-in code";
     show("screen-profile");
   }
 

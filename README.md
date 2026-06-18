@@ -133,6 +133,25 @@ the cloud, so encourage the team to sign in with their email (the magic-link flo
 In the Supabase **SQL Editor**, run this once. It creates a function that returns **only aggregates**
 (counts and a sum — never names or individual rows), so it's safe to expose to the app's public key:
 
+First, a small table to track **excused absences** (people who are out, so they aren't required to
+play on those days):
+
+```sql
+create table if not exists public.excused (
+  id          bigint generated always as identity primary key,
+  player_name text not null,
+  from_date   date not null,
+  to_date     date not null
+);
+alter table public.excused enable row level security;  -- no public policies: only the
+-- security-definer team_stats() function (and you, in the SQL editor) can read it.
+```
+
+Then the stats function. The **team streak** is a "we all showed up" streak: it counts consecutive
+active days (weekdays, with the holidays bridged) on which **every eligible teammate** completed a day.
+"Eligible" means the person has started the quest (`startDate` on or before that day) and is **not**
+excused that day. Completions include replays, since the app records every completion in `activeDays`.
+
 ```sql
 create or replace function public.team_stats(p_today text)
 returns json
@@ -141,66 +160,78 @@ security definer
 set search_path = public
 as $$
 declare
-  v_players      int;
-  v_lessons      int;
-  v_played_today int;
-  v_today        date := p_today::date;
-  v_dates        date[];
-  v_holidays     date[] := array['2026-06-19','2026-07-03']::date[]; -- match REST_HOLIDAYS in app.js
-  v_streak       int := 0;
-  cur            date;
+  v_players int; v_lessons int; v_played_today int;
+  v_today date := p_today::date;
+  v_holidays date[] := array['2026-06-19','2026-07-03']::date[]; -- match REST_HOLIDAYS in app.js
+  v_streak int := 0; cur date;
+  v_eligible int; v_played int; v_min_start date; v_guard int := 0;
 begin
   select count(*) into v_players from public.progress;
 
   select coalesce(sum(done.cnt), 0) into v_lessons
   from public.progress p
   left join lateral (
-    select count(*) as cnt
-    from jsonb_each(coalesce(p.data->'days', '{}'::jsonb)) e
+    select count(*) as cnt from jsonb_each(coalesce(p.data->'days', '{}'::jsonb)) e
     where (e.value->>'completed') = 'true'
   ) done on true;
 
   select coalesce(sum(case when data->>'lastCompletedDate' = p_today then 1 else 0 end), 0)
   into v_played_today from public.progress;
 
-  -- every date any teammate was active (filled by the app's activeDays)
-  select array_agg(distinct ad::date) into v_dates
-  from public.progress p,
-       jsonb_array_elements_text(coalesce(p.data->'activeDays', '[]'::jsonb)) as ad;
+  select min((data->>'startDate')::date) into v_min_start
+  from public.progress where data->>'startDate' is not null;
 
-  -- team streak: consecutive active days (weekends + holidays bridged) with team activity
-  if v_dates is not null then
-    cur := v_today;
-    while extract(dow from cur)::int in (0,6) or cur = any(v_holidays) loop cur := cur - 1; end loop;
-    if not (cur = any(v_dates)) then            -- today not done yet: don't count it as a break
-      cur := cur - 1;
-      while extract(dow from cur)::int in (0,6) or cur = any(v_holidays) loop cur := cur - 1; end loop;
+  -- team streak: consecutive active days where EVERY eligible teammate played
+  cur := v_today;
+  loop
+    v_guard := v_guard + 1;
+    exit when v_guard > 400 or v_min_start is null or cur < v_min_start;
+    if extract(dow from cur)::int in (0,6) or cur = any(v_holidays) then
+      cur := cur - 1; continue;                          -- bridge weekends/holidays
     end if;
-    while cur = any(v_dates) loop
-      v_streak := v_streak + 1;
-      cur := cur - 1;
-      while extract(dow from cur)::int in (0,6) or cur = any(v_holidays) loop cur := cur - 1; end loop;
-    end loop;
-  end if;
+    select count(*) into v_eligible
+    from public.progress p
+    where (p.data->>'startDate') is not null and (p.data->>'startDate')::date <= cur
+      and not exists (select 1 from public.excused x
+        where lower(x.player_name) = lower(p.player_name) and cur between x.from_date and x.to_date);
+    if v_eligible = 0 then cur := cur - 1; continue; end if; -- nobody eligible: bridge the day
+    select count(*) into v_played
+    from public.progress p
+    where (p.data->>'startDate') is not null and (p.data->>'startDate')::date <= cur
+      and not exists (select 1 from public.excused x
+        where lower(x.player_name) = lower(p.player_name) and cur between x.from_date and x.to_date)
+      and exists (select 1 from jsonb_array_elements_text(coalesce(p.data->'activeDays','[]'::jsonb)) ad
+        where ad::date = cur);
+    if v_played >= v_eligible then
+      v_streak := v_streak + 1; cur := cur - 1; continue;  -- everyone eligible played
+    elsif cur = v_today then
+      cur := cur - 1; continue;                            -- today not fully done yet: don't break
+    else
+      exit;                                                -- an eligible teammate missed: streak ends
+    end if;
+  end loop;
 
-  return json_build_object(
-    'players',      v_players,
-    'lessons',      v_lessons,
-    'played_today', v_played_today,
-    'team_streak',  v_streak
-  );
+  return json_build_object('players', v_players, 'lessons', v_lessons,
+                           'played_today', v_played_today, 'team_streak', v_streak);
 end;
 $$;
 
 grant execute on function public.team_stats(text) to anon, authenticated;
 ```
 
-The app calls this with `sb.rpc("team_stats", { p_today: <today> })` in `renderTeamProgress()`
-(`app.js`). The progress bar's denominator is `players × 19` (each teammate can finish 19 days). The
-**team streak** counts consecutive active days (weekdays, with the holidays bridged like personal
-streaks) on which at least one signed-in teammate completed any day — including replays of days they'd
-already finished, since the app records every completion in `activeDays`. To turn the panel off again,
-just `drop function public.team_stats(text);` — the app will hide it.
+**Managing absences.** When someone is out, add a row to `excused` (the `player_name` must match the
+name they sign in with — `select player_name from public.progress order by player_name;` shows the
+exact names). Example:
+
+```sql
+insert into public.excused (player_name, from_date, to_date) values
+  ('Andreas',  '2026-06-08', '2026-06-14'),
+  ('Kimberly', '2026-06-15', '2026-06-21'),
+  ('Gail',     '2026-06-15', '2026-06-21');
+```
+
+When they're back, delete their row(s): `delete from public.excused where player_name = 'Andreas';`.
+To turn the whole panel off, `drop function public.team_stats(text);` and the app hides it.
 
 ### Resetting the team for a new cohort
 
