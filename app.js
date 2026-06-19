@@ -401,7 +401,7 @@
         } else {
           $("auth-code-box").classList.remove("hidden");
           $("auth-send").textContent = "Resend code";
-          $("auth-msg").textContent = "We emailed a 6-digit code to " + email + ". Enter it below.";
+          $("auth-msg").textContent = "We emailed a sign-in code to " + email + ". Enter it below.";
           $("auth-code").focus();
         }
       });
@@ -411,7 +411,7 @@
   // ones an "email"-type code, so try email first and fall back to signup.
   function verifyCode() {
     var code = ($("auth-code").value || "").replace(/\D/g, "");
-    if (code.length !== 6) { $("auth-msg").textContent = "Enter the 6-digit code from the email."; $("auth-code").focus(); return; }
+    if (code.length < 6) { $("auth-msg").textContent = "Enter the code from the email."; $("auth-code").focus(); return; }
     if (!pendingEmail) { $("auth-msg").textContent = "Request a code first."; return; }
     $("auth-verify").disabled = true;
     $("auth-msg").textContent = "Checking your code…";
