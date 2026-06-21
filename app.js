@@ -148,11 +148,9 @@
   // ---- pacing ----
   // The course is paced at one lesson per *active* day (weekdays minus team
   // holidays), anchored to the day each player first completed a lesson
-  // (state.startDate). Teammates may run up to LEAD_DAYS ahead of that pace, and
-  // may do several lessons in one sitting to catch up if they've fallen behind. A
-  // weekly "streak freeze" forgives one missed active day so a single skip doesn't
-  // reset a long streak.
-  var LEAD_DAYS = 2;        // how far ahead of the daily pace you may work
+  // (state.startDate). The pace is only a suggestion now — anyone can play as many
+  // lessons as they like, whenever, with no cap on working ahead. A weekly "streak
+  // freeze" forgives one missed active day so a single skip doesn't reset a long streak.
   var FREEZE_COOLDOWN = 7;  // a streak freeze refills this many days after use
 
   // ---- the finish line ----
@@ -243,16 +241,12 @@
     if (!s.startDate) return 1;
     return Math.min(Math.max(1, activeDaysInclusive(s.startDate, today())), TOTAL_DAYS);
   }
-  // The furthest day currently unlocked: today's paced lesson plus the lead window.
-  function maxUnlockedDay(s) { return Math.min(scheduledDay(s) + LEAD_DAYS, TOTAL_DAYS); }
-  // You can play the next sequential day if it's within the unlocked window. This
-  // naturally allows several lessons in one sitting (to catch up or work a little
-  // ahead) while capping how far ahead of the daily pace anyone can get.
+  // There's no cap on how far ahead you can work: the next sequential lesson is
+  // always playable until the whole quest is done. scheduledDay() still drives the
+  // gentle "working ahead / catch up" labels, but never blocks anyone.
   function availableToday(s) {
-    return completedCount(s) < TOTAL_DAYS && nextDayNumber(s) <= maxUnlockedDay(s);
+    return completedCount(s) < TOTAL_DAYS;
   }
-  // How many more lessons can be started right now (0 when caught up / capped).
-  function unlockedAhead(s) { return Math.max(0, maxUnlockedDay(s) - completedCount(s)); }
 
   // ---- streak freeze ----
   // One freeze is available unless one was used within the last FREEZE_COOLDOWN days.
@@ -657,31 +651,20 @@
 
     var n = nextDayNumber(state);
     var sched = scheduledDay(state);
-    if (availableToday(state)) {
-      var d = CURRICULUM[n - 1];
-      var ahead = n > sched, behind = n < sched;
-      cta.appendChild(el("div", "step-label", ahead ? "Working ahead" : (behind ? "Catch up" : "Today's lesson")));
-      cta.appendChild(el("h2", null, "Day " + n + ": " + d.title));
-      cta.appendChild(el("p", "muted", d.lesson.length + " cards · " + d.quiz.length + " questions · " + d.challenge.length + " hands-on tasks. About 15 minutes."));
-      var btn = el("button", "btn btn-primary", "Start Day " + n);
-      btn.onclick = function () { beginDay(n, false); };
-      cta.appendChild(btn);
-      if (ahead) cta.appendChild(el("p", "cta-hint muted small",
-        "You're ahead of the daily pace. One lesson a day makes it stick best, but a little extra is welcome."));
-      else if (behind) cta.appendChild(el("p", "cta-hint muted small",
-        "A little behind? You can do a few in a row to catch back up to today."));
-    } else {
-      cta.appendChild(el("h2", null, "You're all set for today."));
-      var lead = done - sched; // how many days ahead of pace
-      // "tomorrow" unless the next lesson day lands after a weekend/holiday.
-      var soon = nextActiveDay(today()) === addDays(today(), 1) ? "tomorrow" : "your next weekday";
-      var msg = lead >= LEAD_DAYS
-        ? "You're " + LEAD_DAYS + " days ahead, as far as the pace allows. Come back " + soon + " to keep going and protect your streak."
-        : (state.currentStreak > 1
-          ? "You're on a " + state.currentStreak + "-day streak. Come back " + soon + " to keep it going. Weekends are free; they won't break it."
-          : "Come back " + soon + " for the next lesson and start building a streak.");
-      cta.appendChild(el("p", "muted", msg));
-    }
+    // The next lesson is always playable now, so this branch always runs until the
+    // quest is finished (the done >= TOTAL_DAYS case returned above).
+    var d = CURRICULUM[n - 1];
+    var ahead = n > sched, behind = n < sched;
+    cta.appendChild(el("div", "step-label", ahead ? "Working ahead" : (behind ? "Catch up" : "Today's lesson")));
+    cta.appendChild(el("h2", null, "Day " + n + ": " + d.title));
+    cta.appendChild(el("p", "muted", d.lesson.length + " cards · " + d.quiz.length + " questions · " + d.challenge.length + " hands-on tasks. About 15 minutes."));
+    var btn = el("button", "btn btn-primary", "Start Day " + n);
+    btn.onclick = function () { beginDay(n, false); };
+    cta.appendChild(btn);
+    if (ahead) cta.appendChild(el("p", "cta-hint muted small",
+      "Working ahead is welcome — play as many lessons as you like."));
+    else if (behind) cta.appendChild(el("p", "cta-hint muted small",
+      "A little behind? You can do a few in a row to catch back up to today."));
 
     // Streak-freeze status (only once a streak or a used freeze exists).
     if (state.currentStreak > 0 || state.freezeUsedDate) {
@@ -714,7 +697,7 @@
       if (status === "done") tile.onclick = function () { beginDay(d.day, true); };
       else if (status === "available") tile.onclick = function () { beginDay(d.day, false); };
       else if (previewMode) { tile.classList.remove("locked"); tile.classList.add("available"); tile.title = "Preview (review mode — no points)"; tile.onclick = function () { beginDay(d.day, true); }; }
-      else tile.title = d.day === next ? "Come back tomorrow to unlock this day." : "Complete earlier days first.";
+      else tile.title = "Complete earlier days first.";
       grid.appendChild(tile);
     });
   }
