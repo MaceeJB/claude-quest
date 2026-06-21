@@ -217,10 +217,13 @@
       });
     }, 700);
   }
+  // Resolves to the saved state, or null when this account genuinely has no row
+  // yet (a real new player). REJECTS on a lookup error, so callers can tell a
+  // failed fetch apart from "no data" and never overwrite real progress with a blank.
   function fetchCloud() {
     return sb.from("progress").select("data").eq("user_id", authUser.id).maybeSingle()
       .then(function (res) {
-        if (res.error) { console.warn("Cloud load failed:", res.error.message); return null; }
+        if (res.error) throw new Error(res.error.message || "cloud load failed");
         return res.data ? res.data.data : null;
       });
   }
@@ -434,6 +437,15 @@
   function enterSignedIn(user) {
     authUser = user;
     $("auth-msg").textContent = "";
+    loadProfileFromCloud(user, 0);
+  }
+
+  // Pull the player's cloud record and land them on the home screen. If the
+  // lookup ERRORS (network blip), we retry with backoff and — critically — never
+  // fall through to building a blank state and saving it, which would overwrite
+  // real progress. saveCloud() runs only after a successful fetch (restored data,
+  // or a genuine null meaning a brand-new account with no row yet).
+  function loadProfileFromCloud(user, attempt) {
     fetchCloud().then(function (cloud) {
       if (cloud) {
         state = cloud;
@@ -450,6 +462,19 @@
       saveCloud(); // ensure the account has a row from now on
       renderHome();
       show("screen-home");
+    }).catch(function (err) {
+      console.warn("Cloud load failed during sign-in (attempt " + attempt + "):", err && err.message);
+      if (attempt < 3) {
+        $("auth-msg").textContent = "Loading your progress…";
+        setTimeout(function () { loadProfileFromCloud(user, attempt + 1); }, 800 * (attempt + 1));
+        return;
+      }
+      // Persistent failure: do NOT overwrite the cloud record. Leave it untouched
+      // and let them retry with a refresh (the session is already established, so a
+      // reload re-runs this load without re-entering a code).
+      authUser = null;
+      if ($("auth-verify")) $("auth-verify").disabled = false;
+      $("auth-msg").textContent = "You're signed in, but we couldn't reach your saved progress just now. Your data is safe — please refresh the page to try again.";
     });
   }
 
