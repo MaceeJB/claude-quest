@@ -79,6 +79,13 @@
 
       <div id="today-cta" class="card cta"></div>
 
+      <div id="work-setup-card" class="card cta supplemental-card">
+        <div class="step-label">New · open anytime</div>
+        <h2>Just got Claude Code at work?</h2>
+        <p class="muted">A quick guide to signing in on your work computer, carrying over what you built at home, and getting set up the right way. No unlock needed — it's always here.</p>
+        <button id="open-supplemental" class="btn btn-primary">Open the work setup guide</button>
+      </div>
+
       <h2 class="section-heading">Sprints <span class="section-note">lock in, stick with it, and build something.</span></h2>
       <div id="project-tracker" class="project-tracker"></div>
 
@@ -104,6 +111,24 @@
         <div id="dd-counter" class="muted small"></div>
         <div id="dd-body"></div>
         <button id="dd-action" class="btn btn-primary"></button>
+      </div>
+    </section>
+
+    <!-- ===== Supplemental guide (always available, no unlock / points) ===== -->
+    <section id="screen-supplemental" class="screen hidden">
+      <header class="topbar">
+        <button class="btn btn-ghost small back-home">&larr; Home</button>
+        <span class="player-chip">Work setup &middot; anytime</span>
+      </header>
+      <div class="card">
+        <div class="step-label">Supplemental guide</div>
+        <h1 id="supp-title"></h1>
+        <p id="supp-intro" class="muted"></p>
+        <div id="supp-cards"></div>
+        <h3 id="supp-checklist-head" class="hidden">Quick setup checklist</h3>
+        <p id="supp-checklist-note" class="muted small hidden">Tap each step as you go — just for you, nothing's scored.</p>
+        <div id="supp-checklist" class="challenge-list"></div>
+        <button class="btn btn-primary back-home">&larr; Back to home</button>
       </div>
     </section>
 

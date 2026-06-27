@@ -81,6 +81,8 @@ h2 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: .2e
 }
 .card.center { max-width: 460px; margin: 9vh auto 0; }
 .cta { display: flex; flex-direction: column; gap: 10px; }
+.supplemental-card { border-left: 3px solid var(--accent); }
+.supplemental-card .step-label { color: var(--accent); }
 .cta .cta-hint { margin: 2px 0 0; }
 .cta .freeze-status { margin: 6px 0 0; opacity: .85; }
 .cta .freeze-note {

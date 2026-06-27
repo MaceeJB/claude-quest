@@ -169,7 +169,7 @@
   function blankState(name) {
     return { name: name, totalPoints: 0, currentStreak: 0, longestStreak: 0,
       lastCompletedDate: null, startDate: null, freezeUsedDate: null,
-      perfectCount: 0, days: {}, badges: {}, verdictsUsed: [], activeDays: [] };
+      perfectCount: 0, days: {}, badges: {}, verdictsUsed: [], activeDays: [], suppChecks: {} };
   }
   function key(name) { return "ccq:" + name; }
   // Backfill fields added after a player's state was first saved, so existing
@@ -188,6 +188,7 @@
       if (s.lastCompletedDate) set[s.lastCompletedDate] = 1;
       s.activeDays = Object.keys(set);
     }
+    if (!s.suppChecks) s.suppChecks = {};
     return s;
   }
   function load(name) {
@@ -286,7 +287,7 @@
   // ---- DOM helpers ----
   function $(id) { return document.getElementById(id); }
   function show(screenId) {
-    ["screen-profile", "screen-home", "screen-lesson", "screen-quiz", "screen-challenge", "screen-results", "screen-deepdive"]
+    ["screen-profile", "screen-home", "screen-lesson", "screen-quiz", "screen-challenge", "screen-results", "screen-deepdive", "screen-supplemental"]
       .forEach(function (s) { $(s).classList.toggle("hidden", s !== screenId); });
     window.scrollTo(0, 0);
   }
@@ -737,6 +738,41 @@
     $("lesson-next").onclick = function () { session.qIndex = 0; session.quizPoints = 0; session.perfect = true; renderQuestion(); show("screen-quiz"); };
   }
 
+  // The always-available work-setup guide. Read-only: no quiz, no points, no
+  // unlock, no streak. The checklist's ticks persist per player (state.suppChecks)
+  // and sync to the cloud like everything else, but award nothing.
+  function renderSupplemental() {
+    var g = window.SUPPLEMENTAL;
+    if (!g || !state) return;
+    $("supp-title").textContent = g.title;
+    $("supp-intro").textContent = g.intro || "";
+    var box = $("supp-cards");
+    box.innerHTML = "";
+    (g.cards || []).forEach(function (c) {
+      var card = el("div", "lesson-card");
+      card.appendChild(el("h3", null, c.heading));
+      card.appendChild(el("p", null, c.body));
+      box.appendChild(card);
+    });
+    var items = g.checklist || [];
+    var hasList = items.length > 0;
+    $("supp-checklist-head").classList.toggle("hidden", !hasList);
+    $("supp-checklist-note").classList.toggle("hidden", !hasList);
+    var list = $("supp-checklist");
+    list.innerHTML = "";
+    items.forEach(function (text, i) {
+      var done = !!state.suppChecks[i];
+      var row = el("div", "challenge-item" + (done ? " checked" : ""));
+      var main = el("label", "ci-main");
+      var cb = el("input"); cb.type = "checkbox"; cb.checked = done;
+      cb.onchange = function () { state.suppChecks[i] = cb.checked; row.classList.toggle("checked", cb.checked); save(); };
+      main.appendChild(cb);
+      main.appendChild(el("span", "ci-text", text));
+      row.appendChild(main);
+      list.appendChild(row);
+    });
+  }
+
   function renderQuestion() {
     var d = CURRICULUM[session.day - 1];
     var q = d.quiz[session.qIndex];
@@ -1098,6 +1134,7 @@
     $("share-progress").onclick = function () {
       if (state) copyToClipboard(buildShareText(null), this, "Share");
     };
+    $("open-supplemental").onclick = function () { renderSupplemental(); show("screen-supplemental"); };
     $("sign-out").onclick = signOut;
     show("screen-profile");
   }

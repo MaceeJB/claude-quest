@@ -622,3 +622,34 @@ window.DEEP_DIVE = {
     { q: "Pair /goal with which Day 17 habit for a big job?", a: "<b>Plan mode</b>. Plan the approach first, then set the goal, then let it run to the finish line. Planning scopes the work; the goal holds it to a verifiable end." }
   ]
 };
+
+/* Supplemental guide: always available from the home screen, no unlock or points.
+ * For teammates who practiced on a personal device and just got Claude Code on
+ * their WORK computer. cards[] render like step-1 lesson cards ({heading, body},
+ * body may contain simple HTML). checklist[] renders as a tick-off list whose
+ * checked state is saved per player (state.suppChecks) but awards nothing. */
+window.SUPPLEMENTAL = {
+  title: "Set up Claude Code on your work computer",
+  intro: "Many of us practiced on a personal device and just got Claude Code on our work machines. This guide gets you set up the right way — signing in, carrying over the useful bits you built at home, and steering clear of the few things you shouldn't copy across. It lives here permanently; open it whenever you need it.",
+  cards: [
+    { heading: "What actually carries over (and what doesn't)", body: "The best part — the <b>skills you've built are in your head</b>, and those transfer instantly. The <i>customizations</i> you made (your personal preferences file, any custom commands or skills) are just files, so you can bring those along too. What does <b>not</b> follow you: your logins, your saved sessions, and Claude's auto-memory. None of that syncs automatically; it all stays on the machine where you made it. Treat this as a fresh, clean setup that you season with a few favorite touches." },
+    { heading: "Sign in with your WORK account", body: "Open Claude Code on your work computer and sign in when prompted. Use the <b>account your company gave you</b> (a work Claude subscription or your company single sign-on), not your personal one. <b>Never paste a personal API key</b> onto a work machine — that ties your personal billing and account to company equipment. If you're not sure which account or method to use, ask IT; some companies set this up for you automatically." },
+    { heading: "Confirm you're on the right account", body: "Once you're in, type <code>/status</code> to see which account is active. If it's the wrong one, run <code>/logout</code> and sign back in with your work account. It's worth a ten-second check now so every bit of your work activity is on the right account from day one." },
+    { heading: "Where your personal touches live", body: "Your personal Claude settings sit in a hidden folder called <code>.claude</code> inside your user folder (on Windows, <code>C:\\Users\\you\\.claude</code>). Inside are the things worth keeping: your <b>global <code>CLAUDE.md</code></b> (your preferences for every project) and any <b>custom skills or slash commands</b> you made. You don't have to memorize any of this — you can simply <b>ask Claude</b> to find and copy these for you." },
+    { heading: "Bringing your customizations to work", body: "On your <b>personal</b> machine, ask Claude to gather your <code>CLAUDE.md</code> and any custom skills or commands into one folder. Move that folder to your work computer the normal way (OneDrive, email-to-yourself, a USB stick). Then on your <b>work</b> machine, ask Claude to place them into your <code>.claude</code> folder. <b>Review them first</b> and trim anything personal you wouldn't want living on a work device." },
+    { heading: "The things you must NOT copy", body: "A short do-not-copy list: your <b>login and credential files</b> (account-specific and secret), anything containing a <b>password, API key, or token</b>, and any <b>personal</b> notes that don't belong on work equipment. It matters in the other direction too — don't move <b>work-confidential</b> material onto a personal machine. When in doubt, leave it out." },
+    { heading: "Set up your first work project", body: "In a real project folder, run <code>/init</code>. Claude looks around and writes a starter <code>CLAUDE.md</code> — a short brief of how that project works (its common commands, where things live, the team's conventions) that loads automatically every session. Review it, tidy it, and if it's a shared team project, save it so everyone benefits. A good <code>CLAUDE.md</code> is the single biggest thing that makes Claude feel like it already knows your work." },
+    { heading: "Go gently on permissions at first", body: "For your first week on real work, lean on <b>plan mode</b> (the read-only mode — it can look and propose, but not change anything) so you can watch how Claude approaches your actual files. As trust builds, switch to the faster modes, and use <code>/permissions</code> to <b>allow</b> the safe commands you run constantly so you're not clicking approve all day. <b>Deny always wins</b>, so you can hard-block anything you never want run." },
+    { heading: "Connecting work tools (Slack, email, Jira…)", body: "Claude can connect to your work tools through <b>connectors</b> (MCP). Two rules: <b>check your company's policy first</b> — some require approval or restrict this entirely — and always keep <b>work accounts to work, personal to personal</b>, never crossed. Each person signs in with their own account, and those logins stay on your machine and are never shared. If you're unsure whether a tool is approved, ask IT or your team lead before connecting it." },
+    { heading: "A few habits that pay off", body: "Carry these from practice into the real thing: <b>explore before you change</b> (plan mode for anything non-trivial), <b>give Claude a way to check itself</b> (a test, an expected result, a 'does it match this?'), keep a tidy project <code>CLAUDE.md</code>, and turn any procedure you repeat into a <b>skill</b> you can run with one command. The fundamentals are exactly what you practiced in the quest — you're just pointing them at real work now." }
+  ],
+  checklist: [
+    "Open Claude Code on your work computer and sign in with your work account",
+    "Run /status to confirm the right account is active",
+    "Copy over your personal CLAUDE.md and any custom skills (review them for anything private first)",
+    "Open a real work project, run /init, and review the CLAUDE.md it writes",
+    "Start in plan mode for your first few real tasks",
+    "Check your company's policy before connecting any work tools (Slack, email, Jira)",
+    "Allowlist a couple of safe commands you use constantly with /permissions"
+  ]
+};

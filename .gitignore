@@ -8,3 +8,4 @@ desktop.ini
 
 # local preview/test server (not part of the app)
 .preview-server.ps1
+_serve.ps1
