@@ -81,8 +81,20 @@ h2 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: .2e
 }
 .card.center { max-width: 460px; margin: 9vh auto 0; }
 .cta { display: flex; flex-direction: column; gap: 10px; }
-.supplemental-card { border-left: 3px solid var(--accent); }
-.supplemental-card .step-label { color: var(--accent); }
+/* Standout "work setup" bonus tile in the day grid — vivid next to locked days. */
+.day-tile.supp-tile {
+  border-color: var(--accent); opacity: 1;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--accent) 24%, var(--bg-elev)), var(--bg-elev) 72%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 8px 24px -10px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.day-tile.supp-tile .dnum { color: var(--accent); font-weight: 700; }
+.day-tile.supp-tile .dtitle { color: #fff; }
+.day-tile.supp-tile .dsection { color: color-mix(in srgb, var(--accent) 70%, var(--muted)); }
+.day-tile.supp-tile::after {
+  content: "NEW"; position: absolute; top: 9px; right: 10px;
+  background: var(--accent); color: #1c1430; font-size: .58rem; font-weight: 800;
+  letter-spacing: .8px; padding: 2px 7px; border-radius: 999px;
+}
 .cta .cta-hint { margin: 2px 0 0; }
 .cta .freeze-status { margin: 6px 0 0; opacity: .85; }
 .cta .freeze-note {

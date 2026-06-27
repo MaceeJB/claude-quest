@@ -701,6 +701,18 @@
       else tile.title = "Complete earlier days first.";
       grid.appendChild(tile);
     });
+
+    // Always-available bonus tile for the work-setup guide. Sits in the grid (it
+    // fills the empty slot after Day 19) and is styled to stand out as new/unlocked.
+    if (window.SUPPLEMENTAL) {
+      var supp = el("div", "day-tile supp-tile");
+      supp.appendChild(el("div", "dnum", "Bonus · open anytime"));
+      supp.appendChild(el("div", "dtitle", "Set up Claude Code at work"));
+      supp.appendChild(el("div", "dsection", "Transfer your setup &amp; get going"));
+      supp.title = "Open the work setup guide";
+      supp.onclick = function () { renderSupplemental(); show("screen-supplemental"); };
+      grid.appendChild(supp);
+    }
   }
 
   function renderBadges() {
@@ -1135,7 +1147,6 @@
     $("share-progress").onclick = function () {
       if (state) copyToClipboard(buildShareText(null), this, "Share");
     };
-    $("open-supplemental").onclick = function () { renderSupplemental(); show("screen-supplemental"); };
     $("sign-out").onclick = signOut;
     show("screen-profile");
   }
