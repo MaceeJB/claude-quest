@@ -443,7 +443,7 @@
   function loadProfileFromCloud(user, attempt) {
     fetchCloud().then(function (cloud) {
       if (cloud) {
-        state = cloud;
+        state = normalize(cloud); // backfill any fields added since this record was saved
         profile = state.name || deriveName(user);
       } else {
         var localName = localStorage.getItem("ccq:lastProfile");
@@ -744,6 +744,7 @@
   function renderSupplemental() {
     var g = window.SUPPLEMENTAL;
     if (!g || !state) return;
+    if (!state.suppChecks) state.suppChecks = {}; // older records may predate this field
     $("supp-title").textContent = g.title;
     $("supp-intro").textContent = g.intro || "";
     var box = $("supp-cards");
